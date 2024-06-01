@@ -4,35 +4,34 @@
 #include <functional>
 #include <SFML/Graphics/Drawable.hpp>
 #include <SFML/Graphics/RectangleShape.hpp>
-#include <SFML/Graphics/Text.hpp>
 #include <SFML/Graphics/Sprite.hpp>
+#include <SFML/Graphics/Text.hpp>
 #include <SFML/Graphics/Transformable.hpp>
 #include <SFML/Window/Event.hpp>
 
+#include "graphics/ResourceManager.h"
 
 class UiButton : public sf::Drawable, public sf::Transformable
 {
 private:
-	sf::RectangleShape background_;
+	sf::Font font_;
+	//sf::Texture texture_;
+	ResourceManager resource_manager_;
+
+	//sf::RectangleShape background_;
 	sf::Sprite sprite_;
-	sf::Texture textureBG_;
 	sf::Text text_;
 
-
-	sf::Color normalColor_;
-	sf::Color pressedColor_;
-
-	sf::Vector2f normalSize_;
-	sf::Vector2f pressedSize_;
+	bool buttonPressed_ = false;
 
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
+	bool ContainsMouse(const sf::Event& event);
 
 public:
-	UiButton(sf::Vector2f position, sf::Vector2f size, sf::Color base_color, const std::string& text, const sf::Font& font);
+	UiButton(sf::Vector2f position, sf::Color colorBase, std::string text, ResourceManager::Resource textureName);
 	void HandleEvent(const sf::Event& event);
 
-	//Callback pour avoir une fonction spécifique au bouton
-	//void(*callback_)();
+	//	//Callback pour avoir une fonction spécifique au bouton
 	std::function<void()> callback_;
 };
 
