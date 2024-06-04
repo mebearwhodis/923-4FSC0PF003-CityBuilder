@@ -11,7 +11,8 @@ public:
 	enum class Resource
 	{
 		WhiteButtonRedFrame,
-		TerrainForest
+		TerrainForest,
+		House
 	};
 
 private:

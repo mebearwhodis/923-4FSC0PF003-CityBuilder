@@ -135,5 +135,5 @@ namespace core
 			front_ = (front_ + 1) % data_.capacity();
 		}
 	};
-} // namespace core
-#endif // CORE_STRUCTURES_QUEUE_H_
+} //namespace core
+#endif //CORE_STRUCTURES_QUEUE_H_

@@ -6,7 +6,7 @@ class QueueFixture : public ::testing::TestWithParam<std::pair<core::Queue<int>,
 
 };
 
-// Test case for push and front functions
+//Test case for push and front functions
 TEST_P(QueueFixture, PushAndFront) {
     auto [queue, vector] = GetParam();
     for (auto value : vector)
@@ -14,15 +14,16 @@ TEST_P(QueueFixture, PushAndFront) {
         queue.push(value);
     }
 
+    //Ensure front() throws an exception on an empty vector
     if (!vector.empty()) {
         EXPECT_EQ(queue.front(), vector.front());
     }
     else {
-        EXPECT_THROW(queue.front(), std::underflow_error); //Ensure front() throws an exception on an empty vector
+        EXPECT_THROW(queue.front(), std::underflow_error); 
     }
 }
 
-// Test case for pop function
+//Test case for pop function
 TEST_P(QueueFixture, Pop) {
     auto [queue, vector] = GetParam();
     for (auto value : vector)
@@ -30,18 +31,21 @@ TEST_P(QueueFixture, Pop) {
         queue.push(value);
     }
 
+    //Ensure pop() throws an exception on an empty queue
     if (!vector.empty()) {
         queue.pop();
         vector.erase(vector.begin());
+
+        //Ensure front() throws an exception on an empty vector
         if (!vector.empty()) {
             EXPECT_EQ(queue.front(), vector.front());
         }
         else {
-            EXPECT_THROW(queue.front(), std::underflow_error); //Ensure front() throws an exception on an empty vector
+            EXPECT_THROW(queue.front(), std::underflow_error); 
         }
     }
     else {
-        EXPECT_THROW(queue.pop(), std::underflow_error); //Ensure pop() throws an exception on an empty queue
+        EXPECT_THROW(queue.pop(), std::underflow_error); 
     }
 }
 
@@ -60,7 +64,7 @@ class FixedQueueFixture : public ::testing::TestWithParam<std::pair<core::FixedQ
 
 };
 
-// Test case for push and front functions
+//Test case for push and front functions
 TEST_P(FixedQueueFixture, PushAndFront) {
     auto [queue, vector] = GetParam();
     for (auto value : vector)
@@ -68,15 +72,16 @@ TEST_P(FixedQueueFixture, PushAndFront) {
         queue.push(value);
     }
 
+    //Ensure front() throws an exception on an empty vector
     if (!vector.empty()) {
         EXPECT_EQ(queue.front(), vector.front());
     }
     else {
-        EXPECT_THROW(queue.front(), std::underflow_error); //Ensure front() throws an exception on an empty vector
+        EXPECT_THROW(queue.front(), std::underflow_error); 
     }
 }
 
-// Test case for pop function
+//Test case for pop function
 TEST_P(FixedQueueFixture, Pop) {
     auto [queue, vector] = GetParam();
     for (auto value : vector)
@@ -84,18 +89,21 @@ TEST_P(FixedQueueFixture, Pop) {
         queue.push(value);
     }
 
+    //Ensure pop() throws an exception on an empty queue
     if (!vector.empty()) {
         queue.pop();
         vector.erase(vector.begin());
+
+        //Ensure front() throws an exception on an empty vector
         if (!vector.empty()) {
             EXPECT_EQ(queue.front(), vector.front());
         }
         else {
-            EXPECT_THROW(queue.front(), std::underflow_error); //Ensure front() throws an exception on an empty vector
+            EXPECT_THROW(queue.front(), std::underflow_error); 
         }
     }
     else {
-        EXPECT_THROW(queue.pop(), std::underflow_error); //Ensure pop() throws an exception on an empty queue
+        EXPECT_THROW(queue.pop(), std::underflow_error); 
     }
 }
 
