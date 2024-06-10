@@ -35,13 +35,13 @@ namespace core
 		}
 
 		//First perpendicular vector
-		constexpr Vec2f Perpendicular() const
+		[[nodiscard]] constexpr Vec2f Perpendicular() const
 		{
 			return{ -y, x };
 		}
 
 		//Second perpendicular vector
-		constexpr Vec2f Perpendicular2() const
+		[[nodiscard]] constexpr Vec2f Perpendicular2() const
 		{
 			return{ y, -x };
 		}
@@ -60,7 +60,7 @@ namespace core
 		}
 
 		//Vector squarelength
-		constexpr float SquareLength() const
+		[[nodiscard]] constexpr float SquareLength() const
 		{
 			return x * x + y * y;
 		}
@@ -80,13 +80,13 @@ namespace core
 		}
 
 		//Vector length
-		constexpr float Length() const
+		[[nodiscard]] constexpr float Length() const
 		{
 			return Sqrt(SquareLength());
 		}
 
 		//Normalized vector
-		constexpr Vec2f Normalized() const
+		[[nodiscard]] constexpr Vec2f Normalized() const
 		{
 			float length = Length();
 			if (length == 0) return { 0, 0 };
@@ -94,7 +94,7 @@ namespace core
 		}
 
 		//LERP(a, b, t) where a & b are Vec2f and t is a float ranging from 0 to 1
-		constexpr Vec2f LERP(Vec2f other, float t) const
+		[[nodiscard]] constexpr Vec2f LERP(Vec2f other, float t) const
 		{
 			return { x + t * (other.x - x), y + t * (other.y - y) };
 		}

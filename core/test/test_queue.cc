@@ -6,46 +6,47 @@ class QueueFixture : public ::testing::TestWithParam<std::pair<core::Queue<int>,
 
 };
 
-//Test case for push and front functions
+//TODO: Tests for when capacity is modified (are things still in order, etc.)
+//Test case for Push and Front functions
 TEST_P(QueueFixture, PushAndFront) {
     auto [queue, vector] = GetParam();
     for (auto value : vector)
     {
-        queue.push(value);
+        queue.Push(value);
     }
 
-    //Ensure front() throws an exception on an empty vector
+    //Ensure Front() throws an exception on an empty vector
     if (!vector.empty()) {
-        EXPECT_EQ(queue.front(), vector.front());
+        EXPECT_EQ(queue.Front(), vector.front());
     }
     else {
-        EXPECT_THROW(queue.front(), std::underflow_error); 
+        EXPECT_THROW(queue.Front(), std::underflow_error); 
     }
 }
 
-//Test case for pop function
+//Test case for Pop function
 TEST_P(QueueFixture, Pop) {
     auto [queue, vector] = GetParam();
     for (auto value : vector)
     {
-        queue.push(value);
+        queue.Push(value);
     }
 
-    //Ensure pop() throws an exception on an empty queue
+    //Ensure Pop() throws an exception on an empty queue
     if (!vector.empty()) {
-        queue.pop();
+        queue.Pop();
         vector.erase(vector.begin());
 
-        //Ensure front() throws an exception on an empty vector
+        //Ensure Front() throws an exception on an empty vector
         if (!vector.empty()) {
-            EXPECT_EQ(queue.front(), vector.front());
+            EXPECT_EQ(queue.Front(), vector.front());
         }
         else {
-            EXPECT_THROW(queue.front(), std::underflow_error); 
+            EXPECT_THROW(queue.Front(), std::underflow_error); 
         }
     }
     else {
-        EXPECT_THROW(queue.pop(), std::underflow_error); 
+        EXPECT_THROW(queue.Pop(), std::underflow_error); 
     }
 }
 
@@ -64,46 +65,46 @@ class FixedQueueFixture : public ::testing::TestWithParam<std::pair<core::FixedQ
 
 };
 
-//Test case for push and front functions
+//Test case for Push and Front functions
 TEST_P(FixedQueueFixture, PushAndFront) {
     auto [queue, vector] = GetParam();
     for (auto value : vector)
     {
-        queue.push(value);
+        queue.Push(value);
     }
 
-    //Ensure front() throws an exception on an empty vector
+    //Ensure Front() throws an exception on an empty vector
     if (!vector.empty()) {
-        EXPECT_EQ(queue.front(), vector.front());
+        EXPECT_EQ(queue.Front(), vector.front());
     }
     else {
-        EXPECT_THROW(queue.front(), std::underflow_error); 
+        EXPECT_THROW(queue.Front(), std::underflow_error); 
     }
 }
 
-//Test case for pop function
+//Test case for Pop function
 TEST_P(FixedQueueFixture, Pop) {
     auto [queue, vector] = GetParam();
     for (auto value : vector)
     {
-        queue.push(value);
+        queue.Push(value);
     }
 
-    //Ensure pop() throws an exception on an empty queue
+    //Ensure Pop() throws an exception on an empty queue
     if (!vector.empty()) {
-        queue.pop();
+        queue.Pop();
         vector.erase(vector.begin());
 
-        //Ensure front() throws an exception on an empty vector
+        //Ensure Front() throws an exception on an empty vector
         if (!vector.empty()) {
-            EXPECT_EQ(queue.front(), vector.front());
+            EXPECT_EQ(queue.Front(), vector.front());
         }
         else {
-            EXPECT_THROW(queue.front(), std::underflow_error); 
+            EXPECT_THROW(queue.Front(), std::underflow_error); 
         }
     }
     else {
-        EXPECT_THROW(queue.pop(), std::underflow_error); 
+        EXPECT_THROW(queue.Pop(), std::underflow_error); 
     }
 }
 
@@ -112,11 +113,11 @@ TEST_P(FixedQueueFixture, Overflow) {
     auto [queue, vector] = GetParam();
     for (int i = 0; i < 10; i++)
     {
-            queue.push(0);
+            queue.Push(0);
     }
 
-    //Now attempt to push one more element to check if overflow error is thrown
-    EXPECT_THROW(queue.push(0), std::overflow_error);
+    //Now attempt to Push one more element to check if overflow error is thrown
+    EXPECT_THROW(queue.Push(0), std::overflow_error);
 }
 
 

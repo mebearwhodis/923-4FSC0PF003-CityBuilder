@@ -35,13 +35,13 @@ namespace core
 		}
 
 		//First perpendicular vector
-		constexpr Vec2i Perpendicular() const
+		[[nodiscard]] constexpr Vec2i Perpendicular() const
 		{
 			return{ -y, x };
 		}
 
 		//Second perpendicular vector
-		constexpr Vec2i Perpendicular2() const
+		[[nodiscard]] constexpr Vec2i Perpendicular2() const
 		{
 			return{ y, -x };
 		}
@@ -60,7 +60,7 @@ namespace core
 		}
 
 		//Vector squarelength
-		constexpr int SquareLength() const
+		[[nodiscard]] constexpr int SquareLength() const
 		{
 			return x * x + y * y;
 		}

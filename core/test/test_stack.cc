@@ -6,46 +6,47 @@ class StackFixture : public ::testing::TestWithParam<std::pair<core::Stack<int>,
 
 };
 
-//Test case for push and top functions
+//TODO: Tests for when capacity is modified (are things still in order, etc.)
+//Test case for Push and Top functions
 TEST_P(StackFixture, PushAndTop) {
     auto [stack, vector] = GetParam();
     for (auto value : vector)
     {
-        stack.push(value);
+        stack.Push(value);
     }
 
-    //Ensure top() throws an exception on an empty stack
+    //Ensure Top() throws an exception on an empty stack
     if (!vector.empty()) {
-        EXPECT_EQ(stack.top(), vector.back());
+        EXPECT_EQ(stack.Top(), vector.back());
     }
     else {
-        EXPECT_THROW(stack.top(), std::underflow_error); 
+        EXPECT_THROW(stack.Top(), std::underflow_error); 
     }
 }
 
-//Test case for pop function
+//Test case for Pop function
 TEST_P(StackFixture, Pop) {
     auto [stack, vector] = GetParam();
     for (auto value : vector)
     {
-        stack.push(value);
+        stack.Push(value);
     }
 
-    //Ensure pop() throws an exception on an empty stack
+    //Ensure Pop() throws an exception on an empty stack
     if (!vector.empty()) {
-        stack.pop();
+        stack.Pop();
         vector.pop_back();
 
-        //Ensure top() throws an exception on an empty stack
+        //Ensure Top() throws an exception on an empty stack
         if (!vector.empty()) {
-            EXPECT_EQ(stack.top(), vector.back());
+            EXPECT_EQ(stack.Top(), vector.back());
         }
         else {
-            EXPECT_THROW(stack.top(), std::underflow_error); 
+            EXPECT_THROW(stack.Top(), std::underflow_error); 
         }
     }
     else {
-        EXPECT_THROW(stack.pop(), std::underflow_error); 
+        EXPECT_THROW(stack.Pop(), std::underflow_error); 
     }
 }
 
@@ -65,46 +66,46 @@ class FixedStackFixture : public ::testing::TestWithParam<std::pair<core::FixedS
 
 };
 
-//Test case for push and top functions
+//Test case for Push and Top functions
 TEST_P(FixedStackFixture, PushAndTop) {
     auto [stack, vector] = GetParam();
     for (auto value : vector)
     {
-        stack.push(value);
+        stack.Push(value);
     }
 
-    //Ensure top() throws an exception on an empty stack
+    //Ensure Top() throws an exception on an empty stack
     if (!vector.empty()) {
-        EXPECT_EQ(stack.top(), vector.back());
+        EXPECT_EQ(stack.Top(), vector.back());
     }
     else {
-        EXPECT_THROW(stack.top(), std::underflow_error); 
+        EXPECT_THROW(stack.Top(), std::underflow_error); 
     }
 }
 
-//Test case for pop function
+//Test case for Pop function
 TEST_P(FixedStackFixture, Pop) {
     auto [stack, vector] = GetParam();
     for (auto value : vector)
     {
-        stack.push(value);
+        stack.Push(value);
     }
 
-    //Ensure pop() throws an exception on an empty stack
+    //Ensure Pop() throws an exception on an empty stack
     if (!vector.empty()) {
-        stack.pop();
+        stack.Pop();
         vector.pop_back();
 
-        //Ensure top() throws an exception on an empty stack
+        //Ensure Top() throws an exception on an empty stack
         if (!vector.empty()) {
-            EXPECT_EQ(stack.top(), vector.back());
+            EXPECT_EQ(stack.Top(), vector.back());
         }
         else {
-            EXPECT_THROW(stack.top(), std::underflow_error); 
+            EXPECT_THROW(stack.Top(), std::underflow_error); 
         }
     }
     else {
-        EXPECT_THROW(stack.pop(), std::underflow_error); 
+        EXPECT_THROW(stack.Pop(), std::underflow_error); 
     }
 }
 
@@ -113,11 +114,11 @@ TEST_P(FixedStackFixture, Overflow) {
     auto [stack, vector] = GetParam();
     for (int i = 0; i < 10; i++)
     {
-        stack.push(0);
+        stack.Push(0);
     }
 
-    //Now attempt to push one more element to check if overflow error is thrown
-    EXPECT_THROW(stack.push(0), std::overflow_error);
+    //Now attempt to Push one more element to check if overflow error is thrown
+    EXPECT_THROW(stack.Push(0), std::overflow_error);
 }
 
 

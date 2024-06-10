@@ -12,35 +12,35 @@ namespace core
      * \brief Stacks are data structures that follow the principle of 'Last in, first out'
      * FixedStack's size is set when initialized, Stack's size is dynamic
      */
-    template <typename T, std::size_t Size>
+    template <typename T, std::size_t Capacity>
     class FixedStack
     {
     private:
         //Fixed-size array
-        std::array<T, Size> data_;
+        std::array<T, Capacity> data_;
 
-        //Index of the top element
+        //Index of the Top element
         std::size_t top_;
 
     public:
         //Constructor, initializes the stack with a size of 0
         FixedStack() { top_ = 0; }
 
-        //push() inserts element at the top of the stack
-        void push(const T& item)
+        //Push() inserts element at the Top of the stack
+        void Push(const T& item)
         {
             //Check if there is room in the stack, return an error if not
-            if (top_ == Size)
+            if (top_ == Capacity)
             {
                 throw std::overflow_error("Stack full");
             }
 
-            //Insert element at the top and adjust top_ position
+            //Insert element at the Top and adjust top_ position
             data_[top_++] = item;
         }
 
-        //top() returns a reference to the top element in the stack
-        const T& top() const
+        //Top() returns a reference to the Top element in the stack
+        [[nodiscard]] const T& Top() const
         {
             //Check if there is an item in the stack, return an error if not
             if (top_ == 0)
@@ -51,8 +51,8 @@ namespace core
             return data_[top_ - 1];
         }
 
-        //pop() removes the top element
-        void pop()
+        //Top() returns a reference to the Top element in the stack
+        [[nodiscard]] T& Top()
         {
             //Check if there is an item in the stack, return an error if not
             if (top_ == 0)
@@ -60,7 +60,19 @@ namespace core
                 throw std::underflow_error("Stack empty");
             }
 
-            //Decrement top to remove the top element
+            return data_[top_ - 1];
+        }
+
+        //Pop() removes the Top element
+        void Pop()
+        {
+            //Check if there is an item in the stack, return an error if not
+            if (top_ == 0)
+            {
+                throw std::underflow_error("Stack empty");
+            }
+
+            //Decrement Top to remove the Top element
             --top_;
         }
     };
@@ -76,8 +88,8 @@ namespace core
         //Constructor, initializes the stack with a size of 0
         Stack() = default;
 
-        //push() inserts element at the top of the stack
-        void push(const T& item)
+        //Push() inserts element at the Top of the stack
+        void Push(const T& item)
         {
             if (data_.size() == data_.capacity())
             {
@@ -86,8 +98,8 @@ namespace core
             data_.push_back(item);
         }
 
-        //top() returns a reference to the top element in the stack
-        const T& top() const
+        //Top() returns a reference to the Top element in the stack
+        [[nodiscard]] const T& Top() const
         {
             //Check if there is an item in the stack, return an error if not
             if (data_.empty())
@@ -98,8 +110,8 @@ namespace core
             return data_.back();
         }
 
-        //pop() removes the top element
-        void pop()
+        //Top() returns a reference to the Top element in the stack
+        [[nodiscard]] T& Top()
         {
             //Check if there is an item in the stack, return an error if not
             if (data_.empty())
@@ -107,7 +119,19 @@ namespace core
                 throw std::underflow_error("Stack empty");
             }
 
-            //Remove the top element
+            return data_.back();
+        }
+
+        //Pop() removes the Top element
+        void Pop()
+        {
+            //Check if there is an item in the stack, return an error if not
+            if (data_.empty())
+            {
+                throw std::underflow_error("Stack empty");
+            }
+
+            //Remove the Top element
             data_.pop_back();
         }
     };

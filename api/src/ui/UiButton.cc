@@ -36,7 +36,7 @@ void UiButton::draw(sf::RenderTarget& target, sf::RenderStates states) const
 
 }
 
-bool UiButton::ContainsMouse(const sf::Event& event)
+bool UiButton::ContainsMouse(const sf::Event& event) const
 {
 	// Get the position of the mouse click
 	float mouseX = static_cast<float>(event.mouseButton.x) - getPosition().x;
@@ -63,7 +63,7 @@ void UiButton::HandleEvent(const sf::Event& event)
 			//Check if the left mouse button is pressed
 			if (event.mouseButton.button == sf::Mouse::Left)
 			{
-				buttonPressed_ = true;
+				button_pressed_ = true;
 				setScale(0.9f * getScale().x, 0.9f * getScale().y);
 			}
 		}
@@ -73,10 +73,10 @@ void UiButton::HandleEvent(const sf::Event& event)
 	//Check for mouse button released event
 	if (event.type == sf::Event::MouseButtonReleased)
 	{
-		if(buttonPressed_)
+		if(button_pressed_)
 		{
 			setScale(getScale().x / 0.9f, getScale().y / 0.9f);
-			buttonPressed_ = false;
+			button_pressed_ = false;
 
 			if (ContainsMouse(event))
 			{

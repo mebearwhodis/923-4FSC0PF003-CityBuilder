@@ -22,10 +22,10 @@ private:
 	sf::Sprite sprite_;
 	sf::Text text_;
 
-	bool buttonPressed_ = false;
+	bool button_pressed_ = false;
 
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
-	bool ContainsMouse(const sf::Event& event);
+	bool ContainsMouse(const sf::Event& event) const;
 
 public:
 	UiButton(sf::Vector2f position, sf::Color colorBase, std::string text, ResourceManager::Resource textureName);
