@@ -1,4 +1,4 @@
-#include <structures/queue.h>
+#include <containers/queue.h>
 #include <gtest/gtest.h>
 
 class QueueFixture : public ::testing::TestWithParam<std::pair<core::Queue<int>, std::vector<int>>>

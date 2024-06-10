@@ -1,4 +1,4 @@
-#include <structures/stack.h>
+#include <containers/stack.h>
 #include <gtest/gtest.h>
 
 class StackFixture : public ::testing::TestWithParam<std::pair<core::Stack<int>, std::vector<int>>>
