@@ -24,17 +24,17 @@ namespace core
 		//Position to insert the next element
 		std::size_t back_;
 		//Number of elements in the queue
-		std::size_t nbElements_;
+		std::size_t size_;
 
 	public:
 		//Constructor, initializes the queue with a size of 0
-		FixedQueue() { front_ = 0; back_ = 0; nbElements_ = 0; }
+		FixedQueue() { front_ = 0; back_ = 0; size_ = 0; }
 
 		//Push() inserts element at the end of the queue, after the current last
 		void Push(const T& item)
 		{
 			//Check if there is room in the queue, return an error if not
-			if (nbElements_ == Capacity)
+			if (size_ == Capacity)
 			{
 				throw std::overflow_error("Queue full");
 			}
@@ -43,7 +43,7 @@ namespace core
 			data_[back_] = item;
 			//Increment back_ to next available spot (with modulo to wrap-around) & adjust number of elements in the queue
 			back_ = (back_ + 1) % Capacity;
-			nbElements_++;
+			size_++;
 		}
 
 		//TODO: void Push(T&& item) std::move
@@ -52,7 +52,7 @@ namespace core
 		[[nodiscard]] const T& Front() const
 		{
 			//Check if there is an item in the queue, return an error if not
-			if (nbElements_ == 0)
+			if (size_ == 0)
 			{
 				//TODO: out of range
 				throw std::underflow_error("Queue empty");
@@ -65,7 +65,7 @@ namespace core
 		[[nodiscard]] T& Front() 
 		{
 			//Check if there is an item in the queue, return an error if not
-			if (nbElements_ == 0)
+			if (size_ == 0)
 			{
 				throw std::underflow_error("Queue empty");
 			}
@@ -77,7 +77,7 @@ namespace core
 		void Pop()
 		{
 			//Check if there is an item in the queue, return an error if not
-			if (nbElements_ == 0)
+			if (size_ == 0)
 			{
 				throw std::underflow_error("Queue empty");
 			}
@@ -86,7 +86,7 @@ namespace core
 			data_[front_] = {};
 			//Increment front_ to next spot (with modulo to wrap-around) & adjust number of elements in the queue
 			front_ = (front_ + 1) % Capacity;
-			nbElements_--;
+			size_--;
 		}
 
 	};
