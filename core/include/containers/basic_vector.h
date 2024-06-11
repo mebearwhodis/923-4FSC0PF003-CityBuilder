@@ -1,166 +1,225 @@
-#ifndef CORE_STRUCTURES_QUEUE_H_
-#define CORE_STRUCTURES_QUEUE_H_
+#ifndef CORE_CONTAINERS_BASIC_VECTOR_H_
+#define CORE_CONTAINERS_BASIC_VECTOR_H_
 
 #include <array>
-#include <stdexcept>
 #include <vector>
-
+#include <variant>
+#include <stdexcept>
+#include <initializer_list>
+#include <iterator>
 
 namespace core
 {
 	/**
-	 * \brief Queues are data structures that follow the principle of 'First in, first out'
-	 * FixedQueue's size is set when initialized, Queue's size is dynamic
+	 * \brief A vector class that uses stack storage up to a specified size,
+	 *        and switches to heap storage when the size exceeds the stack capacity.
+	 *
+	 * \tparam T Type of elements stored in the vector
+	 * \tparam StackSize Number of elements that can be stored on the stack
 	 */
-	template <typename T, std::size_t Capacity>
-	class FixedQueue
+	template <typename T, std::size_t StackSize>
+	class BasicVector
 	{
 	private:
-		//Fixed-capacity array
-		std::array<T, Capacity> data_;
+		using StackArray = std::array<T, StackSize>;
+		using HeapVector = std::vector<T>;
 
-		//Index of the Front element
-		std::size_t front_;
-		//Position to insert the next element
-		std::size_t back_;
-		//Number of elements in the queue
+		std::variant<StackArray, HeapVector> data_;
 		std::size_t size_;
+		std::size_t capacity_;
+
+		bool usingHeap() const
+		{
+			return std::holds_alternative<HeapVector>(data_);
+		}
+
+		void switchToHeap()
+		{
+			if (!usingHeap())
+			{
+				HeapVector heapData(std::get<StackArray>(data_).begin(), std::get<StackArray>(data_).begin() + size_);
+				data_ = std::move(heapData);
+				capacity_ = std::get<HeapVector>(data_).capacity();
+			}
+		}
 
 	public:
-		//Constructor, initializes the queue with a size of 0
-		FixedQueue() { front_ = 0; back_ = 0; size_ = 0; }
+		// Constructor
+		BasicVector() : data_(StackArray{}), size_(0), capacity_(StackSize) {}
 
-		//Push() inserts element at the end of the queue, after the current last
-		void Push(const T& item)
+		// Initializer list constructor
+		BasicVector(std::initializer_list<T> init) : BasicVector()
 		{
-			//Check if there is room in the queue, return an error if not
-			if (size_ == Capacity)
+			if (init.size() > StackSize)
 			{
-				throw std::overflow_error("Queue full");
+				switchToHeap();
+				std::get<HeapVector>(data_) = init;
 			}
-
-			//Insert element at the next available spot
-			data_[back_] = item;
-			//Increment back_ to next available spot (with modulo to wrap-around) & adjust number of elements in the queue
-			back_ = (back_ + 1) % Capacity;
-			size_++;
+			else
+			{
+				std::copy(init.begin(), init.end(), std::get<StackArray>(data_).begin());
+			}
+			size_ = init.size();
 		}
 
-		//TODO: void Push(T&& item) std::move
-
-		//Front() returns a reference to the next element in the queue (the 'oldest' one)
-		[[nodiscard]] const T& Front() const
+		// Reserve method
+		void Reserve(std::size_t newCapacity)
 		{
-			//Check if there is an item in the queue, return an error if not
+			if (newCapacity > StackSize)
+			{
+				switchToHeap();
+				std::get<HeapVector>(data_).reserve(newCapacity);
+				capacity_ = newCapacity;
+			}
+		}
+
+		// Push_Back method
+		void PushBack(const T& item)
+		{
+			if (size_ >= capacity_)
+			{
+				if (!usingHeap())
+				{
+					switchToHeap();
+				}
+				std::get<HeapVector>(data_).push_back(item);
+				capacity_ = std::get<HeapVector>(data_).capacity();
+			}
+			else
+			{
+				if (usingHeap())
+				{
+					std::get<HeapVector>(data_).push_back(item);
+				}
+				else
+				{
+					std::get<StackArray>(data_)[size_] = item;
+				}
+			}
+			++size_;
+		}
+
+		// Pop_Back method
+		void PopBack()
+		{
 			if (size_ == 0)
 			{
-				//TODO: out of range
-				throw std::underflow_error("Queue empty");
+				throw std::out_of_range("Vector empty");
 			}
-
-			return data_[front_];
-		}
-
-		//Front() returns a reference to the next element in the queue (the 'oldest' one)
-		[[nodiscard]] T& Front() 
-		{
-			//Check if there is an item in the queue, return an error if not
-			if (size_ == 0)
+			--size_;
+			if (usingHeap())
 			{
-				throw std::underflow_error("Queue empty");
+				std::get<HeapVector>(data_).pop_back();
 			}
-
-			return data_[front_];
 		}
 
-		//Pop() removes the next element
-		void Pop()
+		// Begin method
+		T* Begin()
 		{
-			//Check if there is an item in the queue, return an error if not
-			if (size_ == 0)
+			if (usingHeap())
 			{
-				throw std::underflow_error("Queue empty");
+				return std::get<HeapVector>(data_).data();
 			}
-
-			//Reset the element, might not be necessary, it would just get overwritten
-			data_[front_] = {};
-			//Increment front_ to next spot (with modulo to wrap-around) & adjust number of elements in the queue
-			front_ = (front_ + 1) % Capacity;
-			size_--;
+			return std::get<StackArray>(data_).data();
 		}
 
+		// End method
+		T* End()
+		{
+			return Begin() + size_;
+		}
+
+		// Size method
+		[[nodiscard]] std::size_t Size() const
+		{
+			return size_;
+		}
+
+		// Overloaded operator[]
+		T& operator[](std::size_t pos)
+		{
+			if (pos >= size_)
+			{
+				throw std::out_of_range("Index out of range");
+			}
+			if (usingHeap())
+			{
+				return std::get<HeapVector>(data_)[pos];
+			}
+			return std::get<StackArray>(data_)[pos];
+		}
+
+		const T& operator[](std::size_t pos) const
+		{
+			if (pos >= size_)
+			{
+				throw std::out_of_range("Index out of range");
+			}
+			if (usingHeap())
+			{
+				return std::get<HeapVector>(data_)[pos];
+			}
+			return std::get<StackArray>(data_)[pos];
+		}
+
+		// Insert method
+		void Insert(std::size_t position, const T& value)
+		{
+			if (position > size_)
+			{
+				throw std::out_of_range("Position out of range");
+			}
+			if (size_ >= capacity_)
+			{
+				switchToHeap();
+			}
+			if (usingHeap())
+			{
+				auto& vec = std::get<HeapVector>(data_);
+				vec.insert(vec.begin() + position, value);
+			}
+			else
+			{
+				auto& arr = std::get<StackArray>(data_);
+				for (std::size_t i = size_; i > position; --i)
+				{
+					arr[i] = arr[i - 1];
+				}
+				arr[position] = value;
+			}
+			++size_;
+		}
+
+		// Erase method
+		void Erase(std::size_t position)
+		{
+			if (position >= size_)
+			{
+				throw std::out_of_range("Position out of range");
+			}
+			if (usingHeap())
+			{
+				auto& vec = std::get<HeapVector>(data_);
+				vec.erase(vec.begin() + position);
+			}
+			else
+			{
+				auto& arr = std::get<StackArray>(data_);
+				for (std::size_t i = position; i < size_ - 1; ++i)
+				{
+					arr[i] = arr[i + 1];
+				}
+			}
+			--size_;
+		}
+
+		// Method to check if using heap storage
+		bool UsingHeap() const
+		{
+			return usingHeap();
+		}
 	};
 
-	template <typename T>
-	class Queue
-	{
-	private:
-		//Dynamic array
-		std::vector<T> data_;
+} // namespace core
 
-		//Index of the Front element
-		std::size_t front_;
-		//Position to insert the next element
-		std::size_t back_;
-
-	public:
-		//Constructor, initializes the queue with a size of 0
-		Queue() { front_ = 0; back_ = 0; }
-
-		//Push() inserts element at the end of the queue, after the current last
-		void Push(const T& item)
-		{
-			//If capacity is reached, double it (or set it to 1 if it was 0)
-			if (data_.size() == data_.capacity())
-			{
-				data_.reserve(data_.capacity() == 0 ? 1 : data_.capacity() * 2);
-			}
-
-			data_.push_back(item);
-
-			//Increment back_ to next available spot (with modulo to wrap-around) & adjust number of elements in the queue
-			back_ = (back_ + 1) % data_.capacity();
-		}
-
-		//Front() returns a reference to the next element in the queue (the 'oldest' one)
-		[[nodiscard]] const T& Front() const
-		{
-			//Check if there is an item in the queue, return an error if not
-			if (data_.empty())
-			{
-				throw std::underflow_error("Queue empty");
-			}
-
-			return data_[front_];
-		}
-
-		//Front() returns a reference to the next element in the queue (the 'oldest' one)
-		[[nodiscard]] T& Front()
-		{
-			//Check if there is an item in the queue, return an error if not
-			if (data_.empty())
-			{
-				throw std::underflow_error("Queue empty");
-			}
-
-			return data_[front_];
-		}
-
-		//Pop() removes the next element
-		void Pop()
-		{
-			//Check if there is an item in the queue, return an error if not
-			if (data_.empty())
-			{
-				throw std::underflow_error("Queue empty");
-			}
-
-			//Reset the element, might not be necessary, it would just get overwritten
-			//data_[front_] = T();
-
-			//Increment front_ to next spot (with modulo to wrap-around) & adjust number of elements in the queue
-			front_ = (front_ + 1) % data_.capacity();
-		}
-	};
-} //namespace core
-#endif //CORE_STRUCTURES_QUEUE_H_
+#endif // CORE_CONTAINERS_BASIC_VECTOR_H_

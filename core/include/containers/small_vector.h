@@ -1,166 +1,154 @@
-#ifndef CORE_STRUCTURES_QUEUE_H_
-#define CORE_STRUCTURES_QUEUE_H_
+#ifndef CORE_CONTAINERS_SMALL_VECTOR_H_
+#define CORE_CONTAINERS_SMALL_VECTOR_H_
 
 #include <array>
 #include <stdexcept>
-#include <vector>
-
+#include <initializer_list>
 
 namespace core
 {
+
 	/**
-	 * \brief Queues are data structures that follow the principle of 'First in, first out'
-	 * FixedQueue's size is set when initialized, Queue's size is dynamic
-	 */
+	* \brief A fixed-capacity vector implementation.
+	*
+	* This class provides a vector-like interface with a fixed maximum capacity.
+	* It stores elements in a pre-allocated array and does not support dynamic resizing.
+	*
+	* \tparam T Type of elements stored in the vector
+	* \tparam Capacity Maximum number of elements the vector can hold
+	*/
 	template <typename T, std::size_t Capacity>
-	class FixedQueue
+	class SmallVector
 	{
 	private:
-		//Fixed-capacity array
 		std::array<T, Capacity> data_;
-
-		//Index of the Front element
-		std::size_t front_;
-		//Position to insert the next element
-		std::size_t back_;
-		//Number of elements in the queue
+		std::size_t begin_;
+		std::size_t end_;
 		std::size_t size_;
 
 	public:
-		//Constructor, initializes the queue with a size of 0
-		FixedQueue() { front_ = 0; back_ = 0; size_ = 0; }
+		// Constructor, initializes the queue with a size of 0
+		SmallVector() : begin_(0), end_(0), size_(0) {}
 
-		//Push() inserts element at the end of the queue, after the current last
-		void Push(const T& item)
+		// Initializer list constructor
+		SmallVector(std::initializer_list<T> init) : SmallVector()
 		{
-			//Check if there is room in the queue, return an error if not
-			if (size_ == Capacity)
+			if (init.size() > Capacity)
 			{
-				throw std::overflow_error("Queue full");
+				throw std::overflow_error("Initializer list exceeds vector capacity");
 			}
+			for (const T& item : init)
+			{
+				PushBack(item);
+			}
+		}
 
-			//Insert element at the next available spot
-			data_[back_] = item;
-			//Increment back_ to next available spot (with modulo to wrap-around) & adjust number of elements in the queue
-			back_ = (back_ + 1) % Capacity;
+		// Push_Back() to add an element at the end
+		void PushBack(const T& item)
+		{
+			if (size_ < Capacity)
+			{
+				data_[end_] = item;
+				end_ = (end_ + 1) % Capacity;
+				size_++;
+			}
+			else
+			{
+				throw std::overflow_error("Vector full");
+			}
+		}
+
+		// Pop_Back() to delete the last element
+		void PopBack()
+		{
+			if (size_ > 0)
+			{
+				end_ = (end_ - 1 + Capacity) % Capacity;
+				size_--;
+			}
+			else
+			{
+				throw std::out_of_range("Vector empty");
+			}
+		}
+
+		// Begin() returns iterator to beginning
+		T* Begin()
+		{
+			return &data_[begin_];
+		}
+
+		// End() returns iterator to end
+		T* End()
+		{
+			return &data_[end_];
+		}
+
+		// Size() returns the size that is calculated by subtracting Begin() from End()
+		[[nodiscard]] std::size_t Size() const
+		{
+			return size_;
+		}
+
+		// Overloaded operator[]
+		T& operator[](std::size_t pos)
+		{
+			if (pos >= size_)
+			{
+				throw std::out_of_range("Index out of range");
+			}
+			return data_[(begin_ + pos) % Capacity];
+		}
+
+		const T& operator[](std::size_t pos) const
+		{
+			if (pos >= size_)
+			{
+				throw std::out_of_range("Index out of range");
+			}
+			return data_[(begin_ + pos) % Capacity];
+		}
+
+		// Insert an element at the specified position
+		void Insert(std::size_t position, const T& value)
+		{
+			if (size_ >= Capacity)
+			{
+				throw std::overflow_error("Vector full");
+			}
+			if (position > size_)
+			{
+				throw std::out_of_range("Position out of range");
+			}
+			for (std::size_t i = size_; i > position; --i)
+			{
+				data_[(begin_ + i) % Capacity] = data_[(begin_ + i - 1) % Capacity];
+			}
+			data_[(begin_ + position) % Capacity] = value;
+			end_ = (end_ + 1) % Capacity;
 			size_++;
 		}
 
-		//TODO: void Push(T&& item) std::move
-
-		//Front() returns a reference to the next element in the queue (the 'oldest' one)
-		[[nodiscard]] const T& Front() const
+		// Erase the element at the specified position
+		void Erase(std::size_t position)
 		{
-			//Check if there is an item in the queue, return an error if not
 			if (size_ == 0)
 			{
-				//TODO: out of range
-				throw std::underflow_error("Queue empty");
+				throw std::out_of_range("Vector empty");
 			}
-
-			return data_[front_];
-		}
-
-		//Front() returns a reference to the next element in the queue (the 'oldest' one)
-		[[nodiscard]] T& Front() 
-		{
-			//Check if there is an item in the queue, return an error if not
-			if (size_ == 0)
+			if (position >= size_)
 			{
-				throw std::underflow_error("Queue empty");
+				throw std::out_of_range("Position out of range");
 			}
-
-			return data_[front_];
-		}
-
-		//Pop() removes the next element
-		void Pop()
-		{
-			//Check if there is an item in the queue, return an error if not
-			if (size_ == 0)
+			for (std::size_t i = position; i < size_ - 1; ++i)
 			{
-				throw std::underflow_error("Queue empty");
+				data_[(begin_ + i) % Capacity] = data_[(begin_ + i + 1) % Capacity];
 			}
-
-			//Reset the element, might not be necessary, it would just get overwritten
-			data_[front_] = {};
-			//Increment front_ to next spot (with modulo to wrap-around) & adjust number of elements in the queue
-			front_ = (front_ + 1) % Capacity;
+			end_ = (end_ - 1 + Capacity) % Capacity;
 			size_--;
 		}
-
 	};
 
-	template <typename T>
-	class Queue
-	{
-	private:
-		//Dynamic array
-		std::vector<T> data_;
+} // namespace core
 
-		//Index of the Front element
-		std::size_t front_;
-		//Position to insert the next element
-		std::size_t back_;
-
-	public:
-		//Constructor, initializes the queue with a size of 0
-		Queue() { front_ = 0; back_ = 0; }
-
-		//Push() inserts element at the end of the queue, after the current last
-		void Push(const T& item)
-		{
-			//If capacity is reached, double it (or set it to 1 if it was 0)
-			if (data_.size() == data_.capacity())
-			{
-				data_.reserve(data_.capacity() == 0 ? 1 : data_.capacity() * 2);
-			}
-
-			data_.push_back(item);
-
-			//Increment back_ to next available spot (with modulo to wrap-around) & adjust number of elements in the queue
-			back_ = (back_ + 1) % data_.capacity();
-		}
-
-		//Front() returns a reference to the next element in the queue (the 'oldest' one)
-		[[nodiscard]] const T& Front() const
-		{
-			//Check if there is an item in the queue, return an error if not
-			if (data_.empty())
-			{
-				throw std::underflow_error("Queue empty");
-			}
-
-			return data_[front_];
-		}
-
-		//Front() returns a reference to the next element in the queue (the 'oldest' one)
-		[[nodiscard]] T& Front()
-		{
-			//Check if there is an item in the queue, return an error if not
-			if (data_.empty())
-			{
-				throw std::underflow_error("Queue empty");
-			}
-
-			return data_[front_];
-		}
-
-		//Pop() removes the next element
-		void Pop()
-		{
-			//Check if there is an item in the queue, return an error if not
-			if (data_.empty())
-			{
-				throw std::underflow_error("Queue empty");
-			}
-
-			//Reset the element, might not be necessary, it would just get overwritten
-			//data_[front_] = T();
-
-			//Increment front_ to next spot (with modulo to wrap-around) & adjust number of elements in the queue
-			front_ = (front_ + 1) % data_.capacity();
-		}
-	};
-} //namespace core
-#endif //CORE_STRUCTURES_QUEUE_H_
+#endif // CORE_CONTAINERS_SMALL_VECTOR_H_
