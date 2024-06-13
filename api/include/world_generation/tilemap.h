@@ -27,7 +27,7 @@ public:
 	void Generate();
 	void Clear();
 
-	void HandleEvent(const sf::Event& event);
+	void HandleEvent(const sf::Event& event, const sf::RenderWindow& window);
 
 
 	Tilemap() = default;

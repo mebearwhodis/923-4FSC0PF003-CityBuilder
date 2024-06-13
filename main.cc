@@ -5,12 +5,14 @@
 #include "gameplay/building_manager.h"
 #include "world_generation/tilemap.h"
 
+//TODO: Factorize into game class
+//TODO: check all #include guards
 
 int main()
 {
 
 	BuildingManager building_manager;
-	sf::Vector2f tile_size = sf::Vector2f(Tilemap::playground_tile_size_u_.x, Tilemap::playground_tile_size_u_.y);
+	auto tile_size = Tilemap::playground_tile_size_u_;
 
 	//Cursor
 	sf::Image cursorImage;
@@ -18,14 +20,6 @@ int main()
 	sf::Cursor cursor;
 	cursor.loadFromPixels(cursorImage.getPixelsPtr(), cursorImage.getSize(), { 0,0 });
 
-	//Hovered tile frame
-	//sf::RectangleShape hovered_tile;
-	//hovered_tile.setSize(tile_size);
-	//hovered_tile.setFillColor(sf::Color(100, 100, 100, 180));
-	//hovered_tile.setOutlineColor(sf::Color::Magenta);
-	//hovered_tile.setOutlineThickness(-1);
-	//hovered_tile.setOrigin(0, 0);
-	//bool display_hover = false;
 
 	Tilemap map = Tilemap(sf::Vector2u(50, 50));
 
@@ -69,28 +63,12 @@ int main()
 	{
 		sf::Vector2i mouse_pos = sf::Mouse::getPosition(window);
 		sf::Vector2f mouse_world_pos = window.mapPixelToCoords(mouse_pos);
-		sf::Vector2i mouse_tile_coord;
-
-
-		//TODO: C'est moche et temporaire, peut-être y'a moyen de moyenner avec un arrondi correct
-		if(mouse_world_pos.x < 0 && mouse_world_pos.y < 0)
-		{
-			mouse_tile_coord = sf::Vector2i((mouse_world_pos.x / tile_size.x) -1, (mouse_world_pos.y / tile_size.y) -1);
-		}
-		else if(mouse_world_pos.x < 0)
-		{
-			mouse_tile_coord = sf::Vector2i((mouse_world_pos.x / tile_size.x) -1, mouse_world_pos.y / tile_size.y);
-		}else if(mouse_world_pos.y < 0)
-		{
-			mouse_tile_coord = sf::Vector2i(mouse_world_pos.x / tile_size.x, (mouse_world_pos.y / tile_size.y) -1);
-		}
-		else
-		{
-			mouse_tile_coord = sf::Vector2i(mouse_world_pos.x / tile_size.x, mouse_world_pos.y / tile_size.y);
-		}
-
-
-		
+		//sf::Vector2i mouse_tile_coord; 
+		sf::Vector2f mouse_tile_coord(
+			static_cast<int>(mouse_world_pos.x / tile_size.x) * tile_size.x,
+			static_cast<int>(mouse_world_pos.y / tile_size.y) * tile_size.y
+		);
+			
 
 		//sf::Vector2i mouse_pos = sf::Mouse::getPosition(window);
 		//sf::Vector2i mouse_tile_coord(mouse_pos.x / tile_size.x, mouse_pos.y / tile_size.y);
@@ -141,7 +119,7 @@ int main()
 			button_clear_map.HandleEvent(event);
 			button_activate_build.HandleEvent(event);
 
-			map.HandleEvent(event);
+			map.HandleEvent(event, window);
 
 		}
 
@@ -154,7 +132,8 @@ int main()
 
 		if(building_manager.IsActive())
 		{
-			building_manager.SetHoverTilePosition(sf::Vector2f(static_cast<float>(mouse_tile_coord.x) * tile_size.x, static_cast<float>(mouse_tile_coord.y) * tile_size.y));
+			//building_manager.SetHoverTilePosition(sf::Vector2f(static_cast<float>(mouse_tile_coord.x) * tile_size.x, static_cast<float>(mouse_tile_coord.y) * tile_size.y));
+			building_manager.SetHoverTilePosition(mouse_tile_coord);
 			window.draw(building_manager.HoverTile());
 		}
 

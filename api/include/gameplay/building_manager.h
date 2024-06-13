@@ -1,10 +1,9 @@
-#ifndef API_GRAPHICS_EDITOR_H_
-#define API_GRAPHICS_EDITOR_H_
+#ifndef API_GAMEPLAY_BUILDING_MANAGER_H_
+#define API_GAMEPLAY_BUILDING_MANAGER_H_
 #include <SFML/Graphics/RectangleShape.hpp>
 
 #include "world_generation/tile.h"
 
-//TODO put in a "gameplay" folder
 class BuildingManager
 {
 	bool is_active_ = false;
@@ -23,9 +22,4 @@ public:
 	void AddBuilding(Tile& tile);
 
 };
-#endif // API_GRAPHICS_EDITOR_H_
-
-
-//TODO: class Building with enum of BuildingType
-//Sprite, BuildingType, Cost, State
-//More specific building classes could inherit from it (Building->House/Sawmill/Forge/etc. could inherit and add specific function)
+#endif // API_GAMEPLAY_BUILDING_MANAGER_H_

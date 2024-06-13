@@ -1,12 +1,11 @@
-#ifndef CURSOR_H
-#define CURSOR_H
+#ifndef API_UI_CURSOR_H_
+#define API_UI_CURSOR_H_
 #include <SFML/Graphics/Image.hpp>
 #include <SFML/Window/Cursor.hpp>
 #include <SFML/Window/Window.hpp>
 
 class CursorChange
 {
-	//TODO change name to ChangeCursor
 	//TODO Move cursors to resource manager
 	static void BasicCursor(sf::Window& window)
 	{

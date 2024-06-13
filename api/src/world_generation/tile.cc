@@ -7,7 +7,7 @@ Tile::Tile(ResourceManager::Resource texture, float x = 0, float y = 0, bool wal
 	texture_ = texture;
 	sprite_.setTexture(ResourceManager::Get().GetTexture(texture));
 
-	//TODO: Maybe set the object position rather than the sprite, if we need to interact with it/click on it later? Could cause problems if it's only the sprite
+	
 	sprite_.setPosition(x, y);
 
 	walkable_ = walkable;

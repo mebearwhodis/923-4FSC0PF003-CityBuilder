@@ -54,14 +54,18 @@ void Tilemap::Clear()
 	tiles_.clear();
 }
 
-void Tilemap::HandleEvent(const sf::Event& event)
+void Tilemap::HandleEvent(const sf::Event& event, const sf::RenderWindow& window)
 {
 	//Check for mouse move event
+	//TODO: This is not necessary -> check if it's worth to keep. The outline movement is more fluid without this
 	if (event.type == sf::Event::MouseMoved)
 	{
-		sf::Vector2f mousePosition = sf::Vector2f(
-			event.mouseMove.x - event.mouseMove.x % playground_tile_size_u_.x,
-			event.mouseMove.y - event.mouseMove.y % playground_tile_size_u_.y
+		sf::Vector2f worldPos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
+
+		// Snap mouse position to the grid
+		sf::Vector2f mousePosition(
+			static_cast<int>(worldPos.x / playground_tile_size_u_.x) * playground_tile_size_u_.x,
+			static_cast<int>(worldPos.y / playground_tile_size_u_.y) * playground_tile_size_u_.y
 		);
 
 		//TODO find why it bugs when using this rather than the for_each

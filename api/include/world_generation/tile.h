@@ -1,5 +1,5 @@
-#ifndef GAME_SRC_TILE_H_
-#define GAME_SRC_TILE_H_
+#ifndef API_WORLD_GENERATION_TILE_H_
+#define API_WORLD_GENERATION_TILE_H_
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Graphics/Texture.hpp>
 #include <SFML/Graphics/RenderTarget.hpp>
@@ -32,7 +32,7 @@ protected:
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
 public:
-	//TODO link resources in resource manager to TileType. Or is TileType really useful? Maybe not
+	//TODO link resources in resource manager to TileType. 
 	Tile();
 	Tile(ResourceManager::Resource texture, float x, float y, bool walkable);
 	bool Walkable() const { return walkable_; }
