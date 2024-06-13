@@ -1,23 +1,15 @@
 ﻿#include <iostream>
 #include <SFML/Graphics.hpp>
 
-#include "api/include/ui/UIButton.h"
-#include "graphics/Tilemap.h"
+#include "api/include/ui/ui_button.h"
+#include "gameplay/building_manager.h"
+#include "world_generation/tilemap.h"
 
-void firstCallback()
-{
-	std::cout << "button 1 pressed" << std::endl;
-}
-
-void secondCallback()
-{
-	std::cout << "button 2 pressed" << std::endl;
-}
 
 int main()
 {
 
-
+	BuildingManager building_manager;
 	sf::Vector2f tile_size = sf::Vector2f(Tilemap::playground_tile_size_u_.x, Tilemap::playground_tile_size_u_.y);
 
 	//Cursor
@@ -27,12 +19,13 @@ int main()
 	cursor.loadFromPixels(cursorImage.getPixelsPtr(), cursorImage.getSize(), { 0,0 });
 
 	//Hovered tile frame
-	sf::RectangleShape hovered_tile;
-	hovered_tile.setSize(tile_size);
-	hovered_tile.setFillColor(sf::Color(100, 100, 100, 180));
-	hovered_tile.setOutlineColor(sf::Color::Magenta);
-	hovered_tile.setOutlineThickness(-1);
-	hovered_tile.setOrigin(0, 0);
+	//sf::RectangleShape hovered_tile;
+	//hovered_tile.setSize(tile_size);
+	//hovered_tile.setFillColor(sf::Color(100, 100, 100, 180));
+	//hovered_tile.setOutlineColor(sf::Color::Magenta);
+	//hovered_tile.setOutlineThickness(-1);
+	//hovered_tile.setOrigin(0, 0);
+	//bool display_hover = false;
 
 	Tilemap map = Tilemap(sf::Vector2u(50, 50));
 
@@ -52,17 +45,24 @@ int main()
 	view_.setCenter(960, 540);
 
 	//Create buttons
-	UiButton firstButton(sf::Vector2f(400, 400), sf::Color::Cyan, "Generate", ResourceManager::Resource::WhiteButtonRedFrame);
+	UiButton button_generate_map(sf::Vector2f(400, 100), sf::Color::Cyan, "Generate", ResourceManager::Resource::kWhiteButtonRedFrame);
 
-	UiButton secondButton(sf::Vector2f(400, 200), sf::Color::Cyan, "Bouton 2", ResourceManager::Resource::WhiteButtonRedFrame);
+	UiButton button_clear_map(sf::Vector2f(400, 200), sf::Color::Cyan, "Clear map", ResourceManager::Resource::kWhiteButtonRedFrame);
+
+	UiButton button_activate_build(sf::Vector2f(400, 300), sf::Color::Cyan, "Edit mode", ResourceManager::Resource::kWhiteButtonRedFrame);
 
 
 	//Use a lambda to attach method to button
-	firstButton.callback_ = [&map]() {
+	button_generate_map.callback_ = [&map]() {
 		map.Generate();
 		};
 
-	secondButton.callback_ = secondCallback;
+	map.clicked_tile_ = [&building_manager](auto tile) { building_manager.AddBuilding(tile); };
+
+
+	button_clear_map.callback_ = [&map]() {map.Clear(); };
+
+	button_activate_build.callback_ = [&building_manager]() {building_manager.ToggleActive(); };
 
 	// run the program as long as the window is open
 	while (window.isOpen())
@@ -70,6 +70,8 @@ int main()
 		sf::Vector2i mouse_pos = sf::Mouse::getPosition(window);
 		sf::Vector2f mouse_world_pos = window.mapPixelToCoords(mouse_pos);
 		sf::Vector2i mouse_tile_coord;
+
+
 		//TODO: C'est moche et temporaire, peut-être y'a moyen de moyenner avec un arrondi correct
 		if(mouse_world_pos.x < 0 && mouse_world_pos.y < 0)
 		{
@@ -86,11 +88,12 @@ int main()
 		{
 			mouse_tile_coord = sf::Vector2i(mouse_world_pos.x / tile_size.x, mouse_world_pos.y / tile_size.y);
 		}
-		hovered_tile.setPosition(static_cast<float>(mouse_tile_coord.x) * tile_size.x, static_cast<float>(mouse_tile_coord.y) * tile_size.y);
+
+
+		
 
 		//sf::Vector2i mouse_pos = sf::Mouse::getPosition(window);
 		//sf::Vector2i mouse_tile_coord(mouse_pos.x / tile_size.x, mouse_pos.y / tile_size.y);
-		//hovered_tile.setPosition(mouse_tile_coord.x * tile_size.x, mouse_tile_coord.y * tile_size.y);
 		//hovered_tile.setPosition(mouse_tile_coord.x * tile_size.x, mouse_tile_coord.y * tile_size.y);
 
 		if (sf::Keyboard::isKeyPressed(sf::Keyboard::A) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left))
@@ -134,8 +137,11 @@ int main()
 				window.close();
 
 			// Handle UI Events
-			firstButton.HandleEvent(event);
-			secondButton.HandleEvent(event);
+			button_generate_map.HandleEvent(event);
+			button_clear_map.HandleEvent(event);
+			button_activate_build.HandleEvent(event);
+
+			map.HandleEvent(event);
 
 		}
 
@@ -146,12 +152,17 @@ int main()
 		// window.draw(...);
 		window.draw(map);
 
-		window.draw(hovered_tile);
+		if(building_manager.IsActive())
+		{
+			building_manager.SetHoverTilePosition(sf::Vector2f(static_cast<float>(mouse_tile_coord.x) * tile_size.x, static_cast<float>(mouse_tile_coord.y) * tile_size.y));
+			window.draw(building_manager.HoverTile());
+		}
 
 		window.setView(view_);
 
-		window.draw(firstButton);
-		window.draw(secondButton);
+		window.draw(button_generate_map);
+		window.draw(button_clear_map);
+		window.draw(button_activate_build);
 
 		// end the current frame
 		window.display();

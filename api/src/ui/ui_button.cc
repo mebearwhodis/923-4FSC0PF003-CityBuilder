@@ -1,14 +1,16 @@
-#include <ui/UiButton.h>
+#include "ui/ui_button.h"
+
 
 #include <iostream>
 
 #include <SFML/Graphics/RenderTarget.hpp>
 
-#include "graphics/ResourceManager.h"
+#include "graphics/resource_manager.h"
 
 
 UiButton::UiButton(sf::Vector2f position, sf::Color colorBase, std::string text, ResourceManager::Resource textureName)
 {
+	//TODO: Set button position to be relative to the world? not the view? when I move the place to click stays the same and should not (also, maybe this problem is not a problem if buttons follow the view, which they probably should)-> So maybe just have the buttons positioned relatively to the view
 	setPosition(position); //Button inherits from Transformable, so it has its own position
 
 	//Declare and load a font

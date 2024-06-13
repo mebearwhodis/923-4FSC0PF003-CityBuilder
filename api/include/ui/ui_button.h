@@ -8,15 +8,13 @@
 #include <SFML/Graphics/Text.hpp>
 #include <SFML/Graphics/Transformable.hpp>
 #include <SFML/Window/Event.hpp>
-
-#include "graphics/ResourceManager.h"
+#include "graphics/resource_manager.h"
 
 class UiButton : public sf::Drawable, public sf::Transformable
 {
 private:
 	sf::Font font_;
 	//sf::Texture texture_;
-	ResourceManager resource_manager_;
 
 	//sf::RectangleShape background_;
 	sf::Sprite sprite_;
@@ -31,7 +29,7 @@ public:
 	UiButton(sf::Vector2f position, sf::Color colorBase, std::string text, ResourceManager::Resource textureName);
 	void HandleEvent(const sf::Event& event);
 
-	//	//Callback pour avoir une fonction spécifique au bouton
+	//Callback pour avoir une fonction spécifique au bouton
 	std::function<void()> callback_;
 };
 
