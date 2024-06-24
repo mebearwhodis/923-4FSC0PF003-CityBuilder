@@ -9,7 +9,7 @@ BuildingManager::BuildingManager()
 #ifdef TRACY_ENABLE
 	ZoneScoped;
 #endif
-	sf::Vector2f tile_size = sf::Vector2f(Tilemap::playground_tile_size_u_.x, Tilemap::playground_tile_size_u_.y);
+	sf::Vector2f tile_size = sf::Vector2f(64, 64);
 	sf::RectangleShape hovered_tile;
 	hover_tile_.setSize(tile_size);
 	hover_tile_.setFillColor(sf::Color(100, 100, 100, 180));
@@ -33,6 +33,7 @@ void BuildingManager::SetHoverTilePosition(const sf::Vector2f position)
 #endif
 	hover_tile_.setPosition(position);
 }
+
 
 void BuildingManager::AddBuilding(Tile& tile)
 {

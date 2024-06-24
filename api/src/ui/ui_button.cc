@@ -12,7 +12,7 @@
 #include "graphics/resource_manager.h"
 
 
-UiButton::UiButton(sf::Vector2f position, sf::Color colorBase, std::string text, ResourceManager::Resource textureName)
+UiButton::UiButton(sf::Vector2f positionRelativeToView, sf::Color colorBase, std::string text, Resource textureName)
 {
 
 #ifdef TRACY_ENABLE
@@ -20,7 +20,7 @@ UiButton::UiButton(sf::Vector2f position, sf::Color colorBase, std::string text,
 #endif
 
 	//TODO: Set button position to be relative to the world? not the view? when I move the place to click stays the same and should not (also, maybe this problem is not a problem if buttons follow the view, which they probably should)-> So maybe just have the buttons positioned relatively to the view
-	setPosition(position); //Button inherits from Transformable, so it has its own position
+	setPosition(positionRelativeToView);
 
 	//Declare and load a font
 	font_.loadFromFile("../resources/fonts/arial.ttf");
@@ -31,6 +31,7 @@ UiButton::UiButton(sf::Vector2f position, sf::Color colorBase, std::string text,
 	text_.setFillColor(sf::Color::Black);
 	sf::FloatRect textBounds = text_.getLocalBounds();
 	text_.setOrigin(textBounds.left + textBounds.width / 2.0f, textBounds.top + textBounds.height / 2.0f);
+
 
 	sprite_.setTexture(ResourceManager::Get().GetTexture(textureName));
 	sprite_.setOrigin(sprite_.getTexture()->getSize().x / 2.0f, sprite_.getTexture()->getSize().y / 2.0f);
@@ -52,7 +53,7 @@ void UiButton::draw(sf::RenderTarget& target, sf::RenderStates states) const
 
 }
 
-bool UiButton::ContainsMouse(const sf::Event& event) const
+bool UiButton::ContainsMouse(const sf::Event::MouseButtonEvent& event) const
 {
 
 #ifdef TRACY_ENABLE
@@ -60,8 +61,8 @@ bool UiButton::ContainsMouse(const sf::Event& event) const
 #endif
 
 	// Get the position of the mouse click
-	float mouseX = static_cast<float>(event.mouseButton.x) - getPosition().x;
-	float mouseY = static_cast<float>(event.mouseButton.y) - getPosition().y;
+	float mouseX = static_cast<float>(event.x) - getPosition().x;
+	float mouseY = static_cast<float>(event.y) - getPosition().y;
 
 	// Check if the mouse click is inside the drawable shape
 	if (sprite_.getGlobalBounds().contains(mouseX, mouseY)) {
@@ -83,7 +84,7 @@ void UiButton::HandleEvent(const sf::Event& event)
 	//Check for mouse button pressed event
 	if (event.type == sf::Event::MouseButtonPressed)
 	{
-		if (ContainsMouse(event))
+		if (ContainsMouse(event.mouseButton))
 		{
 			//Check if the left mouse button is pressed
 			if (event.mouseButton.button == sf::Mouse::Left)
@@ -91,6 +92,7 @@ void UiButton::HandleEvent(const sf::Event& event)
 				button_pressed_ = true;
 				setScale(0.9f * getScale().x, 0.9f * getScale().y);
 			}
+			return;
 		}
 	}
 
@@ -103,7 +105,7 @@ void UiButton::HandleEvent(const sf::Event& event)
 			setScale(getScale().x / 0.9f, getScale().y / 0.9f);
 			button_pressed_ = false;
 
-			if (ContainsMouse(event))
+			if (ContainsMouse(event.mouseButton))
 			{
 
 				//Check if the left mouse button is pressed

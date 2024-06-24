@@ -1,43 +1,36 @@
 #ifndef API_GRAPHICS_RESOURCEMANAGER_H_
 #define API_GRAPHICS_RESOURCEMANAGER_H_
 
+#include <array>
 #include <SFML/Graphics.hpp>
 #include <unordered_map>
+#include "../enum.h"
 
 class ResourceManager {
 
-	//TODO: have multiple enums for terrain/UI/...? -> multiple "GetTexture", one for each? Maybe a bad idea
+	//TODO: have multiple enums for terrain/UI/...? -> multiple "GetTexture", one for each?
 public:
-	enum class Resource
-	{
-		kWhiteButtonRedFrame,
-		kTerrainForest,
-		kTerrainForestCutDown,
-		kHouse,
-		//...
-		kLength // or kMax Last valule, used to get size of the enum
-	};
+
 
 private:
-	//TODO was changed to array, check repo
-	std::unordered_map<Resource, sf::Texture> textures_;
-	//std::array<sf::Texture, (int)Resource::kLength>
-	sf::Texture blankTexture_;
+	//TODO make one for each type of resource and change for array, using kLength for size
+	std::array<sf::Texture, static_cast<int>(Resource::kLength)> textures_;
+	std::array<sf::Image, static_cast<int>(CursorType::kLength)> cursor_images_;
 
+	sf::Texture blank_texture_;
+	sf::Image blank_cursor_image_;
 
 	ResourceManager();
 	void LoadAllTextures();
 
 public:
-	static ResourceManager& Get() {
-		static ResourceManager instance_;
-		return instance_;
-	}
+	static ResourceManager& Get();
 
 	ResourceManager(const ResourceManager&) = delete;
 	ResourceManager& operator=(const ResourceManager&) = delete;
 
-	sf::Texture& GetTexture(Resource resourceId);
+	sf::Texture& GetTexture(Resource resource_id);
+	sf::Image& GetCursorImage(CursorType cursor_id);
 
 };
 

@@ -5,12 +5,15 @@
 
 class View {
 public:
-    void init(sf::Vector2f size, sf::Vector2f center);
-    void handleInput();
-    sf::View getView();
+    View(const sf::Vector2f& center, const sf::Vector2f& size);
+
+    void handleInput(sf::RenderWindow& window);
+    void handleEvent(sf::Event& event);
+    void apply(sf::RenderWindow& window);
+    sf::View view() const { return view_; }
 
 private:
     sf::View view_;
 };
 
-#endif // API_VIEW_H_
+#endif // VIEW_H

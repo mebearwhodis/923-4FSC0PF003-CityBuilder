@@ -1,17 +1,14 @@
 #include "game.h"
 
 
-//TODO View class + zoom
-
 Game::Game()
     : window(sf::VideoMode(1920, 1080), "My window"),
     view_(sf::Vector2f(960, 540), sf::Vector2f(1920, 1080)),
-    map(sf::Vector2u(50, 50)),
-    button_generate_map(sf::Vector2f(400, 100), sf::Color::Cyan, "Generate", ResourceManager::Resource::kWhiteButtonRedFrame),
-    button_clear_map(sf::Vector2f(400, 200), sf::Color::Cyan, "Clear map", ResourceManager::Resource::kWhiteButtonRedFrame),
-    button_activate_build(sf::Vector2f(400, 300), sf::Color::Cyan, "Edit mode", ResourceManager::Resource::kWhiteButtonRedFrame)
+    map(),
+    button_generate_map(sf::Vector2f(1920/4, 200), sf::Color::Cyan, "Generate", Resource::kWhiteButtonRedFrame),
+	button_clear_map(sf::Vector2f(1920 / 4, 400), sf::Color::Cyan, "Clear map", Resource::kWhiteButtonRedFrame),
+	button_activate_build(sf::Vector2f(1920 / 4, 600), sf::Color::Cyan, "Edit mode", Resource::kWhiteButtonRedFrame)
 {
-    tile_size = Tilemap::playground_tile_size_u_;
 }
 
 
@@ -20,47 +17,53 @@ void Game::init() {
     ZoneScoped;
 #endif
 
-    std::cout << "Initializing game..." << std::endl;
-
-    // Cursor
-    sf::Image cursorImage;
-    if (!cursorImage.loadFromFile("../resources/sprites/ui/cursorGauntlet_blue.png")) {
-        std::cerr << "Failed to load cursor image!" << std::endl;
-    }
-    cursor.loadFromPixels(cursorImage.getPixelsPtr(), cursorImage.getSize(), { 0,0 });
-    window.setMouseCursor(cursor);
-
     // Basic Setup of the window
     window.setFramerateLimit(30);
     window.setVerticalSyncEnabled(true);
 
-    // Set button callbacks
-    button_generate_map.callback_ = [this]() {
-        std::cout << "Generate map button clicked" << std::endl;
-        map.Generate();
-        };
+    // Set initial cursor
+    cursor_manager_.changeCursor(CursorType::kBasic, window);
+
+    map.Setup(sf::Vector2u(200, 200), sf::Vector2u(64, 64));
+    tile_size = sf::Vector2u(64, 64);
 
     map.clicked_tile_ = [this](auto tile) {
         std::cout << "Tile clicked" << std::endl;
         building_manager.AddBuilding(tile);
         };
 
+    // Set button callbacks
+    button_generate_map.callback_ = [this]() {
+        map.Generate();
+        };
+
     button_clear_map.callback_ = [this]() {
-        std::cout << "Clear map button clicked" << std::endl;
         map.Clear();
         };
 
     button_activate_build.callback_ = [this]() {
-        std::cout << "Activate build button clicked" << std::endl;
         building_manager.ToggleActive();
+        if(building_manager.IsActive())
+        {
+            cursor_manager_.changeCursor(CursorType::kGauntlet, window);
+        }else
+        {
+
+            cursor_manager_.changeCursor(CursorType::kBasic, window);
+        }
         };
+
+
+    buttons_.push_back(button_generate_map);
+    buttons_.push_back(button_clear_map);
+    buttons_.push_back(button_activate_build);
 }
 
 void Game::update() {
-    std::cout << "Starting update loop..." << std::endl;
 
     // run the program as long as the window is open
     while (window.isOpen()) {
+
         sf::Vector2i mouse_pos = sf::Mouse::getPosition(window);
         sf::Vector2f mouse_world_pos = window.mapPixelToCoords(mouse_pos);
         sf::Vector2f mouse_tile_coord(
@@ -68,22 +71,7 @@ void Game::update() {
             static_cast<int>(mouse_world_pos.y / tile_size.y) * tile_size.y
         );
 
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::A) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
-            view_.move(-50.f, 0.f);
-        }
-
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
-            view_.move(50.f, 0.f);
-        }
-
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::W) || sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
-            view_.move(0.f, -50.f);
-        }
-
-        if (sf::Keyboard::isKeyPressed(sf::Keyboard::S) || sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
-            view_.move(0.f, 50.f);
-        }
-
+        view_.handleInput(window);
         // check all the window's events that were triggered since the last iteration of the loop
         sf::Event event;
         while (window.pollEvent(event)) {
@@ -97,10 +85,13 @@ void Game::update() {
             button_activate_build.HandleEvent(event);
 
             map.HandleEvent(event, window);
+            view_.handleEvent(event);
         }
 
         // clear the window with black color
         window.clear(sf::Color::Black);
+
+        view_.apply(window);
 
         // draw everything here...
         window.draw(map);
@@ -109,8 +100,6 @@ void Game::update() {
             building_manager.SetHoverTilePosition(mouse_tile_coord);
             window.draw(building_manager.HoverTile());
         }
-
-        window.setView(view_);
 
         window.draw(button_generate_map);
         window.draw(button_clear_map);

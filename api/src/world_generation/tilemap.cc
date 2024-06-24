@@ -7,10 +7,12 @@
 #include <Tracy/TracyC.h>
 #endif
 
-//TODO Check "Setup" on the repo
-// Fix 1 : initiate static in the cc file
-sf::Vector2u Tilemap::playground_size_u_ = sf::Vector2u(50, 50);
-sf::Vector2u Tilemap::playground_tile_size_u_ = sf::Vector2u(64, 64);
+
+void Tilemap::Setup(sf::Vector2u playground_size_u, sf::Vector2u playground_tile_size_u)
+{
+	playground_size_u_ = playground_size_u;
+	playground_tile_size_u_ = playground_tile_size_u;
+}
 
 void Tilemap::Generate()
 {
@@ -20,8 +22,8 @@ void Tilemap::Generate()
 
 	int numberOfTiles = 0;
 	tiles_.clear();
-	//tiles_.erase(tiles_.begin(), tiles_.end());
-
+	tiles_.erase(tiles_.begin(), tiles_.end());
+	tiles_.reserve(playground_size_u_.x * playground_size_u_.y);
 
 	//For now, just simple random
 	std::random_device r;
@@ -32,32 +34,23 @@ void Tilemap::Generate()
 	{
 		for (unsigned int y = 0; y < playground_size_u_.y; y++)
 		{
-		#ifdef TRACY_ENABLE
-			ZoneNamedN(TileCreation, "Tile Creation", true);
-		#endif
 
 
 			int idx = x * playground_size_u_.y + y;
 
 			//TODO Perlin Noise/ WFC/ Whatevs
 
-#ifdef TRACY_ENABLE
-			TracyCZoneN(random, "Random", true);
-#endif
 
 			int rnd = uniform_dist(e1);
-#ifdef TRACY_ENABLE
-			TracyCZoneEnd(random);
-#endif
 
 			if (rnd == 1)
 			{
 				//TODO: Replace resource by tiletype
-				tiles_.emplace_back(ResourceManager::Resource::kTerrainForest, x * playground_tile_size_u_.x, y * playground_tile_size_u_.y, false);
+				tiles_.emplace_back(Resource::kTerrainForest, x * playground_tile_size_u_.x, y * playground_tile_size_u_.y, false);
 			}
 			if (rnd == 2)
 			{
-				tiles_.emplace_back(ResourceManager::Resource::kTerrainForestCutDown, x * playground_tile_size_u_.x, y * playground_tile_size_u_.y, true);
+				tiles_.emplace_back(Resource::kTerrainForestCutDown, x * playground_tile_size_u_.x, y * playground_tile_size_u_.y, true);
 			}
 
 
@@ -71,9 +64,6 @@ void Tilemap::Generate()
 
 void Tilemap::Clear()
 {
-#ifdef TRACY_ENABLE
-	ZoneScoped;
-#endif
 	tiles_.clear();
 }
 
@@ -128,14 +118,49 @@ void Tilemap::HandleEvent(const sf::Event& event, const sf::RenderWindow& window
 	}
 }
 
+void Tilemap::applyFadeEffect(sf::RenderTarget& target)
+{
+	sf::View view = target.getView();
+	sf::Vector2f viewCenter = view.getCenter();
+	sf::FloatRect viewBounds(
+		viewCenter - view.getSize() / 2.f,
+		view.getSize()
+	);
 
+	float maxDistance = std::max(viewBounds.width, viewBounds.height) / 2.f;
+
+	for (auto& tile : tiles_)
+	{
+		sf::FloatRect tileBounds(
+			tile.Position().x,
+			tile.Position().y,
+			static_cast<float>(playground_tile_size_u_.x),
+			static_cast<float>(playground_tile_size_u_.y)
+		);
+
+		if (viewBounds.intersects(tileBounds))
+		{
+			float distance = std::hypot(tile.Position().x - viewCenter.x, tile.Position().y - viewCenter.y);
+			float fadeFactor = std::clamp(1.0f - (distance / maxDistance), 0.0f, 1.0f);
+			sf::Color color = sf::Color(255 * fadeFactor, 255 * fadeFactor, 255 * fadeFactor);
+			tile.setColor(color);
+		}
+	}
+}
 
 void Tilemap::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
+#ifdef TRACY_ENABLE
+	ZoneScoped;
+#endif
 
-	#ifdef TRACY_ENABLE
-		ZoneScoped;
-	#endif
+	const_cast<Tilemap*>(this)->applyFadeEffect(target);
+
+	for (const auto& tile : tiles_)
+	{
+		target.draw(tile, states);
+	}
+
 
 	//TODO: use that to draw only what's in the view -> make a view class, probably. Can also make a "fog of war" kind of thing, the further it is from the center of the view, the more obscured it is (and then not display at all if out of the view)
 	//auto tile = tiles_.begin();
@@ -150,8 +175,10 @@ void Tilemap::draw(sf::RenderTarget& target, sf::RenderStates states) const
 	//	}
 	//}
 
-	for (auto tile : tiles_)
-	{
-		target.draw(tile, states);
-	}
+
+
+	//for (auto tile : tiles_)
+	//{
+	//	target.draw(tile, states);
+	//}
 }

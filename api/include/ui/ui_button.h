@@ -9,26 +9,26 @@
 #include <SFML/Graphics/Transformable.hpp>
 #include <SFML/Window/Event.hpp>
 #include "../graphics/resource_manager.h"
+#include "../gameplay/view.h"
 
 class UiButton : public sf::Drawable, public sf::Transformable
 {
 private:
 	sf::Font font_;
-	//sf::Texture texture_;
-
-	//sf::RectangleShape background_;
 	sf::Sprite sprite_;
+
 	sf::Text text_;
+
+
 
 	bool button_pressed_ = false;
 
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
-	//TODO change const sf::Event& event to const sf::Event::MouseButtonEvent& event
-	bool ContainsMouse(const sf::Event& event) const;
+	bool ContainsMouse(const sf::Event::MouseButtonEvent& event) const;
 
 public:
-	UiButton(sf::Vector2f position, sf::Color colorBase, std::string text, ResourceManager::Resource textureName);
+	UiButton(sf::Vector2f positionRelativeToView, sf::Color colorBase, std::string text, Resource textureName);
 	void HandleEvent(const sf::Event& event);
 
 	//Callback pour avoir une fonction spécifique au bouton

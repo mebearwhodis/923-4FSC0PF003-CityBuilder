@@ -4,7 +4,7 @@
 #endif
 #include "graphics/resource_manager.h"
 
-Tile::Tile(ResourceManager::Resource texture, float x = 0, float y = 0, bool walkable = true)
+Tile::Tile(Resource texture, float x = 0, float y = 0, bool walkable = true)
 {
 #ifdef TRACY_ENABLE
 	ZoneScoped;
@@ -40,19 +40,17 @@ void Tile::Deselect()
 	selected_ = false;
 }
 
+void Tile::setColor(const sf::Color& color)
+{
+	sprite_.setColor(color);
+	outline_.setOutlineColor(color);
+}
 
 void Tile::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
-#ifdef TRACY_ENABLE
-	ZoneScoped;
-#endif
-
 	target.draw(sprite_, states);
 	if(selected_)
 	{
-#ifdef TRACY_ENABLE
-		ZoneNamedN(DrawSelected, "Draw Selected Tile", true);
-#endif
 		target.draw(outline_, states);
 	}
 }
