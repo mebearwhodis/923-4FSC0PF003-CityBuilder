@@ -17,7 +17,9 @@ enum class Resource
 	//...
 	kLength // or kMax Last value, used to get size of the enum
 };
-//
+
+//TODO TileTexture rather than Resource, to divide things
+
 //enum class TileType
 //{
 //	kTerrainForest,
@@ -26,11 +28,12 @@ enum class Resource
 //	kLength,
 //};
 
+//TODO make TileType and TileTexture the same
 enum class TileType
 {
 	kPlain,
 	kForest,
-	kOre,
+	kForestCutDown,
 	kHouse
 	//...
 };

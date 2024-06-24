@@ -41,6 +41,21 @@ void BuildingManager::AddBuilding(Tile& tile)
 	ZoneScoped;
 #endif
 	if (!is_active_) { return; }
-	std::cout << "Tile clicked:\t" << tile.Position().x << "/" << tile.Position().y << "\t" << std::endl;
+	if(static_cast<int>(tile.type()) == 1)
+	{
+		std::cout << "Forest" << std::endl;
+	}
+	if (tile.type() == TileType::kForestCutDown)
+	{
+		buildings_.emplace_back(tile.Position().x, tile.Position().y);
+	}
 	//TODO Add if tiletype... to prevent putting buildings on some types
+}
+
+void BuildingManager::draw(sf::RenderTarget& target, sf::RenderStates states) const
+{
+	for (const auto& b : buildings_)
+	{
+		target.draw(b, states);
+	}
 }

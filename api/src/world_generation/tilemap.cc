@@ -46,11 +46,11 @@ void Tilemap::Generate()
 			if (rnd == 1)
 			{
 				//TODO: Replace resource by tiletype
-				tiles_.emplace_back(Resource::kTerrainForest, x * playground_tile_size_u_.x, y * playground_tile_size_u_.y, false);
+				tiles_.emplace_back(TileType::kForest, x * playground_tile_size_u_.x, y * playground_tile_size_u_.y, false);
 			}
 			if (rnd == 2)
 			{
-				tiles_.emplace_back(Resource::kTerrainForestCutDown, x * playground_tile_size_u_.x, y * playground_tile_size_u_.y, true);
+				tiles_.emplace_back(TileType::kForestCutDown, x * playground_tile_size_u_.x, y * playground_tile_size_u_.y, true);
 			}
 
 
@@ -72,10 +72,6 @@ void Tilemap::HandleEvent(const sf::Event& event, const sf::RenderWindow& window
 #ifdef TRACY_ENABLE
 	ZoneScoped;
 #endif
-	//Check for mouse move event
-	//TODO: This is not necessary -> check if it's worth to keep. The outline movement is more fluid without this
-	if (event.type == sf::Event::MouseMoved)
-	{
 		sf::Vector2f worldPos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
 
 		// Snap mouse position to the grid
@@ -84,13 +80,6 @@ void Tilemap::HandleEvent(const sf::Event& event, const sf::RenderWindow& window
 			static_cast<int>(worldPos.y / playground_tile_size_u_.y) * playground_tile_size_u_.y
 		);
 
-		//TODO find why it bugs when using this rather than the for_each
-		//if (tile_selected_)
-		//{
-		//	tile_selected_->Deselect();
-		//}
-
-		std::for_each(tiles_.begin(), tiles_.end(), [](Tile& t) {t.Deselect(); });
 
 		auto tileFound = std::find_if(tiles_.begin(), tiles_.end(), [&mousePosition](Tile& t) {return t.Position() == mousePosition; });
 
@@ -100,7 +89,6 @@ void Tilemap::HandleEvent(const sf::Event& event, const sf::RenderWindow& window
 			tile_selected_ = &(*tileFound);
 			tile_selected_->Select();
 		}
-	}
 
 	if (event.type == sf::Event::MouseButtonReleased)
 	{
@@ -109,12 +97,26 @@ void Tilemap::HandleEvent(const sf::Event& event, const sf::RenderWindow& window
 		{
 			if (clicked_tile_ && tile_selected_) {
 				clicked_tile_(*tile_selected_);
+				std::cout << static_cast<int>(GetSelectedTileType()) << std::endl;
 			}
 			else
 			{
-				std::cout << "No callback defined.";
+				std::cout << "No callback defined." << std::endl;
 			}
 		}
+	}
+}
+
+TileType Tilemap::GetSelectedTileType() const {
+	if (tile_selected_) {
+		return tile_selected_->type(); // Assuming Tile class has a GetType() method
+	}
+	else {
+		// Handle case where no tile is selected (if needed)
+		// You can return a default TileType or throw an exception
+		// depending on your design requirements.
+		// Example:
+		return TileType::kPlain; // Replace kDefault with an appropriate default TileType
 	}
 }
 
@@ -160,25 +162,4 @@ void Tilemap::draw(sf::RenderTarget& target, sf::RenderStates states) const
 	{
 		target.draw(tile, states);
 	}
-
-
-	//TODO: use that to draw only what's in the view -> make a view class, probably. Can also make a "fog of war" kind of thing, the further it is from the center of the view, the more obscured it is (and then not display at all if out of the view)
-	//auto tile = tiles_.begin();
-	//
-	//while (tile != tiles_.end())
-	//{
-	//	tile = std::find_if(tile, tiles_.end(), [](const Tile& t) {return t.Walkable(); });
-	//	if (tile != tiles_.end())
-	//	{
-	//		target.draw(*tile, states);
-	//		++tile;
-	//	}
-	//}
-
-
-
-	//for (auto tile : tiles_)
-	//{
-	//	target.draw(tile, states);
-	//}
 }

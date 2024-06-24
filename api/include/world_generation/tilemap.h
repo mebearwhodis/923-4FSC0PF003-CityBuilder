@@ -27,6 +27,9 @@ public:
 	void Clear();
 	void HandleEvent(const sf::Event& event, const sf::RenderWindow& window);
 	std::function<void(const Tile&)> clicked_tile_;
+
+	// Getter function to retrieve the TileType of the selected tile
+	TileType GetSelectedTileType() const;
 };
 
 //Tile GetTileAt(sf::Vector2f position, const sf::View& view, const sf::RenderTarget& target) const;

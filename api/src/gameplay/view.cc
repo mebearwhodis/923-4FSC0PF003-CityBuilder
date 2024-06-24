@@ -1,5 +1,7 @@
 #include "gameplay/view.h"
 
+#include <iostream>
+
 View::View(const sf::Vector2f& center, const sf::Vector2f& size)
     : view_(center, size) {}
 
@@ -7,16 +9,16 @@ View::View(const sf::Vector2f& center, const sf::Vector2f& size)
 //TODO Block view from going outside the map
 void View::handleInput(sf::RenderWindow& window) {
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::A) || sf::Keyboard::isKeyPressed(sf::Keyboard::Left)) {
-        view_.move(-50.f, 0.f);
+        view_.move(-64.f, 0.f);
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::D) || sf::Keyboard::isKeyPressed(sf::Keyboard::Right)) {
-        view_.move(50.f, 0.f);
+        view_.move(64.f, 0.f);
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::W) || sf::Keyboard::isKeyPressed(sf::Keyboard::Up)) {
-        view_.move(0.f, -50.f);
+        view_.move(0.f, -64.f);
     }
     if (sf::Keyboard::isKeyPressed(sf::Keyboard::S) || sf::Keyboard::isKeyPressed(sf::Keyboard::Down)) {
-        view_.move(0.f, 50.f);
+        view_.move(0.f, 64.f);
     }
 
 

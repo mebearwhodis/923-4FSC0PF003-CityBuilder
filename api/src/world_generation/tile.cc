@@ -4,13 +4,14 @@
 #endif
 #include "graphics/resource_manager.h"
 
-Tile::Tile(Resource texture, float x = 0, float y = 0, bool walkable = true)
+Tile::Tile(TileType type, float x = 0, float y = 0, bool walkable = true)
 {
 #ifdef TRACY_ENABLE
 	ZoneScoped;
 #endif
-	texture_ = texture;
-	sprite_.setTexture(ResourceManager::Get().GetTexture(texture));
+	selected_ = false;
+	type_ = type;
+	sprite_.setTexture(ResourceManager::Get().GetTexture(static_cast<Resource>(static_cast<int>(type))));
 
 	
 	sprite_.setPosition(x, y);
@@ -43,16 +44,12 @@ void Tile::Deselect()
 void Tile::setColor(const sf::Color& color)
 {
 	sprite_.setColor(color);
-	outline_.setOutlineColor(color);
+	//outline_.setOutlineColor(color);
 }
 
 void Tile::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
 	target.draw(sprite_, states);
-	if(selected_)
-	{
-		target.draw(outline_, states);
-	}
 }
 
 Tile::Tile()

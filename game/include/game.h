@@ -16,9 +16,9 @@ public:
     void update();
 
 private:
-    std::vector<UiButton> buttons_;
     sf::RenderWindow window;
-    View view_;
+    View game_view_;
+    sf::View hud_view_;
     BuildingManager building_manager;
     Tilemap map;
     Cursor cursor_manager_;

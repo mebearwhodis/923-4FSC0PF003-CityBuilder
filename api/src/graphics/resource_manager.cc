@@ -7,6 +7,7 @@ void ResourceManager::LoadAllTextures()
 	textures_.at(static_cast<int>(Resource::kWhiteButtonRedFrame)).loadFromFile("../resources/sprites/ui/red_button10.png");
 	textures_.at(static_cast<int>(Resource::kTerrainForest)).loadFromFile("../resources/sprites/tiles/medievalTile_48.png");
 	textures_.at(static_cast<int>(Resource::kTerrainForestCutDown)).loadFromFile("../resources/sprites/tiles/medievalTile_52.png");
+	textures_.at(static_cast<int>(Resource::kHouse)).loadFromFile("../resources/sprites/structures/medievalStructure_17.png");
 
 	blank_cursor_image_ = sf::Image();
 	cursor_images_[static_cast<int>(CursorType::kBasic)].loadFromFile("../resources/sprites/ui/cursorSword_silver.png");

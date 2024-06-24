@@ -2,15 +2,16 @@
 #define API_GAMEPLAY_BUILDING_MANAGER_H_
 #include <SFML/Graphics/RectangleShape.hpp>
 
+#include "building.h"
 #include "../world_generation/tile.h"
 
 
-class BuildingManager
+class BuildingManager : public sf::Drawable
 {
 	bool is_active_ = false;
 	sf::RectangleShape hover_tile_;
 
-	//std::vector<Building> buildings_;
+	std::vector<Building> buildings_;
 	//TODO this should inherit from Drawable to draw the buildings?
 	//TODO Update()/Tick()
 
@@ -22,5 +23,7 @@ public:
 	bool IsActive() const { return is_active_; }
 	void AddBuilding(Tile& tile);
 
+protected:
+	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 };
 #endif // API_GAMEPLAY_BUILDING_MANAGER_H_
