@@ -2,6 +2,10 @@
 
 #include <random>
 #include <SFML/Graphics/RenderTarget.hpp>
+#ifdef TRACY_ENABLE
+#include <Tracy/Tracy.hpp>
+#include <Tracy/TracyC.h>
+#endif
 
 //TODO Check "Setup" on the repo
 // Fix 1 : initiate static in the cc file
@@ -10,26 +14,42 @@ sf::Vector2u Tilemap::playground_tile_size_u_ = sf::Vector2u(64, 64);
 
 void Tilemap::Generate()
 {
+	#ifdef TRACY_ENABLE
+		ZoneScoped;
+	#endif
+
 	int numberOfTiles = 0;
 	tiles_.clear();
 	//tiles_.erase(tiles_.begin(), tiles_.end());
+
+
+	//For now, just simple random
+	std::random_device r;
+	std::default_random_engine e1(r());
+	std::uniform_int_distribution<int> uniform_dist(1, 2);
 
 	for (unsigned int x = 0; x < playground_size_u_.x; x++)
 	{
 		for (unsigned int y = 0; y < playground_size_u_.y; y++)
 		{
-			std::cout << "Add a sprite in the\t(" << x << "," << y << ")\t position." << std::endl;
+		#ifdef TRACY_ENABLE
+			ZoneNamedN(TileCreation, "Tile Creation", true);
+		#endif
+
 
 			int idx = x * playground_size_u_.y + y;
 
 			//TODO Perlin Noise/ WFC/ Whatevs
 
-			//For now, just simple random
-			std::random_device r;
-			std::default_random_engine e1(r());
-			std::uniform_int_distribution<int> uniform_dist(1, 2);
+#ifdef TRACY_ENABLE
+			TracyCZoneN(random, "Random", true);
+#endif
 
 			int rnd = uniform_dist(e1);
+#ifdef TRACY_ENABLE
+			TracyCZoneEnd(random);
+#endif
+
 			if (rnd == 1)
 			{
 				//TODO: Replace resource by tiletype
@@ -51,11 +71,17 @@ void Tilemap::Generate()
 
 void Tilemap::Clear()
 {
+#ifdef TRACY_ENABLE
+	ZoneScoped;
+#endif
 	tiles_.clear();
 }
 
 void Tilemap::HandleEvent(const sf::Event& event, const sf::RenderWindow& window)
 {
+#ifdef TRACY_ENABLE
+	ZoneScoped;
+#endif
 	//Check for mouse move event
 	//TODO: This is not necessary -> check if it's worth to keep. The outline movement is more fluid without this
 	if (event.type == sf::Event::MouseMoved)
@@ -106,6 +132,10 @@ void Tilemap::HandleEvent(const sf::Event& event, const sf::RenderWindow& window
 
 void Tilemap::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
+
+	#ifdef TRACY_ENABLE
+		ZoneScoped;
+	#endif
 
 	//TODO: use that to draw only what's in the view -> make a view class, probably. Can also make a "fog of war" kind of thing, the further it is from the center of the view, the more obscured it is (and then not display at all if out of the view)
 	//auto tile = tiles_.begin();

@@ -7,3 +7,8 @@ add_library(api ${SRC_FILES} ${HEADER_FILES})
 target_include_directories(api PUBLIC include/)
 
 target_link_libraries(api PRIVATE sfml-system sfml-network sfml-graphics sfml-window sfml-audio)
+
+if(ENABLE_PROFILING)
+	target_link_libraries(api PUBLIC Tracy::TracyClient)
+	target_compile_definitions(api PUBLIC TRACE_ENABLE=1)
+endif(ENABLE_PROFILING)

@@ -84,6 +84,17 @@ namespace core
 			return &data_[end_];
 		}
 
+		// Correction:
+		auto begin()
+		{
+			return data_.begin();
+		}
+
+		auto end()
+		{
+			return data_.begin() + size_;
+		}
+
 		// Size() returns the size that is calculated by subtracting Begin() from End()
 		[[nodiscard]] std::size_t Size() const
 		{
@@ -146,6 +157,18 @@ namespace core
 			}
 			end_ = (end_ - 1 + Capacity) % Capacity;
 			size_--;
+		}
+
+		void clear()
+		{
+			if constexpr (std::is_destructible_v<T>)
+			{
+				for (int i = 0; i < size_; i++)
+				{
+					data_[i].~T();
+				}
+			}
+			size_ = 0;
 		}
 	};
 

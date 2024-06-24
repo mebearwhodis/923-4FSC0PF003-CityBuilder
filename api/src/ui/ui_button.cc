@@ -5,11 +5,20 @@
 
 #include <SFML/Graphics/RenderTarget.hpp>
 
+#ifdef TRACY_ENABLE
+#include <Tracy/Tracy.hpp>
+#endif
+
 #include "graphics/resource_manager.h"
 
 
 UiButton::UiButton(sf::Vector2f position, sf::Color colorBase, std::string text, ResourceManager::Resource textureName)
 {
+
+#ifdef TRACY_ENABLE
+	ZoneScoped;
+#endif
+
 	//TODO: Set button position to be relative to the world? not the view? when I move the place to click stays the same and should not (also, maybe this problem is not a problem if buttons follow the view, which they probably should)-> So maybe just have the buttons positioned relatively to the view
 	setPosition(position); //Button inherits from Transformable, so it has its own position
 
@@ -24,13 +33,18 @@ UiButton::UiButton(sf::Vector2f position, sf::Color colorBase, std::string text,
 	text_.setOrigin(textBounds.left + textBounds.width / 2.0f, textBounds.top + textBounds.height / 2.0f);
 
 	sprite_.setTexture(ResourceManager::Get().GetTexture(textureName));
-	sprite_.setOrigin(sprite_.getTexture()->getSize().x /2.0f, sprite_.getTexture()->getSize().y / 2.0f);
+	sprite_.setOrigin(sprite_.getTexture()->getSize().x / 2.0f, sprite_.getTexture()->getSize().y / 2.0f);
 	sprite_.setColor(sf::Color::White);
 
 }
 
 void UiButton::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
+
+#ifdef TRACY_ENABLE
+	ZoneScoped;
+#endif
+
 	states.transform *= getTransform();
 
 	target.draw(sprite_, states);
@@ -40,6 +54,11 @@ void UiButton::draw(sf::RenderTarget& target, sf::RenderStates states) const
 
 bool UiButton::ContainsMouse(const sf::Event& event) const
 {
+
+#ifdef TRACY_ENABLE
+	ZoneScoped;
+#endif
+
 	// Get the position of the mouse click
 	float mouseX = static_cast<float>(event.mouseButton.x) - getPosition().x;
 	float mouseY = static_cast<float>(event.mouseButton.y) - getPosition().y;
@@ -57,10 +76,14 @@ bool UiButton::ContainsMouse(const sf::Event& event) const
 void UiButton::HandleEvent(const sf::Event& event)
 {
 
+#ifdef TRACY_ENABLE
+	ZoneScoped;
+#endif
+
 	//Check for mouse button pressed event
 	if (event.type == sf::Event::MouseButtonPressed)
 	{
-		if(ContainsMouse(event))
+		if (ContainsMouse(event))
 		{
 			//Check if the left mouse button is pressed
 			if (event.mouseButton.button == sf::Mouse::Left)
@@ -75,7 +98,7 @@ void UiButton::HandleEvent(const sf::Event& event)
 	//Check for mouse button released event
 	if (event.type == sf::Event::MouseButtonReleased)
 	{
-		if(button_pressed_)
+		if (button_pressed_)
 		{
 			setScale(getScale().x / 0.9f, getScale().y / 0.9f);
 			button_pressed_ = false;

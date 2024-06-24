@@ -15,12 +15,13 @@ public:
 		kTerrainForestCutDown,
 		kHouse,
 		//...
-		kMax // Last valule, used to get size of the enum
+		kLength // or kMax Last valule, used to get size of the enum
 	};
 
 private:
-	//TODO was changed to vector, check repo
+	//TODO was changed to array, check repo
 	std::unordered_map<Resource, sf::Texture> textures_;
+	//std::array<sf::Texture, (int)Resource::kLength>
 	sf::Texture blankTexture_;
 
 

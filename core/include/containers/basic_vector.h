@@ -26,7 +26,6 @@ namespace core
 
 		std::variant<StackArray, HeapVector> data_;
 		std::size_t size_;
-		std::size_t capacity_;
 
 		bool usingHeap() const
 		{
@@ -39,13 +38,12 @@ namespace core
 			{
 				HeapVector heapData(std::get<StackArray>(data_).begin(), std::get<StackArray>(data_).begin() + size_);
 				data_ = std::move(heapData);
-				capacity_ = std::get<HeapVector>(data_).capacity();
 			}
 		}
 
 	public:
 		// Constructor
-		BasicVector() : data_(StackArray{}), size_(0), capacity_(StackSize) {}
+		BasicVector() : data_(StackArray{}), size_(0) {}
 
 		// Initializer list constructor
 		BasicVector(std::initializer_list<T> init) : BasicVector()
@@ -69,21 +67,16 @@ namespace core
 			{
 				switchToHeap();
 				std::get<HeapVector>(data_).reserve(newCapacity);
-				capacity_ = newCapacity;
 			}
 		}
 
 		// Push_Back method
 		void PushBack(const T& item)
 		{
-			if (size_ >= capacity_)
+			if (size_ >= Capacity())
 			{
-				if (!usingHeap())
-				{
-					switchToHeap();
-				}
+				switchToHeap();
 				std::get<HeapVector>(data_).push_back(item);
-				capacity_ = std::get<HeapVector>(data_).capacity();
 			}
 			else
 			{
@@ -135,6 +128,15 @@ namespace core
 			return size_;
 		}
 
+		[[nodiscard]] std::size_t Capacity() const
+		{
+			if(usingHeap())
+			{
+				return std::get<HeapVector>(data_).capacity();
+			}
+			return StackSize;
+		}
+
 		// Overloaded operator[]
 		T& operator[](std::size_t pos)
 		{
@@ -169,7 +171,7 @@ namespace core
 			{
 				throw std::out_of_range("Position out of range");
 			}
-			if (size_ >= capacity_)
+			if (size_ >= Capacity())
 			{
 				switchToHeap();
 			}

@@ -5,12 +5,19 @@
 #include "gameplay/building_manager.h"
 #include "world_generation/tilemap.h"
 
+#ifdef TRACY_ENABLE
+#include <Tracy/Tracy.hpp>
+#endif
+
+
 //TODO: Factorize into game class
 //TODO: check all #include guards
 
 int main()
 {
-
+	#ifdef TRACY_ENABLE
+		ZoneScoped;
+	#endif
 	BuildingManager building_manager;
 	auto tile_size = Tilemap::playground_tile_size_u_;
 
@@ -33,6 +40,7 @@ int main()
 	window.setVerticalSyncEnabled(true);
 	//window.setMouseCursorVisible(false);
 
+	//TODO View class + zoom
 	//View
 	sf::View view_;
 	view_.setSize(1920, 1080);
@@ -146,6 +154,11 @@ int main()
 		// end the current frame
 		window.display();
 	}
+
+	//In the loop
+	#ifdef TRACY_ENABLE
+	FrameMark;
+	#endif
 
 	return 0;
 }

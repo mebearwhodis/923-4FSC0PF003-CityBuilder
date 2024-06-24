@@ -23,6 +23,8 @@ private:
 	bool button_pressed_ = false;
 
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
+
+	//TODO change const sf::Event& event to const sf::Event::MouseButtonEvent& event
 	bool ContainsMouse(const sf::Event& event) const;
 
 public:
