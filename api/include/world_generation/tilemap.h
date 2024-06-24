@@ -8,7 +8,7 @@
 #include <SFML/Graphics/Drawable.hpp>
 #include <SFML/System/Vector2.hpp>
 #include "tile.h"
-#include "graphics/resource_manager.h"
+#include "../graphics/resource_manager.h"
 
 class Tilemap : public sf::Drawable
 {

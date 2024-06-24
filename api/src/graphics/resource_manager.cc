@@ -15,7 +15,7 @@ void ResourceManager::LoadAllTextures()
 	textures_[Resource::kWhiteButtonRedFrame].loadFromFile("../resources/sprites/ui/red_button10.png");
 	textures_[Resource::kTerrainForest].loadFromFile("../resources/sprites/tiles/medievalTile_48.png");
 	textures_[Resource::kTerrainForestCutDown].loadFromFile("../resources/sprites/tiles/medievalTile_52.png");
-	textures_[Resource::kHouse].loadFromFile("../resources/sprites/tiles/medievalStructure_17.png");
+	//textures_[Resource::kHouse].loadFromFile("../resources/sprites/tiles/medievalStructure_17.png");
 
 }
 

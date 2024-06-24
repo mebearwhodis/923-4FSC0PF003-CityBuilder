@@ -2,7 +2,8 @@
 #define API_GAMEPLAY_BUILDING_MANAGER_H_
 #include <SFML/Graphics/RectangleShape.hpp>
 
-#include "world_generation/tile.h"
+#include "../world_generation/tile.h"
+
 
 class BuildingManager
 {

@@ -8,7 +8,7 @@
 #include <SFML/Graphics/Text.hpp>
 #include <SFML/Graphics/Transformable.hpp>
 #include <SFML/Window/Event.hpp>
-#include "graphics/resource_manager.h"
+#include "../graphics/resource_manager.h"
 
 class UiButton : public sf::Drawable, public sf::Transformable
 {

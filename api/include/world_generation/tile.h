@@ -3,7 +3,7 @@
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Graphics/Texture.hpp>
 #include <SFML/Graphics/RenderTarget.hpp>
-#include "graphics/resource_manager.h"
+#include "../graphics/resource_manager.h"
 
 enum class TileType
 {
