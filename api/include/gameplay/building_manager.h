@@ -12,7 +12,6 @@ class BuildingManager : public sf::Drawable
 	sf::RectangleShape hover_tile_;
 
 	std::vector<Building> buildings_;
-	//TODO this should inherit from Drawable to draw the buildings?
 	//TODO Update()/Tick()
 
 public:

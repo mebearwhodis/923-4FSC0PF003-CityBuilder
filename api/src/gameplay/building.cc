@@ -5,7 +5,11 @@
 
 Building::Building(float x, float y)
 {
-	sprite_.setTexture(ResourceManager::Get().GetTexture(Resource::kHouse));
+	const auto& textures = ResourceManager::Get().GetTileTextures(TileType::kHouse);
+	if (!textures.empty()) {
+		const sf::Texture& texture = textures[std::rand() % textures.size()];
+		sprite_.setTexture(texture);
+	}
 	sprite_.setPosition(x, y);
 }
 

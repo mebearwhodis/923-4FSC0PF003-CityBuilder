@@ -1,4 +1,6 @@
-﻿#include "game.h"
+﻿#include <Tracy/Tracy.hpp>
+
+#include "game.h"
 
 //TODO: check all #include guards
 

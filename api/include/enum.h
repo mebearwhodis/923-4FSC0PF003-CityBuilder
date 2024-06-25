@@ -8,33 +8,20 @@ enum class CursorType
 	kLength
 };
 
-enum class Resource
+enum class UiTexture
 {
 	kWhiteButtonRedFrame,
-	kTerrainForest,
-	kTerrainForestCutDown,
-	kHouse,
-	//...
-	kLength // or kMax Last value, used to get size of the enum
+	kLength
 };
 
-//TODO TileTexture rather than Resource, to divide things
-
-//enum class TileType
-//{
-//	kTerrainForest,
-//	kTerrainForestCutDown,
-//	kHouse,
-//	kLength,
-//};
-
-//TODO make TileType and TileTexture the same
 enum class TileType
 {
-	kPlain,
-	kForest,
-	kForestCutDown,
-	kHouse
+	kPlain, //2
+	kForest, //4
+	kPineForest, //4
+	kForestCutDown, //4
+	kHouse,
 	//...
+	kLength
 };
 #endif // ENUM_H

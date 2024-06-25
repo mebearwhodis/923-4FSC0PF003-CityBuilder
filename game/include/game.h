@@ -16,17 +16,21 @@ public:
     void update();
 
 private:
-    sf::RenderWindow window;
+    sf::RenderWindow window_;
     View game_view_;
     sf::View hud_view_;
-    BuildingManager building_manager;
-    Tilemap map;
+    BuildingManager building_manager_;
+    Tilemap map_;
     Cursor cursor_manager_;
-    sf::Vector2u tile_size;
+    sf::Vector2u tile_size_;
 
-    UiButton button_generate_map;
-    UiButton button_clear_map;
-    UiButton button_activate_build;
+
+    UiButton button_generate_map_;
+    UiButton button_clear_map_;
+    UiButton button_activate_build_;
+
+
+    void applyFadeEffect(sf::RenderTarget& target);
 
 };
 

@@ -12,7 +12,7 @@
 #include "graphics/resource_manager.h"
 
 
-UiButton::UiButton(sf::Vector2f positionRelativeToView, sf::Color colorBase, std::string text, Resource textureName)
+UiButton::UiButton(sf::Vector2f positionRelativeToView, sf::Color colorBase, std::string text, UiTexture textureName)
 {
 
 #ifdef TRACY_ENABLE
@@ -33,7 +33,7 @@ UiButton::UiButton(sf::Vector2f positionRelativeToView, sf::Color colorBase, std
 	text_.setOrigin(textBounds.left + textBounds.width / 2.0f, textBounds.top + textBounds.height / 2.0f);
 
 
-	sprite_.setTexture(ResourceManager::Get().GetTexture(textureName));
+	sprite_.setTexture(ResourceManager::Get().GetUiTexture(textureName));
 	sprite_.setOrigin(sprite_.getTexture()->getSize().x / 2.0f, sprite_.getTexture()->getSize().y / 2.0f);
 	sprite_.setColor(sf::Color::White);
 

@@ -45,12 +45,11 @@ void Tilemap::Generate()
 
 			if (rnd == 1)
 			{
-				//TODO: Replace resource by tiletype
 				tiles_.emplace_back(TileType::kForest, x * playground_tile_size_u_.x, y * playground_tile_size_u_.y, false);
 			}
 			if (rnd == 2)
 			{
-				tiles_.emplace_back(TileType::kForestCutDown, x * playground_tile_size_u_.x, y * playground_tile_size_u_.y, true);
+				tiles_.emplace_back(TileType::kPlain, x * playground_tile_size_u_.x, y * playground_tile_size_u_.y, true);
 			}
 
 
@@ -112,11 +111,7 @@ TileType Tilemap::GetSelectedTileType() const {
 		return tile_selected_->type(); // Assuming Tile class has a GetType() method
 	}
 	else {
-		// Handle case where no tile is selected (if needed)
-		// You can return a default TileType or throw an exception
-		// depending on your design requirements.
-		// Example:
-		return TileType::kPlain; // Replace kDefault with an appropriate default TileType
+		return TileType::kPlain;
 	}
 }
 

@@ -41,15 +41,15 @@ void BuildingManager::AddBuilding(Tile& tile)
 	ZoneScoped;
 #endif
 	if (!is_active_) { return; }
-	if(static_cast<int>(tile.type()) == 1)
+	if(tile.type() == TileType::kForest)
 	{
 		std::cout << "Forest" << std::endl;
 	}
-	if (tile.type() == TileType::kForestCutDown)
+	if (tile.type() == TileType::kPlain)
 	{
 		buildings_.emplace_back(tile.Position().x, tile.Position().y);
+		//TODO change tiletype, change walkable state, change texture
 	}
-	//TODO Add if tiletype... to prevent putting buildings on some types
 }
 
 void BuildingManager::draw(sf::RenderTarget& target, sf::RenderStates states) const

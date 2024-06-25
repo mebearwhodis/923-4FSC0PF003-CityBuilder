@@ -11,9 +11,12 @@ Tile::Tile(TileType type, float x = 0, float y = 0, bool walkable = true)
 #endif
 	selected_ = false;
 	type_ = type;
-	sprite_.setTexture(ResourceManager::Get().GetTexture(static_cast<Resource>(static_cast<int>(type))));
 
-	
+	const auto& textures = ResourceManager::Get().GetTileTextures(type);
+	if (!textures.empty()) {
+		const sf::Texture& texture = textures[std::rand() % textures.size()];
+		sprite_.setTexture(texture);
+	}
 	sprite_.setPosition(x, y);
 
 	walkable_ = walkable;

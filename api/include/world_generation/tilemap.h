@@ -27,6 +27,7 @@ public:
 	void Clear();
 	void HandleEvent(const sf::Event& event, const sf::RenderWindow& window);
 	std::function<void(const Tile&)> clicked_tile_;
+	sf::Vector2u playground_size_u() const { return playground_size_u_; }
 
 	// Getter function to retrieve the TileType of the selected tile
 	TileType GetSelectedTileType() const;

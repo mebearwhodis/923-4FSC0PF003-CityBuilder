@@ -28,7 +28,7 @@ private:
 	bool ContainsMouse(const sf::Event::MouseButtonEvent& event) const;
 
 public:
-	UiButton(sf::Vector2f positionRelativeToView, sf::Color colorBase, std::string text, Resource textureName);
+	UiButton(sf::Vector2f positionRelativeToView, sf::Color colorBase, std::string text, UiTexture textureName);
 	void HandleEvent(const sf::Event& event);
 
 	//Callback pour avoir une fonction spécifique au bouton
