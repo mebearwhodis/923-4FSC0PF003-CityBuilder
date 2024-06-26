@@ -21,7 +21,6 @@ protected:
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
 public:
-	//TODO link resources in resource manager to TileType. 
 	Tile();
 	Tile(TileType type, float x, float y, bool walkable);
 	bool Walkable() const { return walkable_; }

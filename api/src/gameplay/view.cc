@@ -21,6 +21,8 @@ void View::handleInput(sf::RenderWindow& window) {
         movement.y += 64.f;
     }
 
+
+    //TODO do same for mousewheel drag
     // Calculate where the view would move to
     sf::Vector2f proposedCenter = view_.getCenter() + movement;
     float halfWidth = view_.getSize().x / 2.0f;

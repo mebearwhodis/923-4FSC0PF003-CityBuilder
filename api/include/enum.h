@@ -1,5 +1,5 @@
-#ifndef ENUM_H
-#define ENUM_H
+#ifndef API_ENUM_H_
+#define API_ENUM_H_
 
 enum class CursorType
 {
@@ -24,4 +24,11 @@ enum class TileType
 	//...
 	kLength
 };
-#endif // ENUM_H
+
+enum class VillagerType
+{
+	kVillager,
+	//..
+	kLength
+};
+#endif // API_ENUM_H_

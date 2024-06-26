@@ -2,6 +2,7 @@
 
 #include <Tracy/Tracy.hpp>
 
+#include "../../api/include/gameplay/ai/woodsman.h"
 
 
 Game::Game()
@@ -19,6 +20,7 @@ void Game::init() {
 	ZoneScoped;
 #endif
 
+	std::srand(std::time(nullptr));
 	// Basic Setup of the window
 	window_.setFramerateLimit(60);
 	window_.setVerticalSyncEnabled(true);
@@ -37,6 +39,7 @@ void Game::init() {
 	game_view_.setCenter(map_center);
 	game_view_.setBounds(sf::FloatRect(0, 0, map_size.x, map_size.y));
 
+
 	map_.clicked_tile_ = [this](auto tile) {
 		std::cout << "Tile clicked:\t" << tile.Position().x << "/" << tile.Position().y << "\t" << std::endl;
 		building_manager_.AddBuilding(tile);
@@ -49,6 +52,7 @@ void Game::init() {
 
 	button_clear_map_.callback_ = [this]() {
 		map_.Clear();
+		//TODO clear buildings list
 		};
 
 	button_activate_build_.callback_ = [this]() {
@@ -68,9 +72,14 @@ void Game::init() {
 
 
 void Game::update() {
+
+	Woodsman billy(12800/2, 12800/2, 64);
+	
+
 	// run the program as long as the window is open
 	while (window_.isOpen()) {
 
+		billy.Tick();
 		game_view_.apply(window_);
 		sf::Vector2i mouse_pos = sf::Mouse::getPosition(window_);
 		sf::Vector2f mouse_world_pos = window_.mapPixelToCoords(mouse_pos);
@@ -107,6 +116,9 @@ void Game::update() {
 			building_manager_.SetHoverTilePosition(mouse_tile_coord);
 			window_.draw(building_manager_.HoverTile());
 		}
+
+		//TEST
+		window_.draw(billy);
 
 		window_.setView(hud_view_);
 

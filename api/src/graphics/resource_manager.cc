@@ -31,6 +31,16 @@ void ResourceManager::LoadAllTextures()
 	LoadTileTexture("../resources/sprites/structures/medievalStructure_18.png", TileType::kHouse);
 
 
+	// Character Textures -----------------
+	LoadCharacterTexture("../resources/sprites/units/medievalUnit_05.png", VillagerType::kVillager);
+	LoadCharacterTexture("../resources/sprites/units/medievalUnit_06.png", VillagerType::kVillager);
+	LoadCharacterTexture("../resources/sprites/units/medievalUnit_11.png", VillagerType::kVillager);
+	LoadCharacterTexture("../resources/sprites/units/medievalUnit_12.png", VillagerType::kVillager);
+	LoadCharacterTexture("../resources/sprites/units/medievalUnit_17.png", VillagerType::kVillager);
+	LoadCharacterTexture("../resources/sprites/units/medievalUnit_18.png", VillagerType::kVillager);
+	LoadCharacterTexture("../resources/sprites/units/medievalUnit_23.png", VillagerType::kVillager);
+	LoadCharacterTexture("../resources/sprites/units/medievalUnit_24.png", VillagerType::kVillager);
+
 	// Cursor Images -----------------
 	blank_cursor_image_ = sf::Image();
 	cursor_images_[static_cast<int>(CursorType::kBasic)].loadFromFile("../resources/sprites/ui/cursorSword_silver.png");
@@ -44,6 +54,15 @@ void ResourceManager::LoadTileTexture(const std::string& filepath, TileType type
 	if(texture.loadFromFile(filepath))
 	{
 		tile_textures_[type].push_back(texture);
+	}
+}
+
+void ResourceManager::LoadCharacterTexture(const std::string& filepath, VillagerType type)
+{
+	sf::Texture texture;
+	if (texture.loadFromFile(filepath))
+	{
+		character_textures_[type].push_back(texture);
 	}
 }
 

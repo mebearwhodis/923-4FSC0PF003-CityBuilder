@@ -19,7 +19,6 @@ UiButton::UiButton(sf::Vector2f positionRelativeToView, sf::Color colorBase, std
 	ZoneScoped;
 #endif
 
-	//TODO: Set button position to be relative to the world? not the view? when I move the place to click stays the same and should not (also, maybe this problem is not a problem if buttons follow the view, which they probably should)-> So maybe just have the buttons positioned relatively to the view
 	setPosition(positionRelativeToView);
 
 	//Declare and load a font
