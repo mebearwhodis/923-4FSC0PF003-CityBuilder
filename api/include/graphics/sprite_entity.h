@@ -13,5 +13,6 @@ protected:
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 	virtual void DefineTexture() = 0;
 	sf::Sprite sprite_;
+	sf::RectangleShape frame_;
 };
 #endif // API_GRAPHICS_SPRITE_ENTITY_H_

@@ -3,6 +3,7 @@
 #include <Tracy/Tracy.hpp>
 
 #include "../../api/include/gameplay/ai/woodsman.h"
+#include "../../api/include/pathfinding/pathfinder.h"
 
 
 Game::Game()
@@ -32,7 +33,7 @@ void Game::init() {
 
 	tile_size_ = sf::Vector2u(64, 64);
 	map_.Setup(sf::Vector2u(200, 200), tile_size_);
-
+	//map_.Generate();
 	// Center the view to the middle of the tilemap
 	sf::Vector2f map_size(map_.playground_size_u().x * tile_size_.x, map_.playground_size_u().y * tile_size_.y);
 	const sf::Vector2f map_center(map_size.x / 2.0f, map_size.y / 2.0f);
@@ -73,13 +74,16 @@ void Game::init() {
 
 void Game::update() {
 
-	Woodsman billy(12800/2, 12800/2, 64);
+	//Woodsman A* test
+	Woodsman billy(6400, 6400, 256);
+	Pathfinder pathfinder;
 	
 
 	// run the program as long as the window is open
 	while (window_.isOpen()) {
 
 		billy.Tick();
+
 		game_view_.apply(window_);
 		sf::Vector2i mouse_pos = sf::Mouse::getPosition(window_);
 		sf::Vector2f mouse_world_pos = window_.mapPixelToCoords(mouse_pos);
@@ -95,6 +99,27 @@ void Game::update() {
 			// "close requested" event: we close the window
 			if (event.type == sf::Event::Closed)
 				window_.close();
+
+			if (event.type == sf::Event::MouseButtonReleased)
+			{
+				//Check if the right mouse button is pressed
+				if (event.mouseButton.button == sf::Mouse::Right)
+				{
+					sf::Vector2f destination(mouse_tile_coord);
+					Path p = pathfinder.CalculatePath(map_.GetWalkableTiles(), billy.getPosition(), destination, 64);
+					billy.set_path(p);
+				
+				}
+			}
+
+	/*		if(event.type == sf::Event::KeyPressed)
+			{
+				if(event.key.code == sf::Keyboard::T)
+				{
+					billy.set_destination(mouse_tile_coord);
+				}
+			}*/
+
 
 			// Handle UI Events
 			button_generate_map_.HandleEvent(event);

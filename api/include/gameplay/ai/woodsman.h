@@ -1,7 +1,6 @@
 #ifndef API_GAMEPLAY_AI_WOODSMAN_H_
 #define API_GAMEPLAY_AI_WOODSMAN_H_
 #include "walker.h"
-#include "../../graphics/sprite_entity.h"
 
 class Woodsman : public Walker
 {

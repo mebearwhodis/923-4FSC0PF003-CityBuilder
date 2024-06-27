@@ -16,9 +16,9 @@ void Tilemap::Setup(sf::Vector2u playground_size_u, sf::Vector2u playground_tile
 
 void Tilemap::Generate()
 {
-	#ifdef TRACY_ENABLE
-		ZoneScoped;
-	#endif
+#ifdef TRACY_ENABLE
+	ZoneScoped;
+#endif
 
 	int numberOfTiles = 0;
 	tiles_.clear();
@@ -71,23 +71,23 @@ void Tilemap::HandleEvent(const sf::Event& event, const sf::RenderWindow& window
 #ifdef TRACY_ENABLE
 	ZoneScoped;
 #endif
-		sf::Vector2f worldPos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
+	sf::Vector2f worldPos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
 
-		// Snap mouse position to the grid
-		sf::Vector2f mousePosition(
-			static_cast<int>(worldPos.x / playground_tile_size_u_.x) * playground_tile_size_u_.x,
-			static_cast<int>(worldPos.y / playground_tile_size_u_.y) * playground_tile_size_u_.y
-		);
+	// Snap mouse position to the grid
+	sf::Vector2f mousePosition(
+		static_cast<int>(worldPos.x / playground_tile_size_u_.x) * playground_tile_size_u_.x,
+		static_cast<int>(worldPos.y / playground_tile_size_u_.y) * playground_tile_size_u_.y
+	);
 
 
-		auto tileFound = std::find_if(tiles_.begin(), tiles_.end(), [&mousePosition](Tile& t) {return t.Position() == mousePosition; });
+	auto tileFound = std::find_if(tiles_.begin(), tiles_.end(), [&mousePosition](Tile& t) {return t.Position() == mousePosition; });
 
-		if (tileFound != tiles_.end())
-		{
-			//TODO: Could put the hover_tile here, aka the Tile could manage the hover itself (That's what Select does)
-			tile_selected_ = &(*tileFound);
-			tile_selected_->Select();
-		}
+	if (tileFound != tiles_.end())
+	{
+		//TODO: Could put the hover_tile here, aka the Tile could manage the hover itself (That's what Select does)
+		tile_selected_ = &(*tileFound);
+		tile_selected_->Select();
+	}
 
 	if (event.type == sf::Event::MouseButtonReleased)
 	{
@@ -104,6 +104,20 @@ void Tilemap::HandleEvent(const sf::Event& event, const sf::RenderWindow& window
 			}
 		}
 	}
+}
+
+std::vector<sf::Vector2f> Tilemap::GetWalkableTiles()
+{
+	std::vector<sf::Vector2f> walkable_positions;
+
+	std::for_each(tiles_.begin(), tiles_.end(), [&walkable_positions](const Tile& t)
+		{
+			if (t.is_walkable())
+			{
+				walkable_positions.emplace_back(t.Position());
+			}
+		});
+	return walkable_positions;
 }
 
 TileType Tilemap::GetSelectedTileType() const {

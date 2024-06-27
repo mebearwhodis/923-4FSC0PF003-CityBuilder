@@ -19,7 +19,7 @@ Tile::Tile(TileType type, float x = 0, float y = 0, bool walkable = true)
 	}
 	sprite_.setPosition(x, y);
 
-	walkable_ = walkable;
+	is_walkable_ = walkable;
 
 	outline_.setPosition(x, y);
 	outline_.setSize(sf::Vector2f(sprite_.getTexture()->getSize()));

@@ -14,7 +14,7 @@ class Tile : public sf::Drawable {
 	sf::Vector2f position_;
 	TileType type_;
 	//bool interactible_;
-	bool walkable_;
+	bool is_walkable_;
 	bool selected_;
 
 protected:
@@ -23,7 +23,8 @@ protected:
 public:
 	Tile();
 	Tile(TileType type, float x, float y, bool walkable);
-	bool Walkable() const { return walkable_; }
+	bool is_walkable() const { return is_walkable_; }
+	void set_walkable(bool walkable) { is_walkable_ = walkable; }
 	sf::Vector2f Position() const { return sprite_.getPosition(); }
 
 	void Select();

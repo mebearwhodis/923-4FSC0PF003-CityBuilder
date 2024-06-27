@@ -48,7 +48,8 @@ void BuildingManager::AddBuilding(Tile& tile)
 	if (tile.type() == TileType::kPlain)
 	{
 		buildings_.emplace_back(tile.Position().x, tile.Position().y);
-		//TODO change tiletype, change walkable state, change texture
+		//TODO change tiletype, change walkable state, change texture, set as not buildable anymore or sth
+		tile.set_walkable(false);
 	}
 }
 

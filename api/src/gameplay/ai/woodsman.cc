@@ -6,6 +6,8 @@
 Woodsman::Woodsman(float x, float y, float linear_speed): Walker(x, y, linear_speed)
 {
 	DefineTexture();
+	frame_.setPosition(sprite_.getGlobalBounds().getPosition());
+	frame_.setSize(sprite_.getGlobalBounds().getSize());
 }
 
 //sprite_.setPosition(x, y);

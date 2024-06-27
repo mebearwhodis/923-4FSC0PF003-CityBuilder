@@ -29,6 +29,7 @@ public:
 	std::function<void(const Tile&)> clicked_tile_;
 	sf::Vector2u playground_size_u() const { return playground_size_u_; }
 
+	std::vector<sf::Vector2f> GetWalkableTiles();
 	// Getter function to retrieve the TileType of the selected tile
 	TileType GetSelectedTileType() const;
 };
