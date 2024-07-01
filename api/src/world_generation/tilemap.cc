@@ -2,6 +2,8 @@
 
 #include <random>
 #include <SFML/Graphics/RenderTarget.hpp>
+
+#include "world_generation/wfc.h"
 #ifdef TRACY_ENABLE
 #include <Tracy/Tracy.hpp>
 #include <Tracy/TracyC.h>
@@ -45,11 +47,11 @@ void Tilemap::Generate()
 
 			if (rnd == 1)
 			{
-				tiles_.emplace_back(TileType::kForest, x * playground_tile_size_u_.x, y * playground_tile_size_u_.y, false);
+				tiles_.emplace_back(TileType::grass_centre, x * playground_tile_size_u_.x, y * playground_tile_size_u_.y, false);
 			}
 			if (rnd == 2)
 			{
-				tiles_.emplace_back(TileType::kPlain, x * playground_tile_size_u_.x, y * playground_tile_size_u_.y, true);
+				tiles_.emplace_back(TileType::ground_centre, x * playground_tile_size_u_.x, y * playground_tile_size_u_.y, true);
 			}
 
 
@@ -125,9 +127,36 @@ TileType Tilemap::GetSelectedTileType() const {
 		return tile_selected_->type(); // Assuming Tile class has a GetType() method
 	}
 	else {
-		return TileType::kPlain;
+		return TileType::grass_centre;
 	}
 }
+
+void Tilemap::GenerateWFC()
+{
+
+		tiles_.clear();
+		tiles_.reserve(playground_size_u_.x * playground_size_u_.y);
+
+		WFC wfc(playground_size_u_.x, playground_size_u_.y);
+		std::vector<TileType> generatedTiles;
+		wfc.generate(generatedTiles);
+
+		for (unsigned int x = 0; x < playground_size_u_.x; ++x) {
+			for (unsigned int y = 0; y < playground_size_u_.y; ++y) {
+				int idx = x * playground_size_u_.y + y;
+				TileType type = generatedTiles[idx];
+				bool walkable = (type != TileType::water01); // Example: water tiles are not walkable
+				tiles_.emplace_back(type, x * playground_tile_size_u_.x, y * playground_tile_size_u_.y, walkable);
+			}
+		}
+
+		tile_selected_ = &(*tiles_.begin());
+		tile_selected_->Deselect();
+		std::cout << "Total tiles: " << tiles_.size() << std::endl;
+	}
+
+
+
 
 void Tilemap::applyFadeEffect(sf::RenderTarget& target)
 {

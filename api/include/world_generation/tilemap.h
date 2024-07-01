@@ -32,6 +32,9 @@ public:
 	std::vector<sf::Vector2f> GetWalkableTiles();
 	// Getter function to retrieve the TileType of the selected tile
 	TileType GetSelectedTileType() const;
+
+	void GenerateWFC();
+
 };
 
 //Tile GetTileAt(sf::Vector2f position, const sf::View& view, const sf::RenderTarget& target) const;

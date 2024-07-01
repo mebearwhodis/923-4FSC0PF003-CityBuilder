@@ -41,11 +41,11 @@ void BuildingManager::AddBuilding(Tile& tile)
 	ZoneScoped;
 #endif
 	if (!is_active_) { return; }
-	if(tile.type() == TileType::kForest)
+	if(tile.type() == TileType::ground_centre)
 	{
 		std::cout << "Forest" << std::endl;
 	}
-	if (tile.type() == TileType::kPlain)
+	if (tile.type() == TileType::grass_centre)
 	{
 		buildings_.emplace_back(tile.Position().x, tile.Position().y);
 		//TODO change tiletype, change walkable state, change texture, set as not buildable anymore or sth

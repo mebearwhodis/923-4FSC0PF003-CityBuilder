@@ -32,7 +32,7 @@ void Game::init() {
 	cursor_manager_.changeCursor(CursorType::kBasic, window_);
 
 	tile_size_ = sf::Vector2u(64,64);
-	map_.Setup(sf::Vector2u(200, 200), tile_size_);
+	map_.Setup(sf::Vector2u(10, 20), tile_size_);
 	//map_.Generate();
 	// Center the view to the middle of the tilemap
 	sf::Vector2f map_size(map_.playground_size_u().x * tile_size_.x, map_.playground_size_u().y * tile_size_.y);
@@ -48,7 +48,7 @@ void Game::init() {
 
 	// Set button callbacks
 	button_generate_map_.callback_ = [this]() {
-		map_.Generate();
+		map_.GenerateWFC();
 		};
 
 	button_clear_map_.callback_ = [this]() {

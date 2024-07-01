@@ -14,7 +14,7 @@ Building::Building(float x, float y): SpriteEntity(x, y)
 
 void Building::DefineTexture()
 {
-	const auto& textures = ResourceManager::Get().GetTileTextures(TileType::kHouse);
+	const auto& textures = ResourceManager::Get().GetTileTextures(TileType::water01);
 	if (!textures.empty()) {
 		const sf::Texture& texture = textures[std::rand() % textures.size()];
 		sprite_.setTexture(texture);
