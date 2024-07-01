@@ -31,7 +31,7 @@ void Game::init() {
 	// Set initial cursor
 	cursor_manager_.changeCursor(CursorType::kBasic, window_);
 
-	tile_size_ = sf::Vector2u(64, 64);
+	tile_size_ = sf::Vector2u(64,64);
 	map_.Setup(sf::Vector2u(200, 200), tile_size_);
 	//map_.Generate();
 	// Center the view to the middle of the tilemap

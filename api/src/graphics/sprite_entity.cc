@@ -7,8 +7,6 @@ SpriteEntity::SpriteEntity(float x, float y)
 {
 	sprite_.setPosition(x, y);
 
-	//frame_.setPosition(x, y);
-	//frame_.setSize(sf::Vector2f(64,64));
 	frame_.setFillColor(sf::Color(100, 100, 100, 0));
 	frame_.setOutlineColor(sf::Color::Magenta);
 	frame_.setOutlineThickness(-1);
