@@ -67,6 +67,7 @@ void Walker::Tick()
 		frame_.setPosition(getPosition());
 
 		//TODO check why when I activate this billy runs to the top left corner, genre mets la starting position dans une variable et check si c'est elle dans ce if
+		//TODO this check should probably not be here. Maybe put it in the path. If the path is the last one, then IS READY is off, and if path is not ready, return
 		//path_.is_avaible(true);
 	}
 	else
