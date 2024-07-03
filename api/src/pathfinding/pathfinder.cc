@@ -6,20 +6,19 @@
 #include "sfml_utils.h"
 
 
-static std::vector<sf::Vector2f> ConstructPath(const PathPoint& exit_point)
+static std::vector<sf::Vector2f> ConstructPath(const PathPoint& exit_point, const PathPoint* visited_points)
 {
 	std::vector<sf::Vector2f> positions;
 
 	PathPoint point = exit_point;
 
 	positions.emplace_back(point.position());
-	while (point.parent() != nullptr)
+	while (point.parent_index() != -1)
 	{
-		point = *point.parent();
-		//positions.insert(positions.begin(), point.position());
+		point = visited_points[point.parent_index()];
 		positions.push_back(point.position());
 	}
-	std::reverse(positions.begin(), positions.end());
+	std::ranges::reverse(positions);
 	return positions;
 }
 
@@ -48,12 +47,11 @@ Path Pathfinder::CalculatePath(std::vector<sf::Vector2f> positions, sf::Vector2f
 
 	// --
 	std::priority_queue<PathPoint, std::vector<PathPoint>, std::greater<PathPoint>> open_queue;
-
-
 	std::unordered_set<sf::Vector2f> open_list;
 	std::unordered_set<sf::Vector2f> closed_list;
+	std::vector<PathPoint> visited_points;
 
-	open_queue.emplace(0, Magnitude(rounded_end - start), start);
+	open_queue.emplace(0, Magnitude(rounded_end - start), start, -1);
 	open_list.emplace(start);
 
 	while(!open_queue.empty())
@@ -68,15 +66,14 @@ Path Pathfinder::CalculatePath(std::vector<sf::Vector2f> positions, sf::Vector2f
 		// Did we find the exit of the maze ?
 		if (Magnitude(rounded_end - current.position()) <= std::numeric_limits<float>::epsilon())
 		{
-			path.SetSteps(ConstructPath(current));
+			path.SetSteps(ConstructPath(current, visited_points.data()));
 			std::cout << "Found the path : nb steps = " << path.GetSteps().size() << std::endl;
 			return path;
 		}
 
 		for (auto neighbour : kNeighbours)
 		{
-			// ReSharper disable once CppCStyleCast
-			sf::Vector2f neighbourPos = current.position() + neighbour * (float)tile_size;
+			sf::Vector2f neighbourPos = current.position() + neighbour * static_cast<float>(tile_size);
 
 			// Tous les voisins
 			auto found_position = std::find_if(positions.begin(), positions.end(), [&neighbourPos](sf::Vector2f& pos)
@@ -98,14 +95,15 @@ Path Pathfinder::CalculatePath(std::vector<sf::Vector2f> positions, sf::Vector2f
 
 				if (!is_in_closed && !is_in_open)
 				{
-					open_queue.emplace(PathPoint{ current.g() + tile_size, Magnitude(rounded_end - current.position()), *found_position, current });
+					auto index = visited_points.size();
+					visited_points.push_back(current);
+
+
+					open_queue.emplace(current.g() + tile_size, Magnitude(rounded_end - current.position()), *found_position, index);
 					open_list.emplace(*found_position);
 				}
-
 			}
-
 		}
-
 	}
 
 	// -
@@ -114,6 +112,7 @@ Path Pathfinder::CalculatePath(std::vector<sf::Vector2f> positions, sf::Vector2f
 	std::cout << "End : " << end.x << " " << end.y << std::endl;
 	std::cout << "Rounded end : " << rounded_end.x << " " << rounded_end.y << std::endl;
 
+	//TODO check the path returned. Why does it only move one tile (or half a tile) and then goes straigth to the end?
 	return path;
 
 

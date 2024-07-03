@@ -17,20 +17,14 @@ class PathPoint
 
 	sf::Vector2f position_;
 
-	PathPoint* parent_ = nullptr;
+	std::uint32_t parent_index_ = -1;
 
 
 public:
 	// Constructors
 	PathPoint() = default;
-	PathPoint(float g, float h, sf::Vector2f position, const PathPoint& parent) : g_(g), h_(h), position_(position)
+	PathPoint(float g, float h, sf::Vector2f position, std::uint32_t parent_index) : g_(g), h_(h), position_(position), parent_index_(parent_index)
 	{
-		this->parent_ = new PathPoint(parent);
-		f = g + h;
-	}
-	PathPoint(float g, float h, sf::Vector2f position) : g_(g), h_(h), position_(position)
-	{
-		this->parent_ = nullptr;
 		f = g + h;
 	}
 
@@ -43,7 +37,7 @@ public:
 	}
 
 	// Accessors
-	const PathPoint* parent() const { return parent_; }
+	const std::uint32_t parent_index() const { return parent_index_; }
 
 	const sf::Vector2f& position() const { return position_; }
 

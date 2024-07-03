@@ -16,6 +16,7 @@ void Tilemap::Setup(sf::Vector2u playground_size_u, sf::Vector2u playground_tile
 
 void Tilemap::Generate()
 {
+	//TODO check way to do this with vertex array (or at least check what vertex arrays are)
 #ifdef TRACY_ENABLE
 	ZoneScoped;
 #endif

@@ -7,6 +7,7 @@
 #include "gameplay/ai/woodsman.h"
 #include "pathfinding/pathfinder.h"
 
+//TODO to avoid clicking on the map when clicking on a button, have a if(click on a button) in the clicking events
 
 Game::Game()
 	: window_(sf::VideoMode(1920, 1080), "My window"),
@@ -77,7 +78,7 @@ void Game::init() {
 void Game::update() {
 
 	//Woodsman A* test
-	Woodsman billy(6400, 6400, 256);
+	Woodsman billy(6400, 6400, 640);
 	//Pathfinder pathfinder;
 	
 
@@ -107,6 +108,7 @@ void Game::update() {
 				//Check if the right mouse button is pressed
 				if (event.mouseButton.button == sf::Mouse::Right)
 				{
+					//TODO check if you CAN go on the tile (right now we can go on the forests and stuff if there is a path, because we add start and end)
 					sf::Vector2f destination(mouse_tile_coord);
 					Path p = Pathfinder::CalculatePath(map_.GetWalkableTiles(), billy.getPosition(), destination, 64);
 					billy.set_path(p);

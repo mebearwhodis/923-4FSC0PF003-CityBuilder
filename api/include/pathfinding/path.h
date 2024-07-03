@@ -15,6 +15,8 @@ public:
 
 	// steps getter
 	const std::queue<sf::Vector2f>& GetSteps();
+
+	void is_avaible(bool value) { is_available_ = value; }
 private:
 	std::queue<sf::Vector2f> steps_;
 	sf::Vector2f next_step_;

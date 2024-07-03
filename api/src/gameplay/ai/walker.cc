@@ -65,6 +65,9 @@ void Walker::Tick()
 		setPosition(destination_);
 		sprite_.setPosition(getPosition());
 		frame_.setPosition(getPosition());
+
+		//TODO check why when I activate this billy runs to the top left corner, genre mets la starting position dans une variable et check si c'est elle dans ce if
+		//path_.is_avaible(true);
 	}
 	else
 	{
@@ -72,5 +75,6 @@ void Walker::Tick()
 
 		sprite_.setPosition(getPosition());
 		frame_.setPosition(getPosition());
+		path_.is_avaible(false);
 	}
 }
