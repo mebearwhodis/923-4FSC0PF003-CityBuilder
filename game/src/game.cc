@@ -31,7 +31,7 @@ void Game::init() {
 	// Set initial cursor
 	cursor_manager_.changeCursor(CursorType::kBasic, window_);
 
-	tile_size_ = sf::Vector2u(64,64);
+	tile_size_ = sf::Vector2u(32,32);
 	map_.Setup(sf::Vector2u(10, 20), tile_size_);
 	//map_.Generate();
 	// Center the view to the middle of the tilemap
@@ -75,7 +75,7 @@ void Game::init() {
 void Game::update() {
 
 	//Woodsman A* test
-	Woodsman billy(6400, 6400, 256);
+	Woodsman billy(3200, 3200, 256);
 	Pathfinder pathfinder;
 	
 
@@ -106,7 +106,7 @@ void Game::update() {
 				if (event.mouseButton.button == sf::Mouse::Right)
 				{
 					sf::Vector2f destination(mouse_tile_coord);
-					Path p = pathfinder.CalculatePath(map_.GetWalkableTiles(), billy.getPosition(), destination, 64);
+					Path p = pathfinder.CalculatePath(map_.GetWalkableTiles(), billy.getPosition(), destination, 32);
 					billy.set_path(p);
 				
 				}

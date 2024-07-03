@@ -9,7 +9,7 @@ BuildingManager::BuildingManager()
 #ifdef TRACY_ENABLE
 	ZoneScoped;
 #endif
-	sf::Vector2f tile_size = sf::Vector2f(64,64);
+	sf::Vector2f tile_size = sf::Vector2f(32,32);
 	sf::RectangleShape hovered_tile;
 	hover_tile_.setSize(tile_size);
 	hover_tile_.setFillColor(sf::Color(100, 100, 100, 180));
