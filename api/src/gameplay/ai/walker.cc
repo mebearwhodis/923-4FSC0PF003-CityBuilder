@@ -36,6 +36,7 @@ void Walker::set_path(const Path& path)
 
 void Walker::Tick()
 {
+
 	//TODO Factorize DeltaTime -----------
 	const auto now{ std::chrono::steady_clock::now() };
 	const std::chrono::duration<float> elapsed_time{ now - last_time_ };
@@ -45,7 +46,7 @@ void Walker::Tick()
 	//------------------
 
 	//Mock the path ----------
-	if(path_.IsAvailable())
+	if(path_.is_available() && path_.is_ready() && !path_.is_ended())
 	{
 		destination_ = path_.GetNextStep();
 	}else
@@ -66,9 +67,7 @@ void Walker::Tick()
 		sprite_.setPosition(getPosition());
 		frame_.setPosition(getPosition());
 
-		//TODO check why when I activate this billy runs to the top left corner, genre mets la starting position dans une variable et check si c'est elle dans ce if
-		//TODO this check should probably not be here. Maybe put it in the path. If the path is the last one, then IS READY is off, and if path is not ready, return
-		//path_.is_avaible(true);
+		path_.set_is_ready(true);
 	}
 	else
 	{
@@ -76,6 +75,6 @@ void Walker::Tick()
 
 		sprite_.setPosition(getPosition());
 		frame_.setPosition(getPosition());
-		path_.is_avaible(false);
+		path_.set_is_ready(false);
 	}
 }

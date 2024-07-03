@@ -1,16 +1,16 @@
 #include <pathfinding/path.h>
 
-bool Path::IsEnded()
+bool Path::is_ended()
 {
 	return steps_.empty();
 }
 
-bool Path::IsAvailable()
+bool Path::is_available()
 {
 	return is_available_;
 }
 
-bool Path::IsReady()
+bool Path::is_ready()
 {
 	return is_ready_;
 }
