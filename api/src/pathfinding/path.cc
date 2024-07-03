@@ -40,5 +40,9 @@ void Path::SetSteps(std::vector<sf::Vector2f> steps)
 	{
 		is_available_ = false;
 	}
+}
 
+const std::queue<sf::Vector2f>& Path::GetSteps()
+{
+	return steps_;
 }

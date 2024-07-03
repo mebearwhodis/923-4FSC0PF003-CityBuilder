@@ -4,29 +4,50 @@
 
 #include "path.h"
 
-struct PathPoint
+//TODO Comment all of this, maybe refactor in its own PathPoint class files
+class PathPoint
 {
 	// Members
-	float g;
-	float h;
+	float f;
+	// Cost of the cheapest path from start to current PathPoint
+	float g_;
 
-	sf::Vector2f position;
+	// Heuristic function value (estimated cost to goal)
+	float h_;
 
-	PathPoint* parent = nullptr;
+	sf::Vector2f position_;
 
-	// Constructor
-	PathPoint(float g, float h, sf::Vector2f position, PathPoint* parent) : g(g), h(h), position(position), parent(parent) {}
+	PathPoint* parent_ = nullptr;
 
 
-	// Methods
-	int f() const { return g + h; }	// Total cost
-
+public:
+	// Constructors
+	PathPoint() = default;
+	PathPoint(float g, float h, sf::Vector2f position, const PathPoint& parent) : g_(g), h_(h), position_(position)
+	{
+		this->parent_ = new PathPoint(parent);
+		f = g + h;
+	}
+	PathPoint(float g, float h, sf::Vector2f position) : g_(g), h_(h), position_(position)
+	{
+		this->parent_ = nullptr;
+		f = g + h;
+	}
 
 	// Operators
-	bool operator>(const PathPoint& other) const
-	{
-		return f() > other.f();
+	bool operator<(const PathPoint& other) const {
+		return this->f < other.f;
 	}
+	bool operator>(const PathPoint& other) const {
+		return this->f > other.f;
+	}
+
+	// Accessors
+	const PathPoint* parent() const { return parent_; }
+
+	const sf::Vector2f& position() const { return position_; }
+
+	float g() const { return g_; }
 };
 
 const std::array kNeighbours = {
@@ -36,10 +57,9 @@ sf::Vector2f(0,-1),
 sf::Vector2f(-1,0)
 };
 
-class Pathfinder
+//A* pathfinding TODO: Get rid of namespace
+namespace Pathfinder
 {
-	std::vector<sf::Vector2f> ConstructPath(PathPoint exit_point);
-public:
 	Path CalculatePath(std::vector<sf::Vector2f> positions, sf::Vector2f start, sf::Vector2f end, int tile_size);
 };
 

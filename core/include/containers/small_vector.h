@@ -58,6 +58,21 @@ namespace core
 			}
 		}
 
+		// Push_Back() to add an element at the end
+		void PushBack(T&& item)
+		{
+			if (size_ < Capacity)
+			{
+				data_[end_] = std::move(item);
+				end_ = (end_ + 1) % Capacity;
+				size_++;
+			}
+			else
+			{
+				throw std::overflow_error("Vector full");
+			}
+		}
+
 		// Pop_Back() to delete the last element
 		void PopBack()
 		{
@@ -169,6 +184,12 @@ namespace core
 				}
 			}
 			size_ = 0;
+		}
+
+		//TODO Verifications and tests (test with UNIQUE POINTERS because they're movable only uwu)
+		T& Back()
+		{
+			return data_[size_ - 1];
 		}
 	};
 

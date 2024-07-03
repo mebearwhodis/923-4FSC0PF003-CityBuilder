@@ -8,9 +8,5 @@ int main() {
     game.init();
     game.update();
 
-#ifdef TRACY_ENABLE
-    FrameMark;
-#endif
-
     return 0;
 }

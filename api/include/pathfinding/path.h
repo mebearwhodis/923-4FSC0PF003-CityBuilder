@@ -13,6 +13,8 @@ public:
 	sf::Vector2f GetNextStep();
 	void SetSteps(std::vector<sf::Vector2f> steps);
 
+	// steps getter
+	const std::queue<sf::Vector2f>& GetSteps();
 private:
 	std::queue<sf::Vector2f> steps_;
 	sf::Vector2f next_step_;

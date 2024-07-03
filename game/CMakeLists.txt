@@ -6,7 +6,7 @@ file(GLOB_RECURSE HEADER_FILES include/*.h)
 add_library(game ${SRC_FILES} ${HEADER_FILES})
 target_include_directories(game PUBLIC include/)
 
-target_link_libraries(game PRIVATE sfml-system sfml-network sfml-graphics sfml-window sfml-audio)
+target_link_libraries(game PRIVATE api sfml-system sfml-network sfml-graphics sfml-window sfml-audio)
 
 if(ENABLE_PROFILING)
 	target_link_libraries(game PUBLIC Tracy::TracyClient)

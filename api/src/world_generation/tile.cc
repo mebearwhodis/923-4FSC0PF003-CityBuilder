@@ -13,8 +13,8 @@ Tile::Tile(TileType type, float x = 0, float y = 0, bool walkable = true)
 	type_ = type;
 
 	const auto& textures = ResourceManager::Get().GetTileTextures(type);
-	if (!textures.empty()) {
-		const sf::Texture& texture = textures[std::rand() % textures.size()];
+	if (!textures.Size() == 0) {
+		const sf::Texture& texture = textures[std::rand() % textures.Size()];
 		sprite_.setTexture(texture);
 	}
 	sprite_.setPosition(x, y);

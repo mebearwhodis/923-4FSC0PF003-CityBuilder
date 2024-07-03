@@ -50,7 +50,7 @@ void Walker::Tick()
 		destination_ = path_.GetNextStep();
 	}else
 	{
-		std::cout << "No path available" << std::endl;
+		//std::cout << "No path available" << std::endl;
 	}
 
 	 

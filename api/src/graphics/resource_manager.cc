@@ -1,10 +1,37 @@
 #include "graphics/resource_manager.h"
+#ifdef TRACY_ENABLE
+#include <Tracy/Tracy.hpp>
+#include <Tracy/TracyC.h>
+#endif
 
 void ResourceManager::LoadAllTextures()
 {
+#ifdef TRACY_ENABLE
+	ZoneScoped;
+#endif
+
+
+#ifdef TRACY_ENABLE
+	TracyCZoneN(blankTexture, "Blank Texture", true);
+#endif
 	// Ui Textures -----------------
 	blank_texture_ = sf::Texture();
-	ui_textures_.at(static_cast<int>(UiTexture::kWhiteButtonRedFrame)).loadFromFile("../resources/sprites/ui/red_button10.png");
+#ifdef TRACY_ENABLE
+	TracyCZoneEnd(blankTexture);
+
+#endif
+
+#ifdef TRACY_ENABLE
+	TracyCZoneN(buttonTexture, "Button Texture", true);
+#endif
+
+	//ui_textures_.at(static_cast<int>(UiTexture::kWhiteButtonRedFrame)).loadFromFile("../resources/sprites/ui/red_button10.png");
+	LoadUITexture();
+#ifdef TRACY_ENABLE
+	TracyCZoneEnd(buttonTexture);
+#endif
+
+
 
 	// Tile Textures -----------------
 	LoadTileTexture("../resources/sprites/tiles/medievalTile_57.png", TileType::kPlain);
@@ -14,7 +41,7 @@ void ResourceManager::LoadAllTextures()
 	LoadTileTexture("../resources/sprites/tiles/medievalTile_42.png", TileType::kForest);
 	LoadTileTexture("../resources/sprites/tiles/medievalTile_43.png", TileType::kForest);
 	LoadTileTexture("../resources/sprites/tiles/medievalTile_44.png", TileType::kForest);
-	
+
 	LoadTileTexture("../resources/sprites/tiles/medievalTile_45.png", TileType::kPineForest);
 	LoadTileTexture("../resources/sprites/tiles/medievalTile_46.png", TileType::kPineForest);
 	LoadTileTexture("../resources/sprites/tiles/medievalTile_47.png", TileType::kPineForest);
@@ -48,17 +75,90 @@ void ResourceManager::LoadAllTextures()
 
 }
 
+void ResourceManager::LoadUITexture()
+{
+#ifdef TRACY_ENABLE
+	TracyCZoneN(loadUIImage, "Load UI image", true);
+#endif
+	//---- Things to measure
+	sf::Image image;
+	if (!image.loadFromFile("../resources/sprites/ui/red_button10.png"))
+	{
+		return;
+	}
+#ifdef TRACY_ENABLE
+	TracyCZoneEnd(loadUIImage);
+#endif
+
+
+#ifdef TRACY_ENABLE
+	TracyCZoneN(loadUITexture, "Load UI texture", true);
+#endif
+	sf::Texture texture;
+	if (texture.loadFromImage(image))
+	{
+		ui_textures_.at(static_cast<int>(UiTexture::kWhiteButtonRedFrame)) = texture;
+	}
+
+#ifdef TRACY_ENABLE
+	TracyCZoneEnd(loadUITexture);
+#endif
+}
+
 void ResourceManager::LoadTileTexture(const std::string& filepath, TileType type)
 {
-	sf::Texture texture;
-	if(texture.loadFromFile(filepath))
+
+#ifdef TRACY_ENABLE
+	ZoneScoped;
+#endif
+	//sf::Texture texture;
+	//if(texture.loadFromFile(filepath))
+	//{
+	//	tile_textures_[type].push_back(texture);
+	//}
+
+	#ifdef TRACY_ENABLE
+	TracyCZoneN(loadImage, "Load image", true);
+#endif
+	//---- Things to measure
+	sf::Image image;
+	if (!image.loadFromFile(filepath)) 
 	{
-		tile_textures_[type].push_back(texture);
+		return;
 	}
+#ifdef TRACY_ENABLE
+	TracyCZoneEnd(loadImage);
+#endif
+
+
+#ifdef TRACY_ENABLE
+	TracyCZoneN(loadTexture, "Load texture", true);
+#endif
+	sf::Texture texture;
+	if (!texture.loadFromImage(image))
+	{
+		return;
+	}
+
+#ifdef TRACY_ENABLE
+	TracyCZoneEnd(loadTexture);
+#endif
+
+#ifdef TRACY_ENABLE
+	TracyCZoneN(pushbackTexture, "Push texture back", true);
+#endif
+	tile_textures_[static_cast<int>(type)].PushBack({});
+	tile_textures_[static_cast<int>(type)].Back().swap(texture);
+#ifdef TRACY_ENABLE
+	TracyCZoneEnd(pushbackTexture);
+#endif
 }
 
 void ResourceManager::LoadCharacterTexture(const std::string& filepath, VillagerType type)
 {
+#ifdef TRACY_ENABLE
+	ZoneScoped;
+#endif
 	sf::Texture texture;
 	if (texture.loadFromFile(filepath))
 	{
@@ -66,19 +166,26 @@ void ResourceManager::LoadCharacterTexture(const std::string& filepath, Villager
 	}
 }
 
+static ResourceManager* instance = nullptr;
 ResourceManager::ResourceManager()
 {
+	instance = this;
 	LoadAllTextures();
+}
+
+ResourceManager::~ResourceManager()
+{
+	instance = nullptr;
 }
 
 ResourceManager& ResourceManager::Get()
 {
-	static ResourceManager instance_;
-	return instance_;
+	return *instance;
 }
 
 sf::Texture& ResourceManager::GetUiTexture(UiTexture resource_id) {
-	if (static_cast<int>(resource_id) < ui_textures_.size()) {
+	if (static_cast<int>(resource_id) < ui_textures_.size()) 
+	{
 		return ui_textures_.at(static_cast<int>(resource_id));
 	}
 	else

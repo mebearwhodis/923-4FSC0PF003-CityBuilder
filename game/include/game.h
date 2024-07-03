@@ -2,12 +2,12 @@
 #define GAME_GAME_H_
 #include <SFML/Graphics/RenderWindow.hpp>
 
-#include "../../api/include/gameplay/building_manager.h"
-#include "../../api/include/world_generation/tilemap.h"
-#include "../../api/include/ui/ui_button.h"
-#include "../../api/include/graphics/resource_manager.h"
-#include "../../api/include/gameplay/view.h"
-#include "../../api/include/ui/cursor.h"
+#include "gameplay/building_manager.h"
+#include "world_generation/tilemap.h"
+#include "ui/ui_button.h"
+#include "graphics/resource_manager.h"
+#include "gameplay/view.h"
+#include "ui/cursor.h"
 
 class Game {
 public:
@@ -18,6 +18,7 @@ public:
 private:
     sf::RenderWindow window_;
     View game_view_;
+    ResourceManager resource_manager_;
     sf::View hud_view_;
     BuildingManager building_manager_;
     Tilemap map_;

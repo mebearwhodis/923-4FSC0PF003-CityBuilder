@@ -1,9 +1,11 @@
 #include "game.h"
 
+#ifdef TRACY_ENABLE
 #include <Tracy/Tracy.hpp>
+#endif
 
-#include "../../api/include/gameplay/ai/woodsman.h"
-#include "../../api/include/pathfinding/pathfinder.h"
+#include "gameplay/ai/woodsman.h"
+#include "pathfinding/pathfinder.h"
 
 
 Game::Game()
@@ -76,7 +78,7 @@ void Game::update() {
 
 	//Woodsman A* test
 	Woodsman billy(6400, 6400, 256);
-	Pathfinder pathfinder;
+	//Pathfinder pathfinder;
 	
 
 	// run the program as long as the window is open
@@ -106,7 +108,7 @@ void Game::update() {
 				if (event.mouseButton.button == sf::Mouse::Right)
 				{
 					sf::Vector2f destination(mouse_tile_coord);
-					Path p = pathfinder.CalculatePath(map_.GetWalkableTiles(), billy.getPosition(), destination, 64);
+					Path p = Pathfinder::CalculatePath(map_.GetWalkableTiles(), billy.getPosition(), destination, 64);
 					billy.set_path(p);
 				
 				}
@@ -154,5 +156,9 @@ void Game::update() {
 
 		// end the current frame
 		window_.display();
+
+#ifdef TRACY_ENABLE
+		FrameMark;
+#endif
 	}
 }
