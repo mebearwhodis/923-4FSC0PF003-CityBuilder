@@ -26,6 +26,7 @@ public:
 	void set_linear_speed(float linear_speed);
 	void set_path(const Path& path);
 	void Tick();
+	sf::Vector2f GetLastDestination() const;
 };
 
 

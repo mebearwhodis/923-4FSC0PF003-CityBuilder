@@ -31,7 +31,11 @@ void Walker::set_linear_speed(float linear_speed)
 
 void Walker::set_path(const Path& path)
 {
-	path_ = path;
+	
+	if(path.is_available() && path.is_ready())
+	{
+		path_ = path;
+	}
 }
 
 void Walker::Tick()
@@ -41,40 +45,34 @@ void Walker::Tick()
 	const auto now{ std::chrono::steady_clock::now() };
 	const std::chrono::duration<float> elapsed_time{ now - last_time_ };
 	last_time_ = std::chrono::steady_clock::now();
-
 	const auto delta_time = elapsed_time.count();
-	//------------------
 
-	//Mock the path ----------
-	if(path_.is_available() && path_.is_ready() && !path_.is_ended())
+	if (path_.is_ended())
 	{
-		destination_ = path_.GetNextStep();
-	}else
-	{
-		//std::cout << "No path available" << std::endl;
+		//std::cout << "Path finished" << std::endl;
 	}
 
-	 
-	// Positioning --------------------
-	const sf::Vector2f actual_position = getPosition();
-	const sf::Vector2f direction = Normalized(destination_ - actual_position);
-
-	const sf::Vector2f new_position = actual_position + sf::Vector2f(direction.x * delta_time * linear_speed_, direction.y * delta_time * linear_speed_);
-
-	if (Magnitude(destination_ - actual_position) < 10.0f) {
-
-		setPosition(destination_);
-		sprite_.setPosition(getPosition());
-		frame_.setPosition(getPosition());
-
-		path_.set_is_ready(true);
-	}
-	else
+	if(path_.is_available())
 	{
+		//// Positioning --------------------
+		const sf::Vector2f actual_position = getPosition();
+		const sf::Vector2f direction = Normalized(destination_ - actual_position);
+		sf::Vector2f new_position = sf::Vector2f(0, 0);
+
+		if (Magnitude(destination_ - actual_position) < 16.0f) {
+			new_position = destination_;
+			destination_ = path_.GetNextStep();
+		}else
+		{
+			new_position = actual_position + sf::Vector2f(direction.x * delta_time * linear_speed_, direction.y * delta_time * linear_speed_);
+		}
 		setPosition(new_position);
-
 		sprite_.setPosition(getPosition());
 		frame_.setPosition(getPosition());
-		path_.set_is_ready(false);
 	}
+}
+
+sf::Vector2f Walker::GetLastDestination() const
+{
+	return destination_;
 }

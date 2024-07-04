@@ -6,9 +6,9 @@
 class Path
 {
 public:
-	bool is_ended();
-	bool is_available();
-	bool is_ready();
+	bool is_ended() const;
+	bool is_available() const;
+	bool is_ready() const;
 
 	sf::Vector2f GetNextStep();
 	void SetSteps(std::vector<sf::Vector2f> steps);
@@ -24,7 +24,7 @@ private:
 	bool is_available_ = false;
 
 	//TODO to be changed with job system implementation:
-	bool is_ready_ = false;
+	bool is_ready_ = true;
 };
 
 #endif

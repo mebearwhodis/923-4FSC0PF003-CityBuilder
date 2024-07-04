@@ -37,12 +37,16 @@ Path Pathfinder::CalculatePath(std::vector<sf::Vector2f> positions, sf::Vector2f
 {
 	Path path;
 
+	sf::Vector2f rounded_start;
+	rounded_start.x = start.x - std::fmod(start.x, static_cast<float>(tile_size));
+	rounded_start.y = start.y - std::fmod(start.y, static_cast<float>(tile_size));
+
 	sf::Vector2f rounded_end;
 	rounded_end.x = end.x - std::fmod(end.x, static_cast<float>(tile_size));
 	rounded_end.y = end.y - std::fmod(end.y, static_cast<float>(tile_size));
 
 	// Set list up with start and end
-	positions.emplace_back(start);
+	positions.emplace_back(rounded_start);
 	positions.emplace_back(end);
 
 	// --
@@ -51,8 +55,8 @@ Path Pathfinder::CalculatePath(std::vector<sf::Vector2f> positions, sf::Vector2f
 	std::unordered_set<sf::Vector2f> closed_list;
 	std::vector<PathPoint> visited_points;
 
-	open_queue.emplace(0, Magnitude(rounded_end - start), start, -1);
-	open_list.emplace(start);
+	open_queue.emplace(0, Magnitude(rounded_end - rounded_start), rounded_start, -1);
+	open_list.emplace(rounded_start);
 
 	while(!open_queue.empty())
 	{
@@ -109,10 +113,10 @@ Path Pathfinder::CalculatePath(std::vector<sf::Vector2f> positions, sf::Vector2f
 	// -
 	std::cout << "Didn't find the path" << std::endl;
 	std::cout << "Start : " << start.x << " " << start.y << std::endl;
+	std::cout << "Rounded Start : " << rounded_start.x << " " << rounded_start.y << std::endl;
 	std::cout << "End : " << end.x << " " << end.y << std::endl;
 	std::cout << "Rounded end : " << rounded_end.x << " " << rounded_end.y << std::endl;
 
-	//TODO check the path returned. Why does it only move one tile (or half a tile) and then goes straigth to the end?
 	return path;
 
 

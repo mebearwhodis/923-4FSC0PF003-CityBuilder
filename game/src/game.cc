@@ -78,7 +78,7 @@ void Game::init() {
 void Game::update() {
 
 	//Woodsman A* test
-	Woodsman billy(6400, 6400, 640);
+	Woodsman billy(6400, 6400, 320);
 	//Pathfinder pathfinder;
 	
 
@@ -110,7 +110,7 @@ void Game::update() {
 				{
 					//TODO check if you CAN go on the tile (right now we can go on the forests and stuff if there is a path, because we add start and end)
 					sf::Vector2f destination(mouse_tile_coord);
-					Path p = Pathfinder::CalculatePath(map_.GetWalkableTiles(), billy.getPosition(), destination, 64);
+					Path p = Pathfinder::CalculatePath(map_.GetWalkableTiles(), billy.GetLastDestination(), destination, 64);
 					billy.set_path(p);
 				
 				}

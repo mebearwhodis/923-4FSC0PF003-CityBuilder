@@ -29,7 +29,7 @@ void Tilemap::Generate()
 	//For now, just simple random
 	std::random_device r;
 	std::default_random_engine e1(r());
-	std::uniform_int_distribution<int> uniform_dist(1, 2);
+	std::uniform_int_distribution<int> uniform_dist(1, 10);
 
 	for (unsigned int x = 0; x < playground_size_u_.x; x++)
 	{
@@ -44,11 +44,11 @@ void Tilemap::Generate()
 
 			int rnd = uniform_dist(e1);
 
-			if (rnd == 1)
+			if (rnd <= 3)
 			{
 				tiles_.emplace_back(TileType::kForest, x * playground_tile_size_u_.x, y * playground_tile_size_u_.y, false);
 			}
-			if (rnd == 2)
+			if (rnd > 3)
 			{
 				tiles_.emplace_back(TileType::kPlain, x * playground_tile_size_u_.x, y * playground_tile_size_u_.y, true);
 			}
