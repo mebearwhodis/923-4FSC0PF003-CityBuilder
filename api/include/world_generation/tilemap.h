@@ -30,6 +30,10 @@ public:
 	sf::Vector2u playground_size_u() const { return playground_size_u_; }
 
 	std::vector<sf::Vector2f> GetWalkableTiles();
+
+	//TODO GET CLOSEST TREE -> quand on dessine un arbre, mettre un pointeur dans un tableau de pointeurs et check la magnitude SQUARED (parce que la racine ça coûte cher)
+	sf::Vector2f GetClosestTree();
+
 	// Getter function to retrieve the TileType of the selected tile
 	TileType GetSelectedTileType() const;
 };

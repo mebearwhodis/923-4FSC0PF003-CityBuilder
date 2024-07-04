@@ -78,7 +78,8 @@ void Game::init() {
 void Game::update() {
 
 	//Woodsman A* test
-	Woodsman billy(6400, 6400, 320);
+	Woodsman billy(6400, 6400, 320, map_);
+
 	//Pathfinder pathfinder;
 	
 

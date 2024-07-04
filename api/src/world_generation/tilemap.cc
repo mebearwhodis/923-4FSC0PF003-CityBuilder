@@ -121,6 +121,12 @@ std::vector<sf::Vector2f> Tilemap::GetWalkableTiles()
 	return walkable_positions;
 }
 
+sf::Vector2f Tilemap::GetClosestTree()
+{
+	sf::Vector2f closest_tree;
+	return closest_tree;
+}
+
 TileType Tilemap::GetSelectedTileType() const {
 	if (tile_selected_) {
 		return tile_selected_->type(); // Assuming Tile class has a GetType() method
