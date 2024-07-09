@@ -12,7 +12,7 @@
 #include "graphics/resource_manager.h"
 
 
-UiButton::UiButton(sf::Vector2f positionRelativeToView, sf::Color colorBase, std::string text, UiTexture textureName)
+UiButton::UiButton(sf::Vector2f positionRelativeToView, sf::Color colorBase, std::string text, UiTexture up_texture_name, bool visible)
 {
 
 #ifdef TRACY_ENABLE
@@ -22,7 +22,7 @@ UiButton::UiButton(sf::Vector2f positionRelativeToView, sf::Color colorBase, std
 	setPosition(positionRelativeToView);
 
 	//Declare and load a font
-	font_.loadFromFile("../resources/fonts/arial.ttf");
+	font_.loadFromFile("../resources/fonts/DejaVuSans.ttf");
 
 	//Create text
 	text_ = sf::Text(text, font_);
@@ -31,11 +31,14 @@ UiButton::UiButton(sf::Vector2f positionRelativeToView, sf::Color colorBase, std
 	sf::FloatRect textBounds = text_.getLocalBounds();
 	text_.setOrigin(textBounds.left + textBounds.width / 2.0f, textBounds.top + textBounds.height / 2.0f);
 
+	texture_up_ = ResourceManager::Get().GetUiTexture(up_texture_name);
+	texture_down_ = ResourceManager::Get().GetUiTexture(static_cast<UiTexture>(static_cast<int>(up_texture_name) +1));
 
-	sprite_.setTexture(ResourceManager::Get().GetUiTexture(textureName));
+	sprite_.setTexture(texture_up_);
 	sprite_.setOrigin(sprite_.getTexture()->getSize().x / 2.0f, sprite_.getTexture()->getSize().y / 2.0f);
 	sprite_.setColor(sf::Color::White);
 
+	is_visible_ = visible;
 }
 
 void UiButton::draw(sf::RenderTarget& target, sf::RenderStates states) const
@@ -47,8 +50,11 @@ void UiButton::draw(sf::RenderTarget& target, sf::RenderStates states) const
 
 	states.transform *= getTransform();
 
-	target.draw(sprite_, states);
-	target.draw(text_, states);
+	if(is_visible_)
+	{
+		target.draw(sprite_, states);
+	}
+	//target.draw(text_, states);
 
 }
 
@@ -88,8 +94,8 @@ void UiButton::HandleEvent(const sf::Event& event)
 			//Check if the left mouse button is pressed
 			if (event.mouseButton.button == sf::Mouse::Left)
 			{
-				button_pressed_ = true;
-				setScale(0.9f * getScale().x, 0.9f * getScale().y);
+				is_pressed_ = true;
+				sprite_.setTexture(texture_down_);
 			}
 			return;
 		}
@@ -99,10 +105,10 @@ void UiButton::HandleEvent(const sf::Event& event)
 	//Check for mouse button released event
 	if (event.type == sf::Event::MouseButtonReleased)
 	{
-		if (button_pressed_)
+		if (is_pressed_)
 		{
-			setScale(getScale().x / 0.9f, getScale().y / 0.9f);
-			button_pressed_ = false;
+			is_pressed_ = false;
+			sprite_.setTexture(texture_up_);
 
 			if (ContainsMouse(event.mouseButton))
 			{

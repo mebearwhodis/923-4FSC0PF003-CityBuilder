@@ -7,14 +7,15 @@
 #include "gameplay/ai/woodsman.h"
 #include "pathfinding/pathfinder.h"
 
-//TODO to avoid clicking on the map when clicking on a button, have a if(click on a button) in the clicking events
-
-Game::Game()
-	: window_(sf::VideoMode(1920, 1080), "My window"),
+Game::Game() :
+	window_(sf::VideoMode(1920, 1080), "My window"),
 	game_view_(sf::Vector2f(960, 540), sf::Vector2f(1920, 1080)),
-	button_generate_map_(sf::Vector2f(1920 / 4, 200), sf::Color::Cyan, "Generate", UiTexture::kWhiteButtonRedFrame),
-	button_clear_map_(sf::Vector2f(1920 / 4, 400), sf::Color::Cyan, "Clear map", UiTexture::kWhiteButtonRedFrame),
-	button_activate_build_(sf::Vector2f(1920 / 4, 600), sf::Color::Cyan, "Edit mode", UiTexture::kWhiteButtonRedFrame)
+	button_menu_(sf::Vector2f(100, 100), sf::Color::Cyan, " ", UiTexture::kMenuUp, true),
+	button_build_house_(sf::Vector2f(100, 155), sf::Color::Cyan, " ", UiTexture::kHouseUp, false),
+	button_build_forge_(sf::Vector2f(100, 210), sf::Color::Cyan, " ", UiTexture::kForgeUp, false),
+	button_build_sawmill_(sf::Vector2f(100, 265), sf::Color::Cyan, " ", UiTexture::kSawmillUp, false),
+	buttons_{&button_menu_, &button_build_house_, &button_build_forge_, &button_build_sawmill_},
+	any_button_pressed_(false)
 {
 }
 
@@ -32,11 +33,13 @@ void Game::init() {
 	hud_view_ = sf::View(sf::FloatRect(0, 0, 1920, 1080));
 
 	// Set initial cursor
-	cursor_manager_.changeCursor(CursorType::kBasic, window_);
+	cursor_manager_.changeCursor(CursorType::kArrow, window_);
 
 	tile_size_ = sf::Vector2u(64,64);
 	map_.Setup(sf::Vector2u(200, 200), tile_size_);
-	//map_.Generate();
+	map_.Generate();
+
+
 	// Center the view to the middle of the tilemap
 	sf::Vector2f map_size(map_.playground_size_u().x * tile_size_.x, map_.playground_size_u().y * tile_size_.y);
 	const sf::Vector2f map_center(map_size.x / 2.0f, map_size.y / 2.0f);
@@ -44,39 +47,74 @@ void Game::init() {
 	game_view_.setBounds(sf::FloatRect(0, 0, map_size.x, map_size.y));
 
 
-	map_.clicked_tile_ = [this](auto tile) {
+	map_.clicked_tile_ = [this](Tile& tile) {
 		std::cout << "Tile clicked:\t" << tile.Position().x << "/" << tile.Position().y << "\t" << std::endl;
-		building_manager_.AddBuilding(tile);
+		//TODO Add check to stop from adding buildings if not enough resources and/or if current pop = total pop
+		if(building_manager_.AddBuilding(tile))
+		{
+			switch (building_manager_.building_type())
+			{
+			case TileType::kHouse:
+				total_population_ += 2;
+				break;
+			case TileType::kForge:
+				current_population_ += 1;
+				break;
+			case TileType::kSawmill:
+				current_population_ += 1;
+				break;
+			default:
+				break;
+			}
+		}
+		std::cout << current_population_ << std::endl;
 		};
 
 	// Set button callbacks
-	button_generate_map_.callback_ = [this]() {
-		map_.Generate();
-		};
+	//button_generate_map_.callback_ = [this]() {
+	//	map_.Generate();
+	//	};
 
-	button_clear_map_.callback_ = [this]() {
-		map_.Clear();
-		//TODO clear buildings list
-		};
+	//button_clear_map_.callback_ = [this]() {
+	//	map_.Clear();
+	//	building_manager_.ClearBuildings();
+	//	};
 
-	button_activate_build_.callback_ = [this]() {
-		building_manager_.ToggleActive();
-		if (building_manager_.IsActive())
+	button_menu_.callback_ = [this]()
 		{
-			cursor_manager_.changeCursor(CursorType::kGauntlet, window_);
-		}
-		else
-		{
+			building_manager_.ToggleActive();
+			button_build_house_.toggle_visible();
+			button_build_forge_.toggle_visible();
+			button_build_sawmill_.toggle_visible();
 
-			cursor_manager_.changeCursor(CursorType::kBasic, window_);
-		}
+			if (building_manager_.IsActive())
+			{
+				cursor_manager_.changeCursor(CursorType::kBuild, window_);
+			}
+			else
+			{
+				cursor_manager_.changeCursor(CursorType::kArrow, window_);
+			}
 		};
 
+	button_build_house_.callback_ = [this]()
+		{
+			building_manager_.set_building_type(TileType::kHouse);
+		};
+
+	button_build_forge_.callback_ = [this]()
+		{
+			building_manager_.set_building_type(TileType::kForge);
+		};
+
+	button_build_sawmill_.callback_ = [this]()
+		{
+			building_manager_.set_building_type(TileType::kSawmill);
+		};
 }
 
 
 void Game::update() {
-
 	//Woodsman A* test
 	Woodsman billy(6400, 6400, 320, map_);
 
@@ -85,7 +123,7 @@ void Game::update() {
 
 	// run the program as long as the window is open
 	while (window_.isOpen()) {
-
+		
 		billy.Tick();
 
 		game_view_.apply(window_);
@@ -109,30 +147,32 @@ void Game::update() {
 				//Check if the right mouse button is pressed
 				if (event.mouseButton.button == sf::Mouse::Right)
 				{
-					//TODO check if you CAN go on the tile (right now we can go on the forests and stuff if there is a path, because we add start and end)
 					sf::Vector2f destination(mouse_tile_coord);
 					Path p = Pathfinder::CalculatePath(map_.GetWalkableTiles(), billy.GetLastDestination(), destination, 64);
 					billy.set_path(p);
-				
 				}
 			}
 
-	/*		if(event.type == sf::Event::KeyPressed)
-			{
-				if(event.key.code == sf::Keyboard::T)
-				{
-					billy.set_destination(mouse_tile_coord);
-				}
-			}*/
-
-
-			// Handle UI Events
-			button_generate_map_.HandleEvent(event);
-			button_clear_map_.HandleEvent(event);
-			button_activate_build_.HandleEvent(event);
-
-			map_.HandleEvent(event, window_);
 			game_view_.handleEvent(event, window_);
+
+			//Don't trigger event on map if clicking a button
+			for (const auto button : buttons_)
+			{
+				if(button->is_visible())
+				{
+					if (button->ContainsMouse(event.mouseButton))
+					{
+						button->HandleEvent(event);
+						any_button_pressed_ = true;
+						break;
+					}
+					any_button_pressed_ = false;
+				}
+			}
+			if(!any_button_pressed_)
+			{
+				map_.HandleEvent(event, window_);
+			}
 		}
 
 		// clear the window with black color
@@ -143,6 +183,14 @@ void Game::update() {
 		window_.draw(building_manager_);
 
 		if (building_manager_.IsActive()) {
+			if (map_.GetSelectedTileType() == TileType::kPlain)
+			{
+				building_manager_.ChangeHoverTileColour(sf::Color(100, 255, 100, 200));
+			}
+			else
+			{
+				building_manager_.ChangeHoverTileColour(sf::Color(255, 100, 100, 200));
+			}
 			building_manager_.SetHoverTilePosition(mouse_tile_coord);
 			window_.draw(building_manager_.HoverTile());
 		}
@@ -152,10 +200,10 @@ void Game::update() {
 
 		window_.setView(hud_view_);
 
-		window_.draw(button_generate_map_);
-		window_.draw(button_clear_map_);
-		window_.draw(button_activate_build_);
-
+		for (const auto button : buttons_)
+		{
+				window_.draw(*button);
+		}
 
 		// end the current frame
 		window_.display();

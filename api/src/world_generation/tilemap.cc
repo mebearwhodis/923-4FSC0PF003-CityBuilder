@@ -16,7 +16,6 @@ void Tilemap::Setup(sf::Vector2u playground_size_u, sf::Vector2u playground_tile
 
 void Tilemap::Generate()
 {
-	//TODO check way to do this with vertex array (or at least check what vertex arrays are)
 #ifdef TRACY_ENABLE
 	ZoneScoped;
 #endif
@@ -35,25 +34,28 @@ void Tilemap::Generate()
 	{
 		for (unsigned int y = 0; y < playground_size_u_.y; y++)
 		{
-
-
-			int idx = x * playground_size_u_.y + y;
-
-			//TODO Perlin Noise/ WFC/ Whatevs
-
-
-			int rnd = uniform_dist(e1);
-
-			if (rnd <= 3)
-			{
-				tiles_.emplace_back(TileType::kForest, x * playground_tile_size_u_.x, y * playground_tile_size_u_.y, false);
-			}
-			if (rnd > 3)
+			//Make sure centre of the map is all plains
+			if(x > playground_size_u_.x / 2 - 3 && x < playground_size_u_.x /2 + 3 && y > playground_size_u_.y /2 - 3 && y < playground_size_u_.y /2 + 3)
 			{
 				tiles_.emplace_back(TileType::kPlain, x * playground_tile_size_u_.x, y * playground_tile_size_u_.y, true);
 			}
+			else
+			{
+				//int idx = x * playground_size_u_.y + y;
 
+				//TODO Perlin Noise/ WFC/ Whatevs
 
+				int rnd = uniform_dist(e1);
+
+				if (rnd <= 3)
+				{
+					tiles_.emplace_back(TileType::kForest, x * playground_tile_size_u_.x, y * playground_tile_size_u_.y, false);
+				}
+				if (rnd > 3)
+				{
+					tiles_.emplace_back(TileType::kPlain, x * playground_tile_size_u_.x, y * playground_tile_size_u_.y, true);
+				}
+			}
 			numberOfTiles++;
 		}
 	}
@@ -129,7 +131,7 @@ sf::Vector2f Tilemap::GetClosestTree()
 
 TileType Tilemap::GetSelectedTileType() const {
 	if (tile_selected_) {
-		return tile_selected_->type(); // Assuming Tile class has a GetType() method
+		return tile_selected_->type();
 	}
 	else {
 		return TileType::kPlain;

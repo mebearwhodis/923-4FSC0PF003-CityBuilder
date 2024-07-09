@@ -7,15 +7,15 @@
 #include "graphics/resource_manager.h"
 
 
-Building::Building(float x, float y): SpriteEntity(x, y)
+Building::Building(TileType type, float x, float y): SpriteEntity(x, y)
 {
-	DefineTexture();
+	DefineTexture(static_cast<int>(type));
 }
 
-void Building::DefineTexture()
+void Building::DefineTexture(int type)
 {
-	const auto& textures = ResourceManager::Get().GetTileTextures(TileType::kHouse);
-	if (!textures.Size() == 0) {
+	const auto& textures = ResourceManager::Get().GetTileTextures(static_cast<TileType>(type));
+	if (textures.Size() > 0) {
 		const sf::Texture& texture = textures[std::rand() % textures.Size()];
 		sprite_.setTexture(texture);
 	}

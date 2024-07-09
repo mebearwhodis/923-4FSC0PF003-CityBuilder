@@ -20,19 +20,20 @@ private:
     View game_view_;
     ResourceManager resource_manager_;
     sf::View hud_view_;
-    BuildingManager building_manager_;
     Tilemap map_;
+    BuildingManager building_manager_;
     Cursor cursor_manager_;
     sf::Vector2u tile_size_;
 
+    int current_population_ = 0;
+    int total_population_ = 0;
 
-    UiButton button_generate_map_;
-    UiButton button_clear_map_;
-    UiButton button_activate_build_;
-
-
-    void applyFadeEffect(sf::RenderTarget& target);
-
+    UiButton button_menu_;
+    UiButton button_build_house_;
+    UiButton button_build_forge_;
+    UiButton button_build_sawmill_;
+    std::array<UiButton*, 4> buttons_;
+    bool any_button_pressed_;
 };
 
 #endif // GAME_GAME_H_

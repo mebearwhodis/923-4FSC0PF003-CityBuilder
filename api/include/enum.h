@@ -3,14 +3,22 @@
 
 enum class CursorType
 {
-	kBasic,
-	kGauntlet,
+	kArrow,
+	kBuild,
+	kPan,
 	kLength
 };
 
 enum class UiTexture
 {
-	kWhiteButtonRedFrame,
+	kMenuUp,
+	kMenuDown,
+	kHouseUp,
+	kHouseDown,
+	kForgeUp,
+	kForgeDown,
+	kSawmillUp,
+	kSawmillDown,
 	kLength
 };
 
@@ -21,6 +29,8 @@ enum class TileType
 	kPineForest, //4
 	kForestCutDown, //4
 	kHouse,
+	kForge,
+	kSawmill,
 	//...
 	kLength
 };

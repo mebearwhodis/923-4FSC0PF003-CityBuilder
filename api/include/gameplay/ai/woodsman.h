@@ -12,7 +12,7 @@ private:
 
 	behaviour_tree::Tree bt_tree_;
 protected:
-	void DefineTexture() override;
+	void DefineTexture(int type) override;
 	behaviour_tree::Status SeekWood();
 public:
 	Woodsman(const float x, const float y, const float linear_speed, Tilemap& tilemap);

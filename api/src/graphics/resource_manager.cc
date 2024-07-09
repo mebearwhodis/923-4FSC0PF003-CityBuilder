@@ -25,8 +25,14 @@ void ResourceManager::LoadAllTextures()
 	TracyCZoneN(buttonTexture, "Button Texture", true);
 #endif
 
-	//ui_textures_.at(static_cast<int>(UiTexture::kWhiteButtonRedFrame)).loadFromFile("../resources/sprites/ui/red_button10.png");
-	LoadUITexture();
+	LoadUITexture("../resources/sprites/ui/button_menu_up.png", UiTexture::kMenuUp);
+	LoadUITexture("../resources/sprites/ui/button_menu_down.png", UiTexture::kMenuDown);
+	LoadUITexture("../resources/sprites/ui/button_house_up.png", UiTexture::kHouseUp);
+	LoadUITexture("../resources/sprites/ui/button_house_down.png", UiTexture::kHouseDown);
+	LoadUITexture("../resources/sprites/ui/button_forge_up.png", UiTexture::kForgeUp);
+	LoadUITexture("../resources/sprites/ui/button_forge_down.png", UiTexture::kForgeDown);
+	LoadUITexture("../resources/sprites/ui/button_sawmill_up.png", UiTexture::kSawmillUp);
+	LoadUITexture("../resources/sprites/ui/button_sawmill_down.png", UiTexture::kSawmillDown);
 #ifdef TRACY_ENABLE
 	TracyCZoneEnd(buttonTexture);
 #endif
@@ -57,6 +63,9 @@ void ResourceManager::LoadAllTextures()
 	LoadTileTexture("../resources/sprites/structures/medievalStructure_17.png", TileType::kHouse);
 	LoadTileTexture("../resources/sprites/structures/medievalStructure_18.png", TileType::kHouse);
 
+	LoadTileTexture("../resources/sprites/structures/medievalStructure_20.png", TileType::kForge);
+	LoadTileTexture("../resources/sprites/structures/medievalStructure_21.png", TileType::kSawmill);
+
 
 	// Character Textures -----------------
 	LoadCharacterTexture("../resources/sprites/units/medievalUnit_05.png", VillagerType::kVillager);
@@ -70,22 +79,24 @@ void ResourceManager::LoadAllTextures()
 
 	// Cursor Images -----------------
 	blank_cursor_image_ = sf::Image();
-	cursor_images_[static_cast<int>(CursorType::kBasic)].loadFromFile("../resources/sprites/ui/cursorSword_silver.png");
-	cursor_images_[static_cast<int>(CursorType::kGauntlet)].loadFromFile("../resources/sprites/ui/cursorGauntlet_blue.png");
+	cursor_images_[static_cast<int>(CursorType::kArrow)].loadFromFile("../resources/sprites/ui/cursor_arrow.png");
+	cursor_images_[static_cast<int>(CursorType::kBuild)].loadFromFile("../resources/sprites/ui/cursor_build.png");
+	cursor_images_[static_cast<int>(CursorType::kPan)].loadFromFile("../resources/sprites/ui/cursor_pan.png");
 
 }
 
-void ResourceManager::LoadUITexture()
+void ResourceManager::LoadUITexture(const std::string& filepath, UiTexture ui_texture)
 {
 #ifdef TRACY_ENABLE
 	TracyCZoneN(loadUIImage, "Load UI image", true);
 #endif
-	//---- Things to measure
+
 	sf::Image image;
-	if (!image.loadFromFile("../resources/sprites/ui/red_button10.png"))
+	if (!image.loadFromFile(filepath))
 	{
 		return;
 	}
+
 #ifdef TRACY_ENABLE
 	TracyCZoneEnd(loadUIImage);
 #endif
@@ -94,10 +105,12 @@ void ResourceManager::LoadUITexture()
 #ifdef TRACY_ENABLE
 	TracyCZoneN(loadUITexture, "Load UI texture", true);
 #endif
+
+
 	sf::Texture texture;
 	if (texture.loadFromImage(image))
 	{
-		ui_textures_.at(static_cast<int>(UiTexture::kWhiteButtonRedFrame)) = texture;
+		ui_textures_.at(static_cast<int>(ui_texture)) = texture;
 	}
 
 #ifdef TRACY_ENABLE
@@ -120,12 +133,15 @@ void ResourceManager::LoadTileTexture(const std::string& filepath, TileType type
 	#ifdef TRACY_ENABLE
 	TracyCZoneN(loadImage, "Load image", true);
 #endif
-	//---- Things to measure
+
+
 	sf::Image image;
 	if (!image.loadFromFile(filepath)) 
 	{
 		return;
 	}
+
+
 #ifdef TRACY_ENABLE
 	TracyCZoneEnd(loadImage);
 #endif
@@ -134,6 +150,8 @@ void ResourceManager::LoadTileTexture(const std::string& filepath, TileType type
 #ifdef TRACY_ENABLE
 	TracyCZoneN(loadTexture, "Load texture", true);
 #endif
+
+
 	sf::Texture texture;
 	if (!texture.loadFromImage(image))
 	{
@@ -147,8 +165,14 @@ void ResourceManager::LoadTileTexture(const std::string& filepath, TileType type
 #ifdef TRACY_ENABLE
 	TracyCZoneN(pushbackTexture, "Push texture back", true);
 #endif
+
+
+
 	tile_textures_[static_cast<int>(type)].PushBack({});
 	tile_textures_[static_cast<int>(type)].Back().swap(texture);
+
+
+
 #ifdef TRACY_ENABLE
 	TracyCZoneEnd(pushbackTexture);
 #endif
@@ -162,7 +186,7 @@ void ResourceManager::LoadCharacterTexture(const std::string& filepath, Villager
 	sf::Texture texture;
 	if (texture.loadFromFile(filepath))
 	{
-		character_textures_[type].push_back(texture);
+		character_textures_[(static_cast<int>(type))].PushBack(texture);
 	}
 }
 

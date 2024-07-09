@@ -9,6 +9,7 @@
 #include <SFML/System/Vector2.hpp>
 #include "tile.h"
 #include "../graphics/resource_manager.h"
+#include "ui/ui_button.h"
 
 class Tilemap : public sf::Drawable {
 	sf::Vector2u playground_size_u_;
@@ -26,7 +27,7 @@ public:
 	void Generate();
 	void Clear();
 	void HandleEvent(const sf::Event& event, const sf::RenderWindow& window);
-	std::function<void(const Tile&)> clicked_tile_;
+	std::function<void(Tile&)> clicked_tile_;
 	sf::Vector2u playground_size_u() const { return playground_size_u_; }
 
 	std::vector<sf::Vector2f> GetWalkableTiles();

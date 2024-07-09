@@ -8,7 +8,7 @@
 
 Woodsman::Woodsman(float x, float y, float linear_speed, Tilemap& tilemap): tilemap_(tilemap), Walker(x, y, linear_speed)
 {
-	DefineTexture();
+	DefineTexture(static_cast<int>(VillagerType::kVillager));
 	frame_.setPosition(sprite_.getGlobalBounds().getPosition());
 	frame_.setSize(sprite_.getGlobalBounds().getSize());
 
@@ -32,11 +32,11 @@ void Woodsman::Tick()
 }
 
 //sprite_.setPosition(x, y);
-void Woodsman::DefineTexture()
+void Woodsman::DefineTexture(int type)
 {
-	const auto& textures = ResourceManager::Get().GetCharacterTextures(VillagerType::kVillager);
-	if (!textures.empty()) {
-		const sf::Texture& texture = textures[std::rand() % textures.size()];
+	const auto& textures = ResourceManager::Get().GetCharacterTextures(static_cast<VillagerType>(type));
+	if (textures.Size() > 0) {
+		const sf::Texture& texture = textures[std::rand() % textures.Size()];
 		sprite_.setTexture(texture);
 	}
 }
@@ -47,6 +47,6 @@ behaviour_tree::Status Woodsman::SeekWood()
 	//TODO Failure if no close tree, running while moving, success when arrived
 	//Path p = Pathfinder::CalculatePath(tilemap_.GetWalkableTiles(), GetLastDestination(), destination, 64);
 	//set_path(p);
-	std::cout << "Execute seek wood behaviour" << std::endl;
+	//std::cout << "Execute seek wood behaviour" << std::endl;
 	return behaviour_tree::Status::kSuccess;
 }

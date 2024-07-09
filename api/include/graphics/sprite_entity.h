@@ -11,7 +11,7 @@ public:
 
 protected:
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
-	virtual void DefineTexture() = 0;
+	virtual void DefineTexture(int type) = 0;
 	sf::Sprite sprite_;
 	sf::RectangleShape frame_;
 };

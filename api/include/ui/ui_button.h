@@ -15,24 +15,32 @@ class UiButton : public sf::Drawable, public sf::Transformable
 {
 private:
 	sf::Font font_;
+
+	sf::Texture texture_up_;
+	sf::Texture texture_down_;
+
 	sf::Sprite sprite_;
 
 	sf::Text text_;
+	sf::Text text_down_;
 
 
-
-	bool button_pressed_ = false;
+	bool is_visible_ = true;
+	bool is_pressed_ = false;
 
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
-	bool ContainsMouse(const sf::Event::MouseButtonEvent& event) const;
-
 public:
-	UiButton(sf::Vector2f positionRelativeToView, sf::Color colorBase, std::string text, UiTexture textureName);
+
+	bool ContainsMouse(const sf::Event::MouseButtonEvent& event) const;
+	UiButton(sf::Vector2f positionRelativeToView, sf::Color colorBase, std::string text, UiTexture up_texture_name, bool visible);
 	void HandleEvent(const sf::Event& event);
 
 	//Callback pour avoir une fonction spécifique au bouton
 	std::function<void()> callback_;
+	bool is_pressed() const { return is_pressed_; }
+	bool is_visible() const { return is_visible_; }
+	void toggle_visible() { is_visible_ = !is_visible_; }
 };
 
 #endif  // API_UI_UIBUTTON_H_

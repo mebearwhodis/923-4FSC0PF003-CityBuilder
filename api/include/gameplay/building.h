@@ -13,9 +13,9 @@
 class Building : public SpriteEntity
 {
 public:
-	Building(float x, float y);
+	Building(TileType type, float x, float y);
 
 protected:
-	virtual void DefineTexture() override;
+	virtual void DefineTexture(int type) override;
 };
 #endif // API_GAMEPLAY_BUILDING_H_
