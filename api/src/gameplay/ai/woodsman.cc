@@ -3,7 +3,9 @@
 #include <iostream>
 #include <SFML/Graphics/Texture.hpp>
 
+#include "sfml_utils.h"
 #include "behaviour_tree/leaf.h"
+#include "behaviour_tree/sequence.h"
 
 
 Woodsman::Woodsman(float x, float y, float linear_speed, Tilemap& tilemap): tilemap_(tilemap), Walker(x, y, linear_speed)
@@ -18,11 +20,30 @@ Woodsman::Woodsman(float x, float y, float linear_speed, Tilemap& tilemap): tile
 
 void Woodsman::InitiateBehaviourTree()
 {
-	behaviour_tree::Leaf* seek_wood = new behaviour_tree::Leaf([this]()
-	{
+	Leaf* seek_wood = new Leaf([this]()
+		{
 			return SeekWood();
-	});
-		bt_tree_.AttachNode(seek_wood);
+		});
+
+	Leaf* gather_wood = new Leaf([this]()
+		{
+			return GatherWood();
+		});
+
+	Leaf* return_home = new Leaf([this]()
+		{
+			return ReturnHome();
+		});
+
+	// Creating the sequence
+	Sequence* woodsman_sequence = new Sequence();
+
+	// Adding the nodes to the sequence using std::move and static_cast
+	woodsman_sequence->AddNode(seek_wood);
+	woodsman_sequence->AddNode(gather_wood);
+	woodsman_sequence->AddNode(return_home);
+
+	bt_tree_.AttachNode(woodsman_sequence);
 }
 
 void Woodsman::Tick()
@@ -41,12 +62,80 @@ void Woodsman::DefineTexture(int type)
 	}
 }
 
-behaviour_tree::Status Woodsman::SeekWood()
+Status Woodsman::SeekWood()
 {
-	//TODO Use CLOSESTTREE as destination, I guess + checks pour pas SeekWood tout le temps
-	//TODO Failure if no close tree, running while moving, success when arrived
-	//Path p = Pathfinder::CalculatePath(tilemap_.GetWalkableTiles(), GetLastDestination(), destination, 64);
-	//set_path(p);
-	//std::cout << "Execute seek wood behaviour" << std::endl;
-	return behaviour_tree::Status::kSuccess;
+	sf::Vector2f closestTree = tilemap_.GetClosestTree(getPosition());
+	sf::Vector2f pathDestination = path_.final_destination();
+
+	if(squaredMagnitude(closestTree - pathDestination) > std::numeric_limits<float>::epsilon())
+	{
+		Path p = Pathfinder::CalculatePath(tilemap_.GetWalkableTiles(), GetLastDestination(), closestTree, 64);
+		if (p.is_available())
+		{
+			set_path(p);
+		}
+		else
+		{
+			std::cout << "Path unavailable" << std::endl;
+			return Status::kFailure;
+		}
+	}
+
+	if (squaredMagnitude(getPosition() - pathDestination) > std::numeric_limits<float>::epsilon())
+	{
+		std::cout << "On its way to wood" << std::endl;
+		return Status::kRunning;
+	}
+	else
+	{
+		std::cout << "Arrived at wood" << std::endl;
+		return Status::kSuccess;
+	}
+}
+
+Status Woodsman::GatherWood()
+{
+	if(tilemap_.GatherTree(getPosition()))
+	{
+		//TODO (peut-être barre de progression), Running pendant qu'il coupe, succès une fois fini
+		std::cout << "Cutting wood" << std::endl;
+		return Status::kSuccess;
+	}
+	else
+	{
+		std::cout << "Not cutting wood" << std::endl;
+		return Status::kFailure;
+	}
+}
+
+behaviour_tree::Status Woodsman::ReturnHome()
+{
+
+	sf::Vector2f home_position = sf::Vector2f(6400, 6400);
+	sf::Vector2f pathDestination = path_.final_destination();
+
+	if (squaredMagnitude(home_position - pathDestination) > std::numeric_limits<float>::epsilon())
+	{
+		Path p = Pathfinder::CalculatePath(tilemap_.GetWalkableTiles(), GetLastDestination(), home_position, 64);
+		if (p.is_available())
+		{
+			set_path(p);
+		}
+		else
+		{
+			std::cout << "Path unavailable" << std::endl;
+			return Status::kFailure;
+		}
+	}
+
+	if (squaredMagnitude(getPosition() - pathDestination) > std::numeric_limits<float>::epsilon())
+	{
+		std::cout << "On its way to home" << std::endl;
+		return Status::kRunning;
+	}
+	else
+	{
+		std::cout << "Arrived at home" << std::endl;
+		return Status::kSuccess;
+	}
 }

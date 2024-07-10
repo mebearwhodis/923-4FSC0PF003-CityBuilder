@@ -15,6 +15,9 @@ class Tilemap : public sf::Drawable {
 	sf::Vector2u playground_size_u_;
 	sf::Vector2u playground_tile_size_u_;
 	std::vector<Tile> tiles_;
+
+	//TODO peut-être plutôt faire un vecteur de Tiles de Type arbre?:
+	std::vector<sf::Vector2f> trees_;
 	Tile* tile_selected_ = nullptr;
 
 	void applyFadeEffect(sf::RenderTarget& target); // New method to apply fade effect
@@ -27,13 +30,14 @@ public:
 	void Generate();
 	void Clear();
 	void HandleEvent(const sf::Event& event, const sf::RenderWindow& window);
+	[[nodiscard]] bool GatherTree(sf::Vector2f pos);
+
 	std::function<void(Tile&)> clicked_tile_;
 	sf::Vector2u playground_size_u() const { return playground_size_u_; }
 
 	std::vector<sf::Vector2f> GetWalkableTiles();
 
-	//TODO GET CLOSEST TREE -> quand on dessine un arbre, mettre un pointeur dans un tableau de pointeurs et check la magnitude SQUARED (parce que la racine ça coûte cher)
-	sf::Vector2f GetClosestTree();
+	sf::Vector2f GetClosestTree(sf::Vector2f position);
 
 	// Getter function to retrieve the TileType of the selected tile
 	TileType GetSelectedTileType() const;

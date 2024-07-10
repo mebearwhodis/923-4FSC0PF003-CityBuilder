@@ -7,6 +7,9 @@
 #include "gameplay/ai/woodsman.h"
 #include "pathfinding/pathfinder.h"
 
+//TODO ajouter stockage, au moment de ramener les ressources, cherche le stockage le plus proche pour y ramener les éléments -> hence, nécessité de créer des stockages proches
+
+
 Game::Game() :
 	window_(sf::VideoMode(1920, 1080), "My window"),
 	game_view_(sf::Vector2f(960, 540), sf::Vector2f(1920, 1080)),
@@ -116,14 +119,15 @@ void Game::init() {
 
 void Game::update() {
 	//Woodsman A* test
-	Woodsman billy(6400, 6400, 320, map_);
+	Woodsman billy(6400, 6400, 128, map_);
 
 	//Pathfinder pathfinder;
 	
 
 	// run the program as long as the window is open
 	while (window_.isOpen()) {
-		
+
+		//TODO Have an AI_manager with vectors of ai and Tick() for each of them
 		billy.Tick();
 
 		game_view_.apply(window_);
@@ -150,6 +154,7 @@ void Game::update() {
 					sf::Vector2f destination(mouse_tile_coord);
 					Path p = Pathfinder::CalculatePath(map_.GetWalkableTiles(), billy.GetLastDestination(), destination, 64);
 					billy.set_path(p);
+					//Woodsman billy(mouse_tile_coord.x, mouse_tile_coord.y, 1280, map_);
 				}
 			}
 

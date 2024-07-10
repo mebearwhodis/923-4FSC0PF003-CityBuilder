@@ -76,3 +76,4 @@ sf::Vector2f Walker::GetLastDestination() const
 {
 	return destination_;
 }
+

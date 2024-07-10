@@ -7,7 +7,7 @@
 
 namespace behaviour_tree
 {
-	class Leaf : public Node
+	class Leaf final : public Node
 	{
 
 	private:

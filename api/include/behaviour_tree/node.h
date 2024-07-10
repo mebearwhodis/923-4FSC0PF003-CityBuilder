@@ -1,5 +1,6 @@
 #ifndef API_BEHAVIOUR_TREE_NODE_H_
 #define API_BEHAVIOUR_TREE_NODE_H_
+#include <memory>
 #include <vector>
 
 namespace behaviour_tree
@@ -13,15 +14,27 @@ namespace behaviour_tree
 
 	class Node
 	{
-	private:
-		std::vector<Node> children_;
+	public:
+		virtual ~Node() = default;
+		virtual Status Process() = 0;
+	};
+
+
+
+	class NodeList : public Node
+	{
+	protected:
+		int current_child_ = 0;
+		std::vector<Node*> children_;
 
 	public:
-		~Node() = default;
-		virtual Status Process();
-
-		void AddNode(const Node& node);
+		void AddNode(Node* node);
 	};
+
+	inline void NodeList::AddNode(Node* node)
+	{
+		children_.push_back(node);
+	}
 }
 
 #endif //API_BEHAVIOUR_TREE_NODE_H_

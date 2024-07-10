@@ -5,10 +5,12 @@
 #include "path.h"
 
 //TODO Comment all of this, maybe refactor in its own PathPoint class files
+
+//TODO Idk where to put that but maybe make sure that if you're going to a house you can walk through other houses (because otherwise if you make a 3x3 square of houses you can't go back to the one in the middle) Maybe don't allow putting something down if it has more than x neighbours ? idk
 class PathPoint
 {
 	// Members
-	float f;
+	float f_;
 	// Cost of the cheapest path from start to current PathPoint
 	float g_;
 
@@ -19,25 +21,24 @@ class PathPoint
 
 	std::uint32_t parent_index_ = -1;
 
-
 public:
 	// Constructors
 	PathPoint() = default;
 	PathPoint(float g, float h, sf::Vector2f position, std::uint32_t parent_index) : g_(g), h_(h), position_(position), parent_index_(parent_index)
 	{
-		f = g + h;
+		f_ = g + h;
 	}
 
 	// Operators
 	bool operator<(const PathPoint& other) const {
-		return this->f < other.f;
+		return this->f_ < other.f_;
 	}
 	bool operator>(const PathPoint& other) const {
-		return this->f > other.f;
+		return this->f_ > other.f_;
 	}
 
 	// Accessors
-	const std::uint32_t parent_index() const { return parent_index_; }
+	std::uint32_t parent_index() const { return parent_index_; }
 
 	const sf::Vector2f& position() const { return position_; }
 

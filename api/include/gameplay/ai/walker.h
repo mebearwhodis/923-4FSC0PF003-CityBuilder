@@ -17,6 +17,8 @@ private:
 	float linear_speed_ = 0;
 	sf::Vector2f destination_;
 	std::chrono::time_point<std::chrono::steady_clock> last_time_;
+
+protected:
 	Path path_;
 
 public:
@@ -26,6 +28,7 @@ public:
 	void set_linear_speed(float linear_speed);
 	void set_path(const Path& path);
 	void Tick();
+	//TODO Comment what that thing is
 	sf::Vector2f GetLastDestination() const;
 };
 

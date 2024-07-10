@@ -2,6 +2,8 @@
 
 #include <random>
 #include <SFML/Graphics/RenderTarget.hpp>
+
+#include "sfml_utils.h"
 #ifdef TRACY_ENABLE
 #include <Tracy/Tracy.hpp>
 #include <Tracy/TracyC.h>
@@ -30,14 +32,18 @@ void Tilemap::Generate()
 	std::default_random_engine e1(r());
 	std::uniform_int_distribution<int> uniform_dist(1, 10);
 
+
 	for (unsigned int x = 0; x < playground_size_u_.x; x++)
 	{
 		for (unsigned int y = 0; y < playground_size_u_.y; y++)
 		{
+			double tile_x = x * playground_tile_size_u_.x;
+			double tile_y = y * playground_tile_size_u_.y;
+
 			//Make sure centre of the map is all plains
 			if(x > playground_size_u_.x / 2 - 3 && x < playground_size_u_.x /2 + 3 && y > playground_size_u_.y /2 - 3 && y < playground_size_u_.y /2 + 3)
 			{
-				tiles_.emplace_back(TileType::kPlain, x * playground_tile_size_u_.x, y * playground_tile_size_u_.y, true);
+				tiles_.emplace_back(TileType::kPlain, tile_x, tile_y, true);
 			}
 			else
 			{
@@ -49,11 +55,12 @@ void Tilemap::Generate()
 
 				if (rnd <= 3)
 				{
-					tiles_.emplace_back(TileType::kForest, x * playground_tile_size_u_.x, y * playground_tile_size_u_.y, false);
+					tiles_.emplace_back(TileType::kForest, tile_x, tile_y, false);
+					trees_.emplace_back(tile_x, tile_y);
 				}
 				if (rnd > 3)
 				{
-					tiles_.emplace_back(TileType::kPlain, x * playground_tile_size_u_.x, y * playground_tile_size_u_.y, true);
+					tiles_.emplace_back(TileType::kPlain, tile_x, tile_y, true);
 				}
 			}
 			numberOfTiles++;
@@ -109,6 +116,20 @@ void Tilemap::HandleEvent(const sf::Event& event, const sf::RenderWindow& window
 	}
 }
 
+bool Tilemap::GatherTree(sf::Vector2f pos)
+{
+	auto tree = std::find_if(trees_.begin(), trees_.end(), [pos](const sf::Vector2f& t){ return pos == t; });
+	if(tree != trees_.end())
+	{
+		trees_.erase(tree);
+		return true;
+	}
+	else
+	{
+		return false;
+	}
+}
+
 std::vector<sf::Vector2f> Tilemap::GetWalkableTiles()
 {
 	std::vector<sf::Vector2f> walkable_positions;
@@ -123,9 +144,22 @@ std::vector<sf::Vector2f> Tilemap::GetWalkableTiles()
 	return walkable_positions;
 }
 
-sf::Vector2f Tilemap::GetClosestTree()
+sf::Vector2f Tilemap::GetClosestTree(sf::Vector2f position)
 {
+	//TODO (Here because I'm thinking about it now) replace for loops by std::for_each() ?
 	sf::Vector2f closest_tree;
+	float closest_tree_distance = std::numeric_limits<float>::infinity();
+	std::for_each(trees_.begin(), trees_.end(), [&closest_tree_distance, &closest_tree, position](const sf::Vector2f tree)
+		{
+			const float squared_distance = squaredMagnitude(tree - position);
+
+			if (squared_distance < closest_tree_distance)
+			{
+				closest_tree = tree;
+				closest_tree_distance = squared_distance;
+			}
+		});
+
 	return closest_tree;
 }
 
@@ -174,7 +208,7 @@ void Tilemap::draw(sf::RenderTarget& target, sf::RenderStates states) const
 	ZoneScoped;
 #endif
 
-	const_cast<Tilemap*>(this)->applyFadeEffect(target);
+	//const_cast<Tilemap*>(this)->applyFadeEffect(target);
 
 	for (const auto& tile : tiles_)
 	{

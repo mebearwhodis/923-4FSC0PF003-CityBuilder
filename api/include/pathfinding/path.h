@@ -11,6 +11,7 @@ public:
 	bool is_ready() const;
 
 	sf::Vector2f GetNextStep();
+	sf::Vector2f final_destination() const;
 	void SetSteps(std::vector<sf::Vector2f> steps);
 
 	// steps getter
@@ -21,6 +22,7 @@ public:
 private:
 	std::queue<sf::Vector2f> steps_;
 	sf::Vector2f next_step_;
+	sf::Vector2f final_destination_;
 	bool is_available_ = false;
 
 	//TODO to be changed with job system implementation:
