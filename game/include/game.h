@@ -7,6 +7,7 @@
 #include "ui/ui_button.h"
 #include "graphics/resource_manager.h"
 #include "gameplay/view.h"
+#include "gameplay/ai/villager_manager.h"
 #include "ui/cursor.h"
 
 class Game {
@@ -22,6 +23,7 @@ private:
     sf::View hud_view_;
     Tilemap map_;
     BuildingManager building_manager_;
+    VillagerManager villager_manager_;
     Cursor cursor_manager_;
     sf::Vector2u tile_size_;
 

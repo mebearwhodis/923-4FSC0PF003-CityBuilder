@@ -13,7 +13,7 @@ Woodsman::Woodsman(float x, float y, float linear_speed, Tilemap& tilemap): tile
 	DefineTexture(static_cast<int>(VillagerType::kVillager));
 	frame_.setPosition(sprite_.getGlobalBounds().getPosition());
 	frame_.setSize(sprite_.getGlobalBounds().getSize());
-
+	home_position_ = getPosition();
 	InitiateBehaviourTree();
 
 }
@@ -44,6 +44,7 @@ void Woodsman::InitiateBehaviourTree()
 	woodsman_sequence->AddNode(return_home);
 
 	bt_tree_.AttachNode(woodsman_sequence);
+	std::cout << "Behavior tree initialized for Woodsman" << std::endl;
 }
 
 void Woodsman::Tick()
@@ -110,13 +111,11 @@ Status Woodsman::GatherWood()
 
 behaviour_tree::Status Woodsman::ReturnHome()
 {
-
-	sf::Vector2f home_position = sf::Vector2f(6400, 6400);
 	sf::Vector2f pathDestination = path_.final_destination();
 
-	if (squaredMagnitude(home_position - pathDestination) > std::numeric_limits<float>::epsilon())
+	if (squaredMagnitude(home_position_ - pathDestination) > std::numeric_limits<float>::epsilon())
 	{
-		Path p = Pathfinder::CalculatePath(tilemap_.GetWalkableTiles(), GetLastDestination(), home_position, 64);
+		Path p = Pathfinder::CalculatePath(tilemap_.GetWalkableTiles(), GetLastDestination(), home_position_, 64);
 		if (p.is_available())
 		{
 			set_path(p);
@@ -128,7 +127,8 @@ behaviour_tree::Status Woodsman::ReturnHome()
 		}
 	}
 
-	if (squaredMagnitude(getPosition() - pathDestination) > std::numeric_limits<float>::epsilon())
+	//TODO c'est pas un todo, ici j'avais (getPosition() - pathDestination) au lieu de (getPosition() - home_position)
+	if (squaredMagnitude(getPosition() - home_position_) > std::numeric_limits<float>::epsilon())
 	{
 		std::cout << "On its way to home" << std::endl;
 		return Status::kRunning;

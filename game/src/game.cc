@@ -39,7 +39,7 @@ void Game::init() {
 	cursor_manager_.changeCursor(CursorType::kArrow, window_);
 
 	tile_size_ = sf::Vector2u(64,64);
-	map_.Setup(sf::Vector2u(200, 200), tile_size_);
+	map_.Setup(sf::Vector2u(50, 50), tile_size_);
 	map_.Generate();
 
 
@@ -64,6 +64,7 @@ void Game::init() {
 				current_population_ += 1;
 				break;
 			case TileType::kSawmill:
+				villager_manager_.SpawnVillager(tile, map_, VillagerType::kWoodsman);
 				current_population_ += 1;
 				break;
 			default:
@@ -119,7 +120,10 @@ void Game::init() {
 
 void Game::update() {
 	//Woodsman A* test
-	Woodsman billy(6400, 6400, 128, map_);
+	tile_size_ = sf::Vector2u(64, 64);
+	sf::Vector2f map_size(map_.playground_size_u().x * tile_size_.x, map_.playground_size_u().y * tile_size_.y);
+	const sf::Vector2f map_center(map_size.x / 2.0f, map_size.y / 2.0f);
+	Woodsman billy(map_center.x, map_center.y, 128, map_);
 
 	//Pathfinder pathfinder;
 	
@@ -128,7 +132,8 @@ void Game::update() {
 	while (window_.isOpen()) {
 
 		//TODO Have an AI_manager with vectors of ai and Tick() for each of them
-		billy.Tick();
+		/*billy.Tick();*/
+		villager_manager_.Tick();
 
 		game_view_.apply(window_);
 		sf::Vector2i mouse_pos = sf::Mouse::getPosition(window_);
@@ -186,6 +191,7 @@ void Game::update() {
 		// draw everything here...
 		window_.draw(map_);
 		window_.draw(building_manager_);
+		window_.draw(villager_manager_);
 
 		if (building_manager_.IsActive()) {
 			if (map_.GetSelectedTileType() == TileType::kPlain)

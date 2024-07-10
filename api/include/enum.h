@@ -38,6 +38,8 @@ enum class TileType
 enum class VillagerType
 {
 	kVillager,
+	kWoodsman,
+	kMiner,
 	//..
 	kLength
 };
