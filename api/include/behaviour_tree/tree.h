@@ -14,7 +14,7 @@ namespace behaviour_tree
 		Tree();
 		~Tree();
 		void Tick();
-		void AttachNode(std::unique_ptr<Node> node);
+		void AttachNode(Node* node);
 	};
 }
 
