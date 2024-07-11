@@ -49,7 +49,7 @@ void Woodsman::InitiateBehaviourTree()
 
 
 	// Creating the selector
-	Selector* main_selector = new Selector();
+	std::unique_ptr<Selector> main_selector = std::make_unique<Selector>();
 
 	// Creating the sequences
 	Sequence* gathering_sequence = new Sequence();
@@ -66,7 +66,7 @@ void Woodsman::InitiateBehaviourTree()
 	home_sequence->AddNode(return_home);
 	home_sequence->AddNode(refill_stamina);
 
-	bt_tree_.AttachNode(main_selector);
+	bt_tree_.Attach(main_selector);
 	std::cout << "Behavior tree initialized for Woodsman" << std::endl;
 }
 

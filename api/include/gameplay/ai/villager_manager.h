@@ -17,7 +17,7 @@ class VillagerManager : public sf::Drawable
 	//TODO Update()/Tick()
 
 public:
-	void SpawnVillager(const Tile& tile, Tilemap& tilemap, VillagerType type);
+	void SpawnVillager(sf::Vector2f position, Tilemap& tilemap, VillagerType type);
 	void Tick();
 protected:
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;

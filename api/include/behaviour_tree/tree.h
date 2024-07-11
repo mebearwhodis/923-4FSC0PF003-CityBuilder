@@ -2,19 +2,22 @@
 #define API_BEHAVIOUR_TREE_TREE_H_
 #include <memory>
 
+#include "leaf.h"
 #include "node.h"
+#include "selector.h"
+#include "sequence.h"
 
 using namespace behaviour_tree;
 
 	class Tree 
 	{
 	private:
-		Node* root_ = nullptr;
+		std::unique_ptr<Node> root_ = nullptr;
 	public:
-		Tree();
-		~Tree();
 		void Tick();
-		void AttachNode(Node* node);
+		void Attach(std::unique_ptr<Leaf>& node);
+		void Attach(std::unique_ptr<Sequence>& node);
+		void Attach(std::unique_ptr<Selector>& node);
 	};
 
 

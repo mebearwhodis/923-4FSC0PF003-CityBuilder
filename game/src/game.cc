@@ -9,6 +9,7 @@
 
 //TODO ajouter stockage, au moment de ramener les ressources, cherche le stockage le plus proche pour y ramener les éléments -> hence, nécessité de créer des stockages proches
 
+	//TODO (Here because I'm thinking about it now) replace for loops by std::for_each() ?
 
 Game::Game() :
 	window_(sf::VideoMode(1920, 1080), "My window"),
@@ -50,7 +51,7 @@ void Game::init() {
 	game_view_.setBounds(sf::FloatRect(0, 0, map_size.x, map_size.y));
 
 
-	map_.clicked_tile_ = [this](Tile& tile) {
+	map_.clicked_tile_ = [&](Tile& tile) {
 		std::cout << "Tile clicked:\t" << tile.Position().x << "/" << tile.Position().y << "\t" << std::endl;
 		//TODO Add check to stop from adding buildings if not enough resources and/or if current pop = total pop
 		if(building_manager_.AddBuilding(tile))
@@ -58,20 +59,20 @@ void Game::init() {
 			switch (building_manager_.building_type())
 			{
 			case TileType::kHouse:
-				total_population_ += 2;
+				//total_population_ += 2;
 				break;
 			case TileType::kForge:
-				current_population_ += 1;
+				//current_population_ += 1;
 				break;
 			case TileType::kSawmill:
-				villager_manager_.SpawnVillager(tile, map_, VillagerType::kWoodsman);
-				current_population_ += 1;
+				villager_manager_.SpawnVillager(tile.Position(), map_, VillagerType::kWoodsman);
+				//current_population_ += 1;
 				break;
 			default:
 				break;
 			}
 		}
-		std::cout << current_population_ << std::endl;
+		//std::cout << current_population_ << std::endl;
 		};
 
 	// Set button callbacks

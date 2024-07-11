@@ -152,7 +152,6 @@ std::vector<sf::Vector2f> Tilemap::GetWalkableTiles()
 
 sf::Vector2f Tilemap::GetClosestTree(sf::Vector2f position)
 {
-	//TODO (Here because I'm thinking about it now) replace for loops by std::for_each() ?
 	sf::Vector2f closest_tree;
 	float closest_tree_distance = std::numeric_limits<float>::infinity();
 	std::for_each(trees_.begin(), trees_.end(), [&closest_tree_distance, &closest_tree, position](const sf::Vector2f tree)

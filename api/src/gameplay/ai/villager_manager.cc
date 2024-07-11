@@ -2,14 +2,14 @@
 
 #include "gameplay/ai/woodsman.h"
 
-void VillagerManager::SpawnVillager(const Tile& tile, Tilemap& tilemap, VillagerType type)
+void VillagerManager::SpawnVillager(sf::Vector2f position, Tilemap& tilemap, VillagerType type)
 {
 	switch(type)
 	{
 	case VillagerType::kVillager:
 		break;
 	case VillagerType::kWoodsman:
-		woodsman_.emplace_back(tile.Position().x, tile.Position().y, 256, tilemap);
+		woodsman_.emplace_back(position.x, position.y, 256, tilemap);
 		break;
 	case VillagerType::kMiner:
 		break;
