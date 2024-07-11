@@ -19,6 +19,13 @@ Woodsman::Woodsman(float x, float y, float linear_speed, Tilemap& tilemap) : til
 
 }
 
+Woodsman::Woodsman(const Woodsman& w) : Walker(w), tilemap_(w.tilemap_)
+{
+	stamina_ = w.stamina_;
+	home_position_ = w.getPosition();
+	InitiateBehaviourTree();
+}
+
 void Woodsman::InitiateBehaviourTree()
 {
 	Leaf* check_stamina = new Leaf([this]()

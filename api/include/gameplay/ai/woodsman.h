@@ -21,6 +21,8 @@ protected:
 
 public:
 	Woodsman(const float x, const float y, const float linear_speed, Tilemap& tilemap);
+	Woodsman(const Woodsman& w);
+
 	void InitiateBehaviourTree();
 	void Tick();
 };
