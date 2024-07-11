@@ -16,6 +16,7 @@ class Tile : public sf::Drawable {
 	bool is_buildable_;
 	bool is_walkable_;
 	bool selected_;
+	int tile_texture_index_;
 
 protected:
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
@@ -27,7 +28,7 @@ public:
 	bool is_buildable() const { return is_buildable_; }
 	void set_walkable(bool walkable) { is_walkable_ = walkable; }
 	void set_is_buildable(bool buildable) { is_buildable_ = buildable; }
-	void set_type(TileType type) { type_ = type; }
+	void set_type(TileType type);
 	sf::Vector2f Position() const { return sprite_.getPosition(); }
 
 	void Select();

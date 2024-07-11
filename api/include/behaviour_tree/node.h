@@ -17,6 +17,7 @@ namespace behaviour_tree
 	public:
 		virtual ~Node() = default;
 		virtual Status Process() = 0;
+		virtual void Reset() = 0;
 	};
 
 
@@ -29,11 +30,17 @@ namespace behaviour_tree
 
 	public:
 		void AddNode(Node* node);
+		void Reset() override;
 	};
 
 	inline void NodeList::AddNode(Node* node)
 	{
 		children_.push_back(node);
+	}
+
+	inline void NodeList::Reset()
+	{
+		current_child_ = 0;
 	}
 }
 

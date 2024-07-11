@@ -122,6 +122,12 @@ bool Tilemap::GatherTree(sf::Vector2f pos)
 	if(tree != trees_.end())
 	{
 		trees_.erase(tree);
+		auto tile = std::find_if(tiles_.begin(), tiles_.end(), [pos](const Tile& t) {return pos == t.Position(); });
+		if(tile != tiles_.end())
+		{
+			tile->set_type(TileType::kForestCutDown);
+			tile->set_walkable(true);
+		}
 		return true;
 	}
 	else

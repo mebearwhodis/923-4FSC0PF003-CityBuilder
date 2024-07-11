@@ -9,7 +9,7 @@ void VillagerManager::SpawnVillager(const Tile& tile, Tilemap& tilemap, Villager
 	case VillagerType::kVillager:
 		break;
 	case VillagerType::kWoodsman:
-		woodsman_.emplace_back(tile.Position().x, tile.Position().y, 64, tilemap);
+		woodsman_.emplace_back(tile.Position().x, tile.Position().y, 256, tilemap);
 		break;
 	case VillagerType::kMiner:
 		break;

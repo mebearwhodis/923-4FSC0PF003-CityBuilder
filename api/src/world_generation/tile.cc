@@ -14,7 +14,8 @@ Tile::Tile(TileType type, float x = 0, float y = 0, bool walkable = true)
 
 	const auto& textures = ResourceManager::Get().GetTileTextures(type);
 	if (!textures.Size() == 0) {
-		const sf::Texture& texture = textures[std::rand() % textures.Size()];
+		tile_texture_index_ = std::rand() % textures.Size();
+		const sf::Texture& texture = textures[tile_texture_index_];
 		sprite_.setTexture(texture);
 	}
 	sprite_.setPosition(x, y);
@@ -27,6 +28,18 @@ Tile::Tile(TileType type, float x = 0, float y = 0, bool walkable = true)
 	outline_.setFillColor(sf::Color(100, 100, 100, 0));
 	outline_.setOutlineColor(sf::Color::White);
 	outline_.setOutlineThickness(-1);
+}
+
+void Tile::set_type(TileType type)
+{
+	if(type == TileType::kForestCutDown)
+	{
+		const auto& textures = ResourceManager::Get().GetTileTextures(type);
+		const sf::Texture& texture = textures[tile_texture_index_];
+
+		sprite_.setTexture(texture);
+	}
+	type_ = type;
 }
 
 void Tile::Select()

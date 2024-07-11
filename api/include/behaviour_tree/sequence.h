@@ -8,6 +8,5 @@ using namespace behaviour_tree;
 	public:
 		~Sequence() override;
 		Status Process() override;
-		void ResetSequence();
 	};
 #endif // API_BEHAVIOUR_TREE_SEQUENCE_H_

@@ -10,8 +10,9 @@ class Woodsman : public Walker
 private:
 	Tilemap& tilemap_;
 	sf::Vector2f home_position_;
+	int stamina_ = 15;
 
-	behaviour_tree::Tree bt_tree_;
+	Tree bt_tree_;
 protected:
 	void DefineTexture(int type) override;
 	behaviour_tree::Status SeekWood();

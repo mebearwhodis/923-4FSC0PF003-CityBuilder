@@ -39,7 +39,7 @@ void Game::init() {
 	cursor_manager_.changeCursor(CursorType::kArrow, window_);
 
 	tile_size_ = sf::Vector2u(64,64);
-	map_.Setup(sf::Vector2u(50, 50), tile_size_);
+	map_.Setup(sf::Vector2u(100, 100), tile_size_);
 	map_.Generate();
 
 
@@ -120,10 +120,10 @@ void Game::init() {
 
 void Game::update() {
 	//Woodsman A* test
-	tile_size_ = sf::Vector2u(64, 64);
-	sf::Vector2f map_size(map_.playground_size_u().x * tile_size_.x, map_.playground_size_u().y * tile_size_.y);
-	const sf::Vector2f map_center(map_size.x / 2.0f, map_size.y / 2.0f);
-	Woodsman billy(map_center.x, map_center.y, 128, map_);
+	//tile_size_ = sf::Vector2u(64, 64);
+	//sf::Vector2f map_size(map_.playground_size_u().x * tile_size_.x, map_.playground_size_u().y * tile_size_.y);
+	//const sf::Vector2f map_center(map_size.x / 2.0f, map_size.y / 2.0f);
+	//Woodsman billy(map_center.x, map_center.y, 128, map_);
 
 	//Pathfinder pathfinder;
 	
@@ -151,17 +151,17 @@ void Game::update() {
 			if (event.type == sf::Event::Closed)
 				window_.close();
 
-			if (event.type == sf::Event::MouseButtonReleased)
-			{
-				//Check if the right mouse button is pressed
-				if (event.mouseButton.button == sf::Mouse::Right)
-				{
-					sf::Vector2f destination(mouse_tile_coord);
-					Path p = Pathfinder::CalculatePath(map_.GetWalkableTiles(), billy.GetLastDestination(), destination, 64);
-					billy.set_path(p);
-					//Woodsman billy(mouse_tile_coord.x, mouse_tile_coord.y, 1280, map_);
-				}
-			}
+			//if (event.type == sf::Event::MouseButtonReleased)
+			//{
+			//	//Check if the right mouse button is pressed
+			//	if (event.mouseButton.button == sf::Mouse::Right)
+			//	{
+			//		sf::Vector2f destination(mouse_tile_coord);
+			//		Path p = Pathfinder::CalculatePath(map_.GetWalkableTiles(), billy.GetLastDestination(), destination, 64);
+			//		billy.set_path(p);
+			//		//Woodsman billy(mouse_tile_coord.x, mouse_tile_coord.y, 1280, map_);
+			//	}
+			//}
 
 			game_view_.handleEvent(event, window_);
 
@@ -207,7 +207,7 @@ void Game::update() {
 		}
 
 		//TEST
-		window_.draw(billy);
+		//window_.draw(billy);
 
 		window_.setView(hud_view_);
 

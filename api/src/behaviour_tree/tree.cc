@@ -3,7 +3,7 @@
 
 using namespace behaviour_tree;
 
-behaviour_tree::Tree::Tree()
+Tree::Tree()
 {
 	root_ = nullptr;
 }
@@ -15,20 +15,9 @@ Tree::~Tree()
 
 void Tree::Tick()
 {
-	behaviour_tree::Status status;
 	if(root_ != nullptr)
-		status = root_->Process();
-
-	switch (status) {
-	case Status::kRunning:
-		break;
-	case Status::kFailure:
-		break;
-	case Status::kSuccess:
-		break;
-	default: 
-		std::cout << "undefined state\n";
-		break;
+	{
+		Status status = root_->Process();
 	}
 }
 

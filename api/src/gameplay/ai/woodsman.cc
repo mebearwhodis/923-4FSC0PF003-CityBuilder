@@ -5,10 +5,11 @@
 
 #include "sfml_utils.h"
 #include "behaviour_tree/leaf.h"
+#include "behaviour_tree/selector.h"
 #include "behaviour_tree/sequence.h"
 
 
-Woodsman::Woodsman(float x, float y, float linear_speed, Tilemap& tilemap): tilemap_(tilemap), Walker(x, y, linear_speed)
+Woodsman::Woodsman(float x, float y, float linear_speed, Tilemap& tilemap) : tilemap_(tilemap), Walker(x, y, linear_speed)
 {
 	DefineTexture(static_cast<int>(VillagerType::kVillager));
 	frame_.setPosition(sprite_.getGlobalBounds().getPosition());
@@ -20,6 +21,11 @@ Woodsman::Woodsman(float x, float y, float linear_speed, Tilemap& tilemap): tile
 
 void Woodsman::InitiateBehaviourTree()
 {
+	Leaf* check_stamina = new Leaf([this]()
+		{
+			if (stamina_ >= 0) { return Status::kSuccess; }
+			else { return Status::kFailure; }
+		});
 	Leaf* seek_wood = new Leaf([this]()
 		{
 			return SeekWood();
@@ -35,15 +41,32 @@ void Woodsman::InitiateBehaviourTree()
 			return ReturnHome();
 		});
 
-	// Creating the sequence
-	Sequence* woodsman_sequence = new Sequence();
+	Leaf* refill_stamina = new Leaf([this]()
+		{
+			stamina_ = 15;
+			return Status::kFailure;
+		});
+
+
+	// Creating the selector
+	Selector* main_selector = new Selector();
+
+	// Creating the sequences
+	Sequence* gathering_sequence = new Sequence();
+	Sequence* home_sequence = new Sequence();
 
 	// Adding the nodes to the sequence using std::move and static_cast
-	woodsman_sequence->AddNode(seek_wood);
-	woodsman_sequence->AddNode(gather_wood);
-	woodsman_sequence->AddNode(return_home);
+	main_selector->AddNode(gathering_sequence);
+	main_selector->AddNode(home_sequence);
 
-	bt_tree_.AttachNode(woodsman_sequence);
+	gathering_sequence->AddNode(check_stamina);
+	gathering_sequence->AddNode(seek_wood);
+	gathering_sequence->AddNode(gather_wood);
+
+	home_sequence->AddNode(return_home);
+	home_sequence->AddNode(refill_stamina);
+
+	bt_tree_.AttachNode(main_selector);
 	std::cout << "Behavior tree initialized for Woodsman" << std::endl;
 }
 
@@ -63,17 +86,19 @@ void Woodsman::DefineTexture(int type)
 	}
 }
 
+//TODO factorize SeekWood & ReturnHome
 Status Woodsman::SeekWood()
 {
 	sf::Vector2f closestTree = tilemap_.GetClosestTree(getPosition());
-	sf::Vector2f pathDestination = path_.final_destination();
 
-	if(squaredMagnitude(closestTree - pathDestination) > std::numeric_limits<float>::epsilon())
+
+	if (squaredMagnitude(closestTree - path_.final_destination()) > std::numeric_limits<float>::epsilon())
 	{
 		Path p = Pathfinder::CalculatePath(tilemap_.GetWalkableTiles(), GetLastDestination(), closestTree, 64);
 		if (p.is_available())
 		{
 			set_path(p);
+			stamina_ -= p.GetSteps().size();
 		}
 		else
 		{
@@ -82,7 +107,7 @@ Status Woodsman::SeekWood()
 		}
 	}
 
-	if (squaredMagnitude(getPosition() - pathDestination) > std::numeric_limits<float>::epsilon())
+	if (squaredMagnitude(getPosition() - path_.final_destination()) > std::numeric_limits<float>::epsilon())
 	{
 		std::cout << "On its way to wood" << std::endl;
 		return Status::kRunning;
@@ -96,7 +121,7 @@ Status Woodsman::SeekWood()
 
 Status Woodsman::GatherWood()
 {
-	if(tilemap_.GatherTree(getPosition()))
+	if (tilemap_.GatherTree(getPosition()))
 	{
 		//TODO (peut-être barre de progression), Running pendant qu'il coupe, succès une fois fini
 		std::cout << "Cutting wood" << std::endl;
@@ -111,9 +136,8 @@ Status Woodsman::GatherWood()
 
 behaviour_tree::Status Woodsman::ReturnHome()
 {
-	sf::Vector2f pathDestination = path_.final_destination();
 
-	if (squaredMagnitude(home_position_ - pathDestination) > std::numeric_limits<float>::epsilon())
+	if (squaredMagnitude(home_position_ - path_.final_destination()) > std::numeric_limits<float>::epsilon())
 	{
 		Path p = Pathfinder::CalculatePath(tilemap_.GetWalkableTiles(), GetLastDestination(), home_position_, 64);
 		if (p.is_available())
@@ -127,8 +151,7 @@ behaviour_tree::Status Woodsman::ReturnHome()
 		}
 	}
 
-	//TODO c'est pas un todo, ici j'avais (getPosition() - pathDestination) au lieu de (getPosition() - home_position)
-	if (squaredMagnitude(getPosition() - home_position_) > std::numeric_limits<float>::epsilon())
+	if (squaredMagnitude(getPosition() - path_.final_destination()) > std::numeric_limits<float>::epsilon())
 	{
 		std::cout << "On its way to home" << std::endl;
 		return Status::kRunning;

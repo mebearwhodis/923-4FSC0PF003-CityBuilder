@@ -4,18 +4,18 @@
 
 #include "node.h"
 
-namespace behaviour_tree
-{
+using namespace behaviour_tree;
+
 	class Tree 
 	{
 	private:
-		Node* root_;
+		Node* root_ = nullptr;
 	public:
 		Tree();
 		~Tree();
 		void Tick();
 		void AttachNode(Node* node);
 	};
-}
+
 
 #endif //API_BEHAVIOUR_TREE_TREE_H_

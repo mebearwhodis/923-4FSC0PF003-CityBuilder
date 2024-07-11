@@ -4,15 +4,16 @@ Sequence::~Sequence() = default;
 
 Status Sequence::Process()
 {
-	if(current_child_ < children_.size())
+	if (current_child_ < children_.size())
 	{
 		const Status status = children_[current_child_]->Process();
-		if(status == Status::kSuccess)
+		if (status == Status::kSuccess)
 		{
+			children_[current_child_]->Reset();
 			current_child_++;
-			if(current_child_ >= children_.size())
+			if (current_child_ >= children_.size())
 			{
-				ResetSequence();
+				current_child_ = 0;
 				return Status::kSuccess;
 			}
 			else
@@ -20,21 +21,10 @@ Status Sequence::Process()
 				return Status::kRunning;
 			}
 		}
-		else if(status == Status::kRunning)
-		{
-			return Status::kRunning;
-		}
-		else
-		{
-			ResetSequence();
-			return status;
-		}
+
+		return status;
 	}
-	
+
 	return Status::kFailure;
 }
 
-void Sequence::ResetSequence()
-{
-	current_child_ = 0;
-}

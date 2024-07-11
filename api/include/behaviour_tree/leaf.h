@@ -5,8 +5,8 @@
 #include "node.h"
 
 
-namespace behaviour_tree
-{
+using namespace behaviour_tree;
+
 	class Leaf final : public Node
 	{
 
@@ -16,8 +16,9 @@ namespace behaviour_tree
 	public:
 		Status Process() override;
 
-		Leaf(const std::function<Status()>& leaf_action) : leaf_action_(leaf_action) { };
+		Leaf(const std::function<Status()>& leaf_action) : leaf_action_(leaf_action) { }
+		void Reset() override {}
 	};
-}
+
 
 #endif //API_BEHAVIOUR_TREE_LEAF_H_
