@@ -25,7 +25,6 @@ private:
 	sf::Vector2f final_destination_;
 	bool is_available_ = false;
 
-	//TODO to be changed with job system implementation:
 	bool is_ready_ = true;
 };
 

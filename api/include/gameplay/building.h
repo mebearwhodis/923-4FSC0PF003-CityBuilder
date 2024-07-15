@@ -4,12 +4,6 @@
 
 #include "../graphics/sprite_entity.h"
 
-
-//TODO: class Building with enum of BuildingType, will have the Update/Tick function?
-//Sprite, BuildingType, Cost, State
-//More specific building classes could inherit from it (Building->House/Sawmill/Forge/etc. could inherit and add specific function)
-
-
 class Building : public SpriteEntity
 {
 public:

@@ -121,7 +121,7 @@ void UiButton::HandleEvent(const sf::Event& event)
 					}
 					else
 					{
-						std::cout << "No callback defined.";
+						//std::cout << "No callback defined.";
 					}
 				}
 			}

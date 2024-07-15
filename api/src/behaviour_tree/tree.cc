@@ -3,7 +3,7 @@
 
 using namespace behaviour_tree;
 
-void Tree::Tick()
+void Tree::Tick() const
 {
 	if(root_ != nullptr)
 	{

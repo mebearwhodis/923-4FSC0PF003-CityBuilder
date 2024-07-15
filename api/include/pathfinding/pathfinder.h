@@ -6,7 +6,6 @@
 
 //TODO Comment all of this, maybe refactor in its own PathPoint class files
 
-//TODO Idk where to put that but maybe make sure that if you're going to a house you can walk through other houses (because otherwise if you make a 3x3 square of houses you can't go back to the one in the middle) Maybe don't allow putting something down if it has more than x neighbours ? idk
 class PathPoint
 {
 	// Members
@@ -52,10 +51,9 @@ sf::Vector2f(0,-1),
 sf::Vector2f(-1,0)
 };
 
-//A* pathfinding TODO: Get rid of namespace
-namespace Pathfinder
-{
-	Path CalculatePath(std::vector<sf::Vector2f> positions, sf::Vector2f start, sf::Vector2f end, int tile_size);
-};
+//A* pathfinding 
+
+Path CalculatePath(std::vector<sf::Vector2f> positions, sf::Vector2f start, sf::Vector2f end, int tile_size);
+
 
 #endif

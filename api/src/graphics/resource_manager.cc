@@ -33,6 +33,10 @@ void ResourceManager::LoadAllTextures()
 	LoadUITexture("../resources/sprites/ui/button_forge_down.png", UiTexture::kForgeDown);
 	LoadUITexture("../resources/sprites/ui/button_sawmill_up.png", UiTexture::kSawmillUp);
 	LoadUITexture("../resources/sprites/ui/button_sawmill_down.png", UiTexture::kSawmillDown);
+	LoadUITexture("../resources/sprites/ui/button_storage_down.png", UiTexture::kStorageUp);
+	LoadUITexture("../resources/sprites/ui/button_storage_down.png", UiTexture::kStorageDown);
+	LoadUITexture("../resources/sprites/ui/gameplay_resources.png", UiTexture::kGameplayResourcesUp);
+	LoadUITexture("../resources/sprites/ui/gameplay_resources.png", UiTexture::kGameplayResourcesDown); //it's the same because it's not really a button, I just used the same class to avoid making a new one for only one ui element
 #ifdef TRACY_ENABLE
 	TracyCZoneEnd(buttonTexture);
 #endif
@@ -58,22 +62,37 @@ void ResourceManager::LoadAllTextures()
 	LoadTileTexture("../resources/sprites/tiles/medievalTile_51.png", TileType::kForestCutDown);
 	LoadTileTexture("../resources/sprites/tiles/medievalTile_52.png", TileType::kForestCutDown);
 
+	LoadTileTexture("../resources/sprites/tiles/stones_1.png", TileType::kStone);
+	LoadTileTexture("../resources/sprites/tiles/stones_2.png", TileType::kStone);
+	LoadTileTexture("../resources/sprites/tiles/stones_3.png", TileType::kStone);
+
+	LoadTileTexture("../resources/sprites/tiles/berries_1_full.png", TileType::kBerryFull);
+	LoadTileTexture("../resources/sprites/tiles/berries_2_full.png", TileType::kBerryFull);
+	LoadTileTexture("../resources/sprites/tiles/berries_3_full.png", TileType::kBerryFull);
+
+	LoadTileTexture("../resources/sprites/tiles/berries_1_empty.png", TileType::kBerryEmpty);
+	LoadTileTexture("../resources/sprites/tiles/berries_2_empty.png", TileType::kBerryEmpty);
+	LoadTileTexture("../resources/sprites/tiles/berries_3_empty.png", TileType::kBerryEmpty);
+
 	LoadTileTexture("../resources/sprites/structures/medievalStructure_09.png", TileType::kHouse);
-	LoadTileTexture("../resources/sprites/structures/medievalStructure_16.png", TileType::kHouse);
 	LoadTileTexture("../resources/sprites/structures/medievalStructure_17.png", TileType::kHouse);
 	LoadTileTexture("../resources/sprites/structures/medievalStructure_18.png", TileType::kHouse);
 
 	LoadTileTexture("../resources/sprites/structures/medievalStructure_20.png", TileType::kForge);
 	LoadTileTexture("../resources/sprites/structures/medievalStructure_21.png", TileType::kSawmill);
 
+	LoadTileTexture("../resources/sprites/structures/medievalStructure_19.png", TileType::kStorage);
+
+	LoadTileTexture("../resources/sprites/structures/medievalStructure_06_tiled.png", TileType::kCastleBase);
+	LoadTileTexture("../resources/sprites/structures/medievalStructure_02_tiled.png", TileType::kCastleRoof);
 
 	// Character Textures -----------------
-	LoadCharacterTexture("../resources/sprites/units/medievalUnit_05.png", VillagerType::kVillager);
-	LoadCharacterTexture("../resources/sprites/units/medievalUnit_06.png", VillagerType::kVillager);
-	LoadCharacterTexture("../resources/sprites/units/medievalUnit_11.png", VillagerType::kVillager);
-	LoadCharacterTexture("../resources/sprites/units/medievalUnit_12.png", VillagerType::kVillager);
-	LoadCharacterTexture("../resources/sprites/units/medievalUnit_17.png", VillagerType::kVillager);
-	LoadCharacterTexture("../resources/sprites/units/medievalUnit_18.png", VillagerType::kVillager);
+	LoadCharacterTexture("../resources/sprites/units/medievalUnit_05.png", VillagerType::kGatherer);
+	LoadCharacterTexture("../resources/sprites/units/medievalUnit_06.png", VillagerType::kGatherer);
+	LoadCharacterTexture("../resources/sprites/units/medievalUnit_11.png", VillagerType::kWoodsman);
+	LoadCharacterTexture("../resources/sprites/units/medievalUnit_12.png", VillagerType::kWoodsman);
+	LoadCharacterTexture("../resources/sprites/units/medievalUnit_17.png", VillagerType::kMiner);
+	LoadCharacterTexture("../resources/sprites/units/medievalUnit_18.png", VillagerType::kMiner);
 	LoadCharacterTexture("../resources/sprites/units/medievalUnit_23.png", VillagerType::kVillager);
 	LoadCharacterTexture("../resources/sprites/units/medievalUnit_24.png", VillagerType::kVillager);
 

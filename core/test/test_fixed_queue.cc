@@ -1,7 +1,7 @@
 #include <containers/fixed_queue.h>
 #include <gtest/gtest.h>
 
-class FixedQueueFixture : public ::testing::TestWithParam<std::pair<core::FixedQueue<int, 10>, std::vector<int>>>
+class FixedQueueFixture : public testing::TestWithParam<std::pair<core::FixedQueue<int, 10>, std::vector<int>>>
 {
 
 };

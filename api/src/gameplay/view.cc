@@ -2,8 +2,8 @@
 
 #include <iostream>
 
-View::View(const sf::Vector2f& center, const sf::Vector2f& size)
-    : view_(center, size) {}
+View::View(const sf::Vector2f& centre, const sf::Vector2f& size)
+    : view_(centre, size) {}
 
 void View::handleInput(sf::RenderWindow& window) {
     sf::Vector2f movement(0.f, 0.f);
@@ -21,8 +21,6 @@ void View::handleInput(sf::RenderWindow& window) {
         movement.y += 64.f;
     }
 
-
-    //TODO do same for mousewheel drag
     // Calculate where the view would move to
     sf::Vector2f proposedCenter = view_.getCenter() + movement;
     float halfWidth = view_.getSize().x / 2.0f;
@@ -55,12 +53,12 @@ void View::handleEvent(sf::Event& event, sf::RenderWindow& window) {
         if (event.mouseWheelScroll.delta > 0 && zoom_power() < 20) {
             view_.zoom(1.f / zoomFactor);
             set_zoom_power(zoom_power() + 1);
-            std::cout << zoom_power() << std::endl;
+            //std::cout << zoom_power() << std::endl;
         }
         else if (event.mouseWheelScroll.delta < 0 && zoom_power() > 0) {
             view_.zoom(zoomFactor);
             set_zoom_power(zoom_power() - 1);
-            std::cout << zoom_power() << std::endl;
+            //std::cout << zoom_power() << std::endl;
         }
 
         sf::Vector2f newCenter = view_.getCenter();

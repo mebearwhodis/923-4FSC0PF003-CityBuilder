@@ -9,9 +9,13 @@ void VillagerManager::SpawnVillager(sf::Vector2f position, Tilemap& tilemap, Vil
 	case VillagerType::kVillager:
 		break;
 	case VillagerType::kWoodsman:
-		woodsman_.emplace_back(position.x, position.y, 256, tilemap);
+		woodsmen_.emplace_back(Woodsman(position.x, position.y, 64, tilemap));
 		break;
 	case VillagerType::kMiner:
+		miners_.emplace_back(Miner(position.x, position.y, 64, tilemap));
+		break;
+	case VillagerType::kGatherer:
+		gatherers_.emplace_back(Gatherer(position.x, position.y, 64, tilemap));
 		break;
 	default: ;
 	}
@@ -19,7 +23,15 @@ void VillagerManager::SpawnVillager(sf::Vector2f position, Tilemap& tilemap, Vil
 
 void VillagerManager::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
-	for (const auto& w : woodsman_)
+	for (const auto& w : woodsmen_)
+	{
+		target.draw(w, states);
+	}
+	for (const auto& w : miners_)
+	{
+		target.draw(w, states);
+	}
+	for (const auto& w : gatherers_)
 	{
 		target.draw(w, states);
 	}
@@ -27,7 +39,15 @@ void VillagerManager::draw(sf::RenderTarget& target, sf::RenderStates states) co
 
 void VillagerManager::Tick()
 {
-	for (auto& w : woodsman_)
+	for (auto& w : woodsmen_)
+	{
+		w.Tick();
+	}
+	for (auto& w : miners_)
+	{
+		w.Tick();
+	}
+	for (auto& w : gatherers_)
 	{
 		w.Tick();
 	}

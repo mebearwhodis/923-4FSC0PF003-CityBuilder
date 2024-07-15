@@ -3,7 +3,7 @@
 #include <iostream>
 #include <unordered_set>
 
-#include "sfml_utils.h"
+#include "utils.h"
 
 
 static std::vector<sf::Vector2f> ConstructPath(const PathPoint& exit_point, const PathPoint* visited_points)
@@ -29,11 +29,11 @@ struct std::hash<sf::Vector2f>
 	{
 		std::size_t h1 = std::hash<float>{}(v.x);
 		std::size_t h2 = std::hash<float>{}(v.y);
-		return h1 ^ (h2 << 1); // or use boost::hash_combine
+		return h1 ^ (h2 << 1); 
 	}
 };
 
-Path Pathfinder::CalculatePath(std::vector<sf::Vector2f> positions, sf::Vector2f start, sf::Vector2f end, int tile_size)
+Path CalculatePath(std::vector<sf::Vector2f> positions, sf::Vector2f start, sf::Vector2f end, int tile_size)
 {
 	Path path;
 
@@ -67,11 +67,9 @@ Path Pathfinder::CalculatePath(std::vector<sf::Vector2f> positions, sf::Vector2f
 		open_queue.pop();
 		std::erase_if(open_list, [&current](sf::Vector2f p) {return current.position() == p; });
 
-		// Did we find the exit of the maze ?
 		if (Magnitude(rounded_end - current.position()) <= std::numeric_limits<float>::epsilon())
 		{
 			path.SetSteps(ConstructPath(current, visited_points.data()));
-			std::cout << "Found the path : nb steps = " << path.GetSteps().size() << std::endl;
 			return path;
 		}
 
@@ -85,13 +83,11 @@ Path Pathfinder::CalculatePath(std::vector<sf::Vector2f> positions, sf::Vector2f
 					return pos == neighbourPos;
 				});
 
-			// Didn't found a valid neighbour
-			// Possible cases : outside of the map, empty lists, etc.
 			if (found_position != positions.end())
 			{
 				if(*found_position == current.position())
 				{
-					std::cerr << "Nope\n";
+					std::cerr << "No \n";
 				}
 				bool is_in_closed = closed_list.contains(*found_position);
 				bool is_in_open = open_list.contains(*found_position);
@@ -109,13 +105,6 @@ Path Pathfinder::CalculatePath(std::vector<sf::Vector2f> positions, sf::Vector2f
 			}
 		}
 	}
-
-	// -
-	std::cout << "Didn't find the path" << std::endl;
-	std::cout << "Start : " << start.x << " " << start.y << std::endl;
-	std::cout << "Rounded Start : " << rounded_start.x << " " << rounded_start.y << std::endl;
-	std::cout << "End : " << end.x << " " << end.y << std::endl;
-	std::cout << "Rounded end : " << rounded_end.x << " " << rounded_end.y << std::endl;
 
 	return path;
 

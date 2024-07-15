@@ -5,7 +5,7 @@
 
 class View {
 public:
-    View(const sf::Vector2f& center, const sf::Vector2f& size);
+    View(const sf::Vector2f& centre, const sf::Vector2f& size);
 
     void handleInput(sf::RenderWindow& window);
     void handleEvent(sf::Event& event, sf::RenderWindow& window);

@@ -1,7 +1,7 @@
 ﻿#include <Tracy/Tracy.hpp>
 #include "game.h"
 
-//TODO: check all #include guards
+//TODO: check all #include guards and Google style guide
 
 int main() {
     Game game;

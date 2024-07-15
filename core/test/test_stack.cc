@@ -2,7 +2,7 @@
 #include <gtest/gtest.h>
 #include <numeric>  // For std::iota
 
-class StackFixture : public ::testing::TestWithParam<std::pair<core::Stack<int>, std::vector<int>>>
+class StackFixture : public testing::TestWithParam<std::pair<core::Stack<int>, std::vector<int>>>
 {
 };
 

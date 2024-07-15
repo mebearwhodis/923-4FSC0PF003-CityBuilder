@@ -3,6 +3,7 @@
 #include <SFML/Graphics/RenderWindow.hpp>
 
 #include "gameplay/building_manager.h"
+#include "gameplay/economy_manager.h"
 #include "world_generation/tilemap.h"
 #include "ui/ui_button.h"
 #include "graphics/resource_manager.h"
@@ -24,17 +25,19 @@ private:
     Tilemap map_;
     BuildingManager building_manager_;
     VillagerManager villager_manager_;
+    EconomyManager economy_manager_;
     Cursor cursor_manager_;
     sf::Vector2u tile_size_;
+    void SetCallbacks();
 
-    int current_population_ = 0;
-    int total_population_ = 0;
 
     UiButton button_menu_;
     UiButton button_build_house_;
     UiButton button_build_forge_;
     UiButton button_build_sawmill_;
-    std::array<UiButton*, 4> buttons_;
+    UiButton button_build_storage_;
+    UiButton gameplay_resources_;
+    std::array<UiButton*, 6> buttons_;
     bool any_button_pressed_;
 };
 

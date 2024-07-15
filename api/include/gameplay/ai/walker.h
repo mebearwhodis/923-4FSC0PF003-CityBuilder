@@ -6,6 +6,8 @@
 
 #include "../../graphics/sprite_entity.h"
 #include "../../pathfinding/path.h"
+#include "behaviour_tree/node.h"
+#include "world_generation/tilemap.h"
 
 class Walker : public sf::Transformable, public SpriteEntity
 {
@@ -30,6 +32,7 @@ public:
 	void Tick();
 	//TODO Comment what that thing is
 	sf::Vector2f GetLastDestination() const;
+	behaviour_tree::Status GoToNearest(Tilemap& tilemap, sf::Vector2f pos, int& stamina, bool use_stamina);
 };
 
 

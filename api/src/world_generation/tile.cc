@@ -32,12 +32,21 @@ Tile::Tile(TileType type, float x = 0, float y = 0, bool walkable = true)
 
 void Tile::set_type(TileType type)
 {
-	if(type == TileType::kForestCutDown)
+	if(type == TileType::kForestCutDown || type == TileType::kBerryEmpty)
 	{
 		const auto& textures = ResourceManager::Get().GetTileTextures(type);
 		const sf::Texture& texture = textures[tile_texture_index_];
 
 		sprite_.setTexture(texture);
+	}
+	else if(type == TileType::kPlain)
+	{
+		const auto& textures = ResourceManager::Get().GetTileTextures(type);
+		if (!textures.Size() == 0) {
+			tile_texture_index_ = std::rand() % textures.Size();
+			const sf::Texture& texture = textures[tile_texture_index_];
+			sprite_.setTexture(texture);
+		}
 	}
 	type_ = type;
 }

@@ -17,7 +17,6 @@ class BuildingManager : public sf::Drawable
 
 	void UpdateHoverTileTexture();
 
-	//TODO Update()/Tick()
 
 public:
 	BuildingManager();

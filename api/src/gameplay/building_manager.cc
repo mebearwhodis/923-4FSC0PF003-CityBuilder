@@ -52,16 +52,15 @@ bool BuildingManager::AddBuilding(Tile& tile)
 #ifdef TRACY_ENABLE
 	ZoneScoped;
 #endif
-	if (!is_active_) { return false; }
 
-	if(!tile.is_buildable())
+	if(!is_active_ || !tile.is_buildable() || building_type_ == TileType::kPlain)
 	{
-		//std::cout << "can't build here" << std::endl;
+		////std::cout << "can't build here" << std::endl;
 		return false;
 	}
 	else
 	{
-		tile.set_walkable(false);
+		//tile.set_walkable(false);
 		tile.set_is_buildable(false);
 
 		buildings_.emplace_back(building_type_, tile.Position().x, tile.Position().y);

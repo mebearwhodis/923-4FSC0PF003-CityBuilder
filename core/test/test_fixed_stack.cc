@@ -1,7 +1,7 @@
 #include <containers/fixed_stack.h>
 #include <gtest/gtest.h>
 
-class FixedStackFixture : public ::testing::TestWithParam<std::pair<core::FixedStack<int, 10>, std::vector<int>>>
+class FixedStackFixture : public testing::TestWithParam<std::pair<core::FixedStack<int, 10>, std::vector<int>>>
 {
 
 };

@@ -1,11 +1,11 @@
-#ifndef API_GAMEPLAY_AI_MINER_H_
-#define API_GAMEPLAY_AI_MINER_H_
+#ifndef API_GAMEPLAY_AI_GATHERER_H_
+#define API_GAMEPLAY_AI_GATHERER_H_
 #include "walker.h"
 #include "behaviour_tree/tree.h"
 #include "pathfinding/pathfinder.h"
 #include "world_generation/tilemap.h"
 
-class Miner : public Walker
+class Gatherer : public Walker
 {
 private:
 	Tilemap& tilemap_;
@@ -15,15 +15,15 @@ private:
 	Tree bt_tree_;
 protected:
 	void DefineTexture(int type) override;
-	Status SeekStone();
-	Status GatherStone();
+	Status SeekBerry();
+	Status GatherBerry();
 	Status ReturnHome();
 
 public:
-	Miner(const float x, const float y, const float linear_speed, Tilemap& tilemap);
-	Miner(const Miner& w);
+	Gatherer(const float x, const float y, const float linear_speed, Tilemap& tilemap);
+	Gatherer(const Gatherer& w);
 
 	void InitiateBehaviourTree();
 	void Tick();
 };
-#endif // API_GAMEPLAY_AI_MINER_H_
+#endif

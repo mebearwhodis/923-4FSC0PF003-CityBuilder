@@ -19,6 +19,10 @@ enum class UiTexture
 	kForgeDown,
 	kSawmillUp,
 	kSawmillDown,
+	kStorageUp,
+	kStorageDown,
+	kGameplayResourcesUp,
+	kGameplayResourcesDown,
 	kLength
 };
 
@@ -28,9 +32,15 @@ enum class TileType
 	kForest, //4
 	kPineForest, //4
 	kForestCutDown, //4
+	kStone,
+	kBerryFull,
+	kBerryEmpty,
 	kHouse,
 	kForge,
 	kSawmill,
+	kStorage,
+	kCastleBase,
+	kCastleRoof,
 	//...
 	kLength
 };
@@ -40,6 +50,7 @@ enum class VillagerType
 	kVillager,
 	kWoodsman,
 	kMiner,
+	kGatherer,
 	//..
 	kLength
 };

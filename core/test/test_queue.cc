@@ -2,7 +2,7 @@
 #include <gtest/gtest.h>
 #include <numeric>  // For std::iota
 
-class QueueFixture : public ::testing::TestWithParam<std::pair<core::Queue<int>, std::vector<int>>> {};
+class QueueFixture : public testing::TestWithParam<std::pair<core::Queue<int>, std::vector<int>>> {};
 
 // Test case for Push and Front functions
 TEST_P(QueueFixture, PushAndFront) {

@@ -3,7 +3,7 @@
 #include <random>
 #include <SFML/Graphics/RenderTarget.hpp>
 
-#include "sfml_utils.h"
+#include "utils.h"
 #ifdef TRACY_ENABLE
 #include <Tracy/Tracy.hpp>
 #include <Tracy/TracyC.h>
@@ -41,7 +41,16 @@ void Tilemap::Generate()
 			double tile_y = y * playground_tile_size_u_.y;
 
 			//Make sure centre of the map is all plains
-			if(x > playground_size_u_.x / 2 - 3 && x < playground_size_u_.x /2 + 3 && y > playground_size_u_.y /2 - 3 && y < playground_size_u_.y /2 + 3)
+			if(x == playground_size_u_.x / 2 && y == playground_size_u_.y /2)
+			{
+				tiles_.emplace_back(TileType::kCastleBase, tile_x, tile_y, false);
+				
+			}
+			else if(x == playground_size_u_.x / 2 && y == playground_size_u_.y /2 - 1)
+			{
+				tiles_.emplace_back(TileType::kCastleRoof, tile_x, tile_y, false);
+			}
+			else if(x > playground_size_u_.x / 2 - 3 && x < playground_size_u_.x /2 + 3 && y > playground_size_u_.y /2 - 3 && y < playground_size_u_.y /2 + 3)
 			{
 				tiles_.emplace_back(TileType::kPlain, tile_x, tile_y, true);
 			}
@@ -58,7 +67,17 @@ void Tilemap::Generate()
 					tiles_.emplace_back(TileType::kForest, tile_x, tile_y, false);
 					trees_.emplace_back(tile_x, tile_y);
 				}
-				if (rnd > 3)
+				else if (rnd <= 4)
+				{
+					tiles_.emplace_back(TileType::kStone, tile_x, tile_y, false);
+					stones_.emplace_back(tile_x, tile_y);
+				}
+				else if (rnd <= 5)
+				{
+					tiles_.emplace_back(TileType::kBerryFull, tile_x, tile_y, true);
+					berries_.emplace_back(tile_x, tile_y);
+				}
+				else if (rnd > 5)
 				{
 					tiles_.emplace_back(TileType::kPlain, tile_x, tile_y, true);
 				}
@@ -68,7 +87,7 @@ void Tilemap::Generate()
 	}
 	tile_selected_ = &(*tiles_.begin());
 	tile_selected_->Deselect();
-	std::cout << "Total tiles: " << numberOfTiles << std::endl;
+	//std::cout << "Total tiles: " << numberOfTiles << std::endl;
 }
 
 void Tilemap::Clear()
@@ -94,7 +113,6 @@ void Tilemap::HandleEvent(const sf::Event& event, const sf::RenderWindow& window
 
 	if (tileFound != tiles_.end())
 	{
-		//TODO: Could put the hover_tile here, aka the Tile could manage the hover itself (That's what Select does)
 		tile_selected_ = &(*tileFound);
 		tile_selected_->Select();
 	}
@@ -106,34 +124,58 @@ void Tilemap::HandleEvent(const sf::Event& event, const sf::RenderWindow& window
 		{
 			if (clicked_tile_ && tile_selected_) {
 				clicked_tile_(*tile_selected_);
-				std::cout << static_cast<int>(GetSelectedTileType()) << std::endl;
+				//std::cout << static_cast<int>(GetSelectedTileType()) << std::endl;
 			}
 			else
 			{
-				std::cout << "No callback defined." << std::endl;
+				//std::cout << "No callback defined." << std::endl;
 			}
 		}
 	}
 }
 
-bool Tilemap::GatherTree(sf::Vector2f pos)
+bool Tilemap::Gather(sf::Vector2f pos, TileType type)
 {
-	auto tree = std::find_if(trees_.begin(), trees_.end(), [pos](const sf::Vector2f& t){ return pos == t; });
-	if(tree != trees_.end())
+
+	std::vector<sf::Vector2f>* type_map = nullptr; 
+		TileType new_tile = {};
+
+	switch (type) {
+	case TileType::kForest:
+		type_map = &trees_;
+		new_tile = TileType::kForestCutDown;
+		break;
+	case TileType::kStone:
+		type_map = &stones_;
+		new_tile = TileType::kPlain;
+		break;
+	case TileType::kBerryFull:
+		type_map = &berries_;
+		new_tile = TileType::kBerryEmpty;
+		break;
+	default:;
+	}
+
+	if(type_map != nullptr)
 	{
-		trees_.erase(tree);
-		auto tile = std::find_if(tiles_.begin(), tiles_.end(), [pos](const Tile& t) {return pos == t.Position(); });
-		if(tile != tiles_.end())
+		auto item = std::find_if(type_map->begin(), type_map->end(), [pos](const sf::Vector2f& t) { return pos == t; });
+		if (item != type_map->end())
 		{
-			tile->set_type(TileType::kForestCutDown);
-			tile->set_walkable(true);
+			type_map->erase(item);
+			auto tile = std::find_if(tiles_.begin(), tiles_.end(), [pos](const Tile& t) {return pos == t.Position(); });
+			if (tile != tiles_.end())
+			{
+				tile->set_type(new_tile);
+				tile->set_walkable(true);
+			}
+			return true;
 		}
-		return true;
+		else
+		{
+			return false;
+		}
 	}
-	else
-	{
-		return false;
-	}
+	return false;
 }
 
 std::vector<sf::Vector2f> Tilemap::GetWalkableTiles()
@@ -150,22 +192,38 @@ std::vector<sf::Vector2f> Tilemap::GetWalkableTiles()
 	return walkable_positions;
 }
 
-sf::Vector2f Tilemap::GetClosestTree(sf::Vector2f position)
+sf::Vector2f Tilemap::GetClosest(sf::Vector2f position, TileType type) const
 {
-	sf::Vector2f closest_tree;
-	float closest_tree_distance = std::numeric_limits<float>::infinity();
-	std::for_each(trees_.begin(), trees_.end(), [&closest_tree_distance, &closest_tree, position](const sf::Vector2f tree)
+	sf::Vector2f closest;
+	float closest_distance = std::numeric_limits<float>::infinity();
+
+	std::vector<sf::Vector2f> type_map;
+
+	switch (type) {
+	case TileType::kForest:
+		type_map = trees_;
+		break;
+	case TileType::kStone:
+		type_map = stones_;
+		break;
+	case TileType::kBerryFull:
+		type_map = berries_;
+		break;
+	default: ;
+	}
+
+	std::for_each(type_map.begin(), type_map.end(), [&closest_distance, &closest, position](const sf::Vector2f tree)
 		{
 			const float squared_distance = squaredMagnitude(tree - position);
 
-			if (squared_distance < closest_tree_distance)
+			if (squared_distance < closest_distance)
 			{
-				closest_tree = tree;
-				closest_tree_distance = squared_distance;
+				closest = tree;
+				closest_distance = squared_distance;
 			}
 		});
 
-	return closest_tree;
+	return closest;
 }
 
 TileType Tilemap::GetSelectedTileType() const {
