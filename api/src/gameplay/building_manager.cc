@@ -46,8 +46,7 @@ void BuildingManager::SetHoverTilePosition(const sf::Vector2f position)
 	hover_tile_.setPosition(position);
 }
 
-
-bool BuildingManager::AddBuilding(Tile& tile)
+bool BuildingManager::AddBuilding(Tile& tile, Tilemap& tilemap)
 {
 #ifdef TRACY_ENABLE
 	ZoneScoped;
@@ -65,6 +64,11 @@ bool BuildingManager::AddBuilding(Tile& tile)
 
 		buildings_.emplace_back(building_type_, tile.Position().x, tile.Position().y);
 		tile.set_type(building_type_);
+
+		if(building_type_ == TileType::kStorage)
+		{
+			tilemap.AddToStoragesList(tile.Position());
+		}
 
 		return true;
 	}

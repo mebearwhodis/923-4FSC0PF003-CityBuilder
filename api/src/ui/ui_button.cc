@@ -12,7 +12,7 @@
 #include "graphics/resource_manager.h"
 
 
-UiButton::UiButton(sf::Vector2f positionRelativeToView, sf::Color colorBase, std::string text, UiTexture up_texture_name, bool visible)
+UiButton::UiButton(sf::Vector2f positionRelativeToView, sf::Color colorBase, UiTexture up_texture_name, bool visible)
 {
 
 #ifdef TRACY_ENABLE
@@ -20,16 +20,6 @@ UiButton::UiButton(sf::Vector2f positionRelativeToView, sf::Color colorBase, std
 #endif
 
 	setPosition(positionRelativeToView);
-
-	//Declare and load a font
-	font_.loadFromFile("../resources/fonts/DejaVuSans.ttf");
-
-	//Create text
-	text_ = sf::Text(text, font_);
-	text_.setCharacterSize(42);
-	text_.setFillColor(sf::Color::Black);
-	sf::FloatRect textBounds = text_.getLocalBounds();
-	text_.setOrigin(textBounds.left + textBounds.width / 2.0f, textBounds.top + textBounds.height / 2.0f);
 
 	texture_up_ = ResourceManager::Get().GetUiTexture(up_texture_name);
 	texture_down_ = ResourceManager::Get().GetUiTexture(static_cast<UiTexture>(static_cast<int>(up_texture_name) +1));
@@ -53,8 +43,8 @@ void UiButton::draw(sf::RenderTarget& target, sf::RenderStates states) const
 	if(is_visible_)
 	{
 		target.draw(sprite_, states);
+		target.draw(text_, states);
 	}
-	//target.draw(text_, states);
 
 }
 

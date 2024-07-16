@@ -19,6 +19,8 @@ class Tilemap : public sf::Drawable {
 	std::vector<sf::Vector2f> trees_;
 	std::vector<sf::Vector2f> stones_;
 	std::vector<sf::Vector2f> berries_;
+	std::vector<sf::Vector2f> storages_;
+
 	Tile* tile_selected_ = nullptr;
 
 	void applyFadeEffect(sf::RenderTarget& target); // New method to apply fade effect
@@ -42,6 +44,8 @@ public:
 
 	// Getter function to retrieve the TileType of the selected tile
 	TileType GetSelectedTileType() const;
+
+	void AddToStoragesList(sf::Vector2f position) { storages_.emplace_back(position); }
 };
 
 //Tile GetTileAt(sf::Vector2f position, const sf::View& view, const sf::RenderTarget& target) const;

@@ -45,7 +45,7 @@ void Gatherer::InitiateBehaviourTree()
 
 	Leaf* return_home = new Leaf([this]()
 		{
-			return ReturnHome();
+			return ReturnHomeOrStorage();
 		});
 
 	Leaf* refill_stamina = new Leaf([this]()
@@ -113,8 +113,12 @@ Status Gatherer::GatherBerry()
 	}
 }
 
-Status Gatherer::ReturnHome()
+Status Gatherer::ReturnHomeOrStorage()
 {
-	//TODO: compare magnitudes of here to home_pos and here to closest storage, go the nearest
-	return GoToNearest(tilemap_, home_position_, stamina_, false);
+	const sf::Vector2f closest_storage = tilemap_.GetClosest(getPosition(), TileType::kStorage);
+	const float magnitude_to_storage = squaredMagnitude(closest_storage - getPosition());
+	const float magnitude_to_home = squaredMagnitude(home_position_ - getPosition());
+
+	return (magnitude_to_home < magnitude_to_storage) ? 
+		GoToNearest(tilemap_, home_position_, stamina_, false) : GoToNearest(tilemap_, closest_storage, stamina_, false);
 }

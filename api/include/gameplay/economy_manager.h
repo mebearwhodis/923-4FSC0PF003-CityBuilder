@@ -9,10 +9,10 @@ class EconomyManager
 	int current_population_ = 0;
 	int total_population_ = 10;
 
-	int current_house_cost_ = 10;
-	int current_forge_cost_ = 10;
-	int current_sawmill_cost_ = 10;
-	int current_storage_cost_ = 10;
+	int current_house_cost_ = 100;
+	int current_forge_cost_ = 100;
+	int current_sawmill_cost_ = 100;
+	int current_storage_cost_ = 100;
 
 public:
 	EconomyManager() = default;

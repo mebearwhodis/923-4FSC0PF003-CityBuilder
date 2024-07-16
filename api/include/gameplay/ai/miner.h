@@ -17,7 +17,7 @@ protected:
 	void DefineTexture(int type) override;
 	Status SeekStone();
 	Status GatherStone();
-	Status ReturnHome();
+	Status ReturnHomeOrStorage();
 
 public:
 	Miner(const float x, const float y, const float linear_speed, Tilemap& tilemap);

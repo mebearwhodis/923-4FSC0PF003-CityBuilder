@@ -17,6 +17,7 @@ private:
 
 	sf::Texture blank_texture_;
 	sf::Image blank_cursor_image_;
+	sf::Font font_;
 
 	void LoadAllTextures();
 	void LoadUITexture(const std::string& filepath, UiTexture ui_texture);
@@ -33,6 +34,7 @@ public:
 	ResourceManager& operator=(const ResourceManager&) = delete;
 
 	//TODO rename getters
+	sf::Font& GetFont() { return font_; }
 	sf::Texture& GetUiTexture(UiTexture resource_id);
 	sf::Image& GetCursorImage(CursorType cursor_id);
 	const core::SmallVector<sf::Texture, 4>& GetTileTextures(TileType type) const {

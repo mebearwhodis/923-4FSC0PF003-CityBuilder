@@ -71,7 +71,7 @@ sf::Vector2f Walker::GetLastDestination() const
 
 behaviour_tree::Status Walker::GoToNearest(Tilemap& tilemap, sf::Vector2f pos, int& stamina, bool use_stamina) {
 	if (squaredMagnitude(pos - path_.final_destination()) > std::numeric_limits<float>::epsilon()) {
-		Path p = Pathfinder::CalculatePath(tilemap.GetWalkableTiles(), GetLastDestination(), pos, 64);
+		Path p = CalculatePath(tilemap.GetWalkableTiles(), GetLastDestination(), pos, 64);
 		if (p.is_available()) {
 			set_path(p);
 			if (use_stamina) {

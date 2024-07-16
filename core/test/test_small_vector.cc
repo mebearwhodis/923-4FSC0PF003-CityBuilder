@@ -115,3 +115,4 @@ TEST(SmallVectorTest, OutOfBoundsIndex)
     vec.PushBack(1);
     EXPECT_THROW(vec[1], std::out_of_range);
 }
+

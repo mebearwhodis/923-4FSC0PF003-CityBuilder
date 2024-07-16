@@ -17,7 +17,7 @@ protected:
 	void DefineTexture(int type) override;
 	Status SeekBerry();
 	Status GatherBerry();
-	Status ReturnHome();
+	Status ReturnHomeOrStorage();
 
 public:
 	Gatherer(const float x, const float y, const float linear_speed, Tilemap& tilemap);

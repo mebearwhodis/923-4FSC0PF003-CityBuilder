@@ -209,6 +209,9 @@ sf::Vector2f Tilemap::GetClosest(sf::Vector2f position, TileType type) const
 	case TileType::kBerryFull:
 		type_map = berries_;
 		break;
+	case TileType::kStorage:
+		type_map = storages_;
+		break;
 	default: ;
 	}
 

@@ -18,23 +18,27 @@ namespace core
     public:
         Queue() : front_(0), back_(0), size_(0) {}
 
-        void Push(const T& item)
-        {
-            if (size_ == data_.capacity())
-            {
-                data_.reserve(data_.capacity() == 0 ? 1 : data_.capacity() * 2);
+        void Push(const T& item) {
+            if (size_ == data_.capacity()) {
+                // Handle capacity expansion
+                std::vector<T> new_data(data_.capacity() == 0 ? 1 : data_.capacity() * 2);
+                for (std::size_t i = 0; i < size_; ++i) {
+                    new_data[i] = data_[(front_ + i) % data_.capacity()];
+                }
+                data_ = std::move(new_data);
+                front_ = 0;
+                back_ = size_;
             }
-            if (size_ < data_.size())
-            {
+            if (size_ < data_.size()) {
                 data_[back_] = item;
             }
-            else
-            {
+            else {
                 data_.push_back(item);
             }
             back_ = (back_ + 1) % data_.capacity();
             size_++;
         }
+
 
         void Pop()
         {

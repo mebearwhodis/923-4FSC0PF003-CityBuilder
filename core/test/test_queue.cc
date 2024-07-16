@@ -89,14 +89,13 @@ TEST_P(QueueFixture, CapacityAndSize)
 	EXPECT_EQ(queue.Size(), 25);
 	EXPECT_EQ(queue.Capacity(), queueCapacity);
 
-	//TODO Can't get this to work I don't know why it crashes
-	//for (int i = 0; i < 25; ++i)
-	//{
-	//	queue.Push(1);
-	//}
+	for (int i = 0; i < 25; ++i)
+	{
+		queue.Push(1);
+	}
 
-	//EXPECT_EQ(queue.Size(), 50);
-	//EXPECT_EQ(queue.Capacity(), queueCapacity);
+	EXPECT_EQ(queue.Size(), 50);
+	EXPECT_EQ(queue.Capacity(), queueCapacity);
 }
 
 

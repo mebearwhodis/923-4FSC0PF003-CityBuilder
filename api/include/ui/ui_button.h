@@ -22,7 +22,6 @@ private:
 	sf::Sprite sprite_;
 
 	sf::Text text_;
-	sf::Text text_down_;
 
 
 	bool is_visible_ = true;
@@ -33,7 +32,7 @@ private:
 public:
 
 	bool ContainsMouse(const sf::Event::MouseButtonEvent& event) const;
-	UiButton(sf::Vector2f positionRelativeToView, sf::Color colorBase, std::string text, UiTexture up_texture_name, bool visible);
+	UiButton(sf::Vector2f positionRelativeToView, sf::Color colorBase, UiTexture up_texture_name, bool visible);
 	void HandleEvent(const sf::Event& event);
 
 	//Callback pour avoir une fonction spécifique au bouton

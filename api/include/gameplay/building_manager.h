@@ -24,11 +24,12 @@ public:
 	sf::RectangleShape HoverTile() { return hover_tile_; }
 	void SetHoverTilePosition(sf::Vector2f position);
 	bool IsActive() const { return is_active_; }
-	bool AddBuilding(Tile& tile);
+	bool AddBuilding(Tile& tile, Tilemap& tilemap);
 	void ClearBuildings() { buildings_.clear(); }
 	TileType building_type() const { return building_type_; }
 	void set_building_type(TileType building_type);
 	void ChangeHoverTileColour(sf::Color colour);
+
 
 protected:
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;

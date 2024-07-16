@@ -10,6 +10,7 @@ void ResourceManager::LoadAllTextures()
 	ZoneScoped;
 #endif
 
+	font_.loadFromFile("../resources/fonts/DejaVuSans.ttf");
 
 #ifdef TRACY_ENABLE
 	TracyCZoneN(blankTexture, "Blank Texture", true);
@@ -33,7 +34,7 @@ void ResourceManager::LoadAllTextures()
 	LoadUITexture("../resources/sprites/ui/button_forge_down.png", UiTexture::kForgeDown);
 	LoadUITexture("../resources/sprites/ui/button_sawmill_up.png", UiTexture::kSawmillUp);
 	LoadUITexture("../resources/sprites/ui/button_sawmill_down.png", UiTexture::kSawmillDown);
-	LoadUITexture("../resources/sprites/ui/button_storage_down.png", UiTexture::kStorageUp);
+	LoadUITexture("../resources/sprites/ui/button_storage_up.png", UiTexture::kStorageUp);
 	LoadUITexture("../resources/sprites/ui/button_storage_down.png", UiTexture::kStorageDown);
 	LoadUITexture("../resources/sprites/ui/gameplay_resources.png", UiTexture::kGameplayResourcesUp);
 	LoadUITexture("../resources/sprites/ui/gameplay_resources.png", UiTexture::kGameplayResourcesDown); //it's the same because it's not really a button, I just used the same class to avoid making a new one for only one ui element

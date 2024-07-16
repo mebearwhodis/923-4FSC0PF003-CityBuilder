@@ -10,15 +10,16 @@
 Game::Game() :
 	window_(sf::VideoMode(1920, 1080), "My window"),
 	game_view_(sf::Vector2f(960, 540), sf::Vector2f(1920, 1080)),
-	button_menu_(sf::Vector2f(100, 100), sf::Color::Cyan, " ", UiTexture::kMenuUp, true),
-	button_build_house_(sf::Vector2f(100, 155), sf::Color::Cyan, " ", UiTexture::kHouseUp, false),
-	button_build_forge_(sf::Vector2f(100, 210), sf::Color::Cyan, " ", UiTexture::kForgeUp, false),
-	button_build_sawmill_(sf::Vector2f(100, 265), sf::Color::Cyan, " ", UiTexture::kSawmillUp, false),
-	button_build_storage_(sf::Vector2f(100, 320), sf::Color::Cyan, " ", UiTexture::kStorageUp, false),
-	gameplay_resources_(sf::Vector2f(1820, 100), sf::Color::Cyan, " ", UiTexture::kGameplayResourcesUp, true),
+	button_menu_(sf::Vector2f(100, 100), sf::Color::Cyan, UiTexture::kMenuUp, true),
+	button_build_house_(sf::Vector2f(100, 155), sf::Color::Cyan, UiTexture::kHouseUp, false),
+	button_build_forge_(sf::Vector2f(100, 210), sf::Color::Cyan, UiTexture::kForgeUp, false),
+	button_build_sawmill_(sf::Vector2f(100, 265), sf::Color::Cyan, UiTexture::kSawmillUp, false),
+	button_build_storage_(sf::Vector2f(100, 320), sf::Color::Cyan, UiTexture::kStorageUp, false),
+	gameplay_resources_(sf::Vector2f(1820, 100), sf::Color::Cyan, UiTexture::kGameplayResourcesUp, true),
 	buttons_{ &button_menu_, &button_build_house_, &button_build_forge_, &button_build_sawmill_, &button_build_storage_, &gameplay_resources_ },
 	any_button_pressed_(false)
 {
+
 }
 
 
@@ -47,15 +48,15 @@ void Game::init() {
 	const sf::Vector2f map_center(map_size.x / 2.0f, map_size.y / 2.0f);
 	game_view_.setCenter(map_center);
 	game_view_.setBounds(sf::FloatRect(0, 0, map_size.x, map_size.y));
+
 	SetCallbacks();
+	CreateTextboxes();
 }
 
 
 void Game::update() {
 
 	while (window_.isOpen()) {
-
-
 
 		game_view_.apply(window_);
 		sf::Vector2i mouse_pos = sf::Mouse::getPosition(window_);
@@ -102,8 +103,8 @@ void Game::update() {
 
 		// draw everything here...
 		window_.draw(map_);
-		window_.draw(building_manager_);
 		window_.draw(villager_manager_);
+		window_.draw(building_manager_);
 
 		if (building_manager_.IsActive()) {
 			if (map_.GetSelectedTileType() == TileType::kPlain)
@@ -118,14 +119,16 @@ void Game::update() {
 			window_.draw(building_manager_.HoverTile());
 		}
 
-		//TEST
-		//window_.draw(billy);
-
 		window_.setView(hud_view_);
 
-		for (const auto button : buttons_)
+		for (const auto& button : buttons_)
 		{
 			window_.draw(*button);
+		}
+
+		for (const auto& textbox : textboxes_)
+		{
+			window_.draw(textbox);
 		}
 
 		// end the current frame
@@ -141,12 +144,12 @@ void Game::SetCallbacks()
 {
 	map_.clicked_tile_ = [&](Tile& tile) {
 		//std::cout << "Tile clicked:\t" << tile.Position().x << "/" << tile.Position().y << "\t" << std::endl;
-		if(economy_manager_.current_population() == economy_manager_.total_population())
+		if (economy_manager_.current_population() == economy_manager_.total_population())
 		{
 			return;
 		}
 
-		if (building_manager_.AddBuilding(tile))
+		if (building_manager_.AddBuilding(tile, map_))
 		{
 			switch (building_manager_.building_type())
 			{
@@ -183,16 +186,6 @@ void Game::SetCallbacks()
 		}
 		};
 
-	// Set button callbacks
-	//button_generate_map_.callback_ = [this]() {
-	//	map_.Generate();
-	//	};
-
-	//button_clear_map_.callback_ = [this]() {
-	//	map_.Clear();
-	//	building_manager_.ClearBuildings();
-	//	};
-
 	button_menu_.callback_ = [this]()
 		{
 			building_manager_.set_building_type(TileType::kPlain);
@@ -201,6 +194,13 @@ void Game::SetCallbacks()
 			button_build_forge_.toggle_visible();
 			button_build_sawmill_.toggle_visible();
 			button_build_storage_.toggle_visible();
+			for (auto& textbox : textboxes_)
+			{
+				if(textbox.can_be_hidden())
+				{
+					textbox.toggle_visible();
+				}
+			}
 
 			if (building_manager_.IsActive())
 			{
@@ -259,4 +259,33 @@ void Game::SetCallbacks()
 				building_manager_.set_building_type(TileType::kStorage);
 			}
 		};
+}
+
+void Game::CreateTextboxes()
+{
+	const TextBox current_pop(sf::Vector2f(1860, 75), "0/5", 15, sf::Color::Black, true);
+	textboxes_[0] = current_pop;
+	const TextBox current_food(sf::Vector2f(1860, 98), std::to_string(economy_manager_.food()), 15, sf::Color::Black, true);
+	textboxes_[1] = current_food;
+	const TextBox current_wood(sf::Vector2f(1860, 119), std::to_string(economy_manager_.wood()), 15, sf::Color::Black, true);
+	textboxes_[2] = current_wood;
+	const TextBox current_stone(sf::Vector2f(1860, 140), std::to_string(economy_manager_.stone()), 15, sf::Color::Black, true);
+	textboxes_[3] = current_stone;
+
+	const TextBox house_cost_1(sf::Vector2f(55, 165), std::to_string(economy_manager_.current_house_cost()), 24, sf::Color::Black, false);
+	textboxes_[4] = house_cost_1;
+	const TextBox house_cost_2(sf::Vector2f(129, 165), std::to_string(economy_manager_.current_house_cost()), 24, sf::Color::Black, false);
+	textboxes_[5] = house_cost_2;
+	const TextBox forge_cost_1(sf::Vector2f(55, 220), std::to_string(economy_manager_.current_forge_cost()), 24, sf::Color::Black, false);
+	textboxes_[6] = forge_cost_1;
+	const TextBox forge_cost_2(sf::Vector2f(129, 220), std::to_string(economy_manager_.current_forge_cost()), 24, sf::Color::Black, false);
+	textboxes_[7] = forge_cost_2;
+	const TextBox sawmill_cost_1(sf::Vector2f(55, 275), std::to_string(economy_manager_.current_sawmill_cost()), 24, sf::Color::Black, false);
+	textboxes_[8] = sawmill_cost_1;
+	const TextBox sawmill_cost_2(sf::Vector2f(129, 275), std::to_string(economy_manager_.current_sawmill_cost()), 24, sf::Color::Black, false);
+	textboxes_[9] = sawmill_cost_2;
+	const TextBox storage_cost_1(sf::Vector2f(55, 330), std::to_string(economy_manager_.current_storage_cost()), 24, sf::Color::Black, false);
+	textboxes_[10] = storage_cost_1;
+	const TextBox storage_cost_2(sf::Vector2f(129, 330), std::to_string(economy_manager_.current_storage_cost()), 24, sf::Color::Black, false);
+	textboxes_[11] = storage_cost_2;
 }

@@ -4,6 +4,7 @@
 #include <array>
 #include <stdexcept>
 #include <initializer_list>
+#include <memory>
 
 namespace core
 {
@@ -79,6 +80,10 @@ namespace core
 			if (size_ > 0)
 			{
 				end_ = (end_ - 1 + Capacity) % Capacity;
+				if constexpr (std::is_destructible_v<T>)
+				{
+					data_[end_].~T();
+				}
 				size_--;
 			}
 			else
@@ -186,10 +191,13 @@ namespace core
 			size_ = 0;
 		}
 
-		//TODO Verifications and tests (test with UNIQUE POINTERS because they're movable only uwu)
 		T& Back()
 		{
-			return data_[size_ - 1];
+			if (size_ == 0)
+			{
+				throw std::out_of_range("Vector empty");
+			}
+			return data_[(end_ - 1 + Capacity) % Capacity];
 		}
 	};
 

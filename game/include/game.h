@@ -10,6 +10,7 @@
 #include "gameplay/view.h"
 #include "gameplay/ai/villager_manager.h"
 #include "ui/cursor.h"
+#include "ui/textbox.h"
 
 class Game {
 public:
@@ -29,6 +30,7 @@ private:
     Cursor cursor_manager_;
     sf::Vector2u tile_size_;
     void SetCallbacks();
+    void CreateTextboxes();
 
 
     UiButton button_menu_;
@@ -38,6 +40,7 @@ private:
     UiButton button_build_storage_;
     UiButton gameplay_resources_;
     std::array<UiButton*, 6> buttons_;
+    std::array<TextBox, 12> textboxes_ = {};
     bool any_button_pressed_;
 };
 

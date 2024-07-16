@@ -17,7 +17,7 @@ protected:
 	void DefineTexture(int type) override;
 	Status SeekWood();
 	Status GatherWood();
-	Status ReturnHome();
+	Status ReturnHomeOrStorage();
 
 public:
 	Woodsman(const float x, const float y, const float linear_speed, Tilemap& tilemap);
