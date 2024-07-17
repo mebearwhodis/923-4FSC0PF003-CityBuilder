@@ -22,7 +22,7 @@ Miner::Miner(float x, float y, float linear_speed, Tilemap& tilemap) : tilemap_(
 Miner::Miner(const Miner& w) : Walker(w), tilemap_(w.tilemap_)
 {
 	stamina_ = w.stamina_;
-	home_position_ = w.getPosition();
+	home_position_ = w.home_position_;
 	InitiateBehaviourTree();
 }
 
@@ -74,6 +74,12 @@ void Miner::InitiateBehaviourTree()
 	home_sequence->AddNode(refill_stamina);
 
 	bt_tree_.Attach(main_selector);
+
+	check_stamina = nullptr;
+	seek_stone = nullptr;
+	gather_stone = nullptr;
+	return_home = nullptr;
+	refill_stamina = nullptr;
 }
 
 void Miner::Tick()

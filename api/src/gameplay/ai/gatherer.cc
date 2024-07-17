@@ -22,7 +22,7 @@ Gatherer::Gatherer(float x, float y, float linear_speed, Tilemap& tilemap) : til
 Gatherer::Gatherer(const Gatherer& w) : Walker(w), tilemap_(w.tilemap_)
 {
 	stamina_ = w.stamina_;
-	home_position_ = w.getPosition();
+	home_position_ = w.home_position_;
 	InitiateBehaviourTree();
 }
 
@@ -74,6 +74,12 @@ void Gatherer::InitiateBehaviourTree()
 	home_sequence->AddNode(refill_stamina);
 
 	bt_tree_.Attach(main_selector);
+
+	check_stamina = nullptr;
+	seek_berry = nullptr;
+	gather_berry = nullptr;
+	return_home = nullptr;
+	refill_stamina = nullptr;
 }
 
 void Gatherer::Tick()

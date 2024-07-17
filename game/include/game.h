@@ -39,7 +39,7 @@ private:
     UiButton button_build_sawmill_;
     UiButton button_build_storage_;
     UiButton gameplay_resources_;
-    std::array<UiButton*, 6> buttons_;
+    std::array<UiButton*, 6> ui_elements_;
     std::array<TextBox, 12> textboxes_ = {};
     bool any_button_pressed_;
 };

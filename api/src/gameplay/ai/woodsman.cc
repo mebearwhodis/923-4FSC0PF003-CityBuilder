@@ -22,7 +22,7 @@ Woodsman::Woodsman(float x, float y, float linear_speed, Tilemap& tilemap) : til
 Woodsman::Woodsman(const Woodsman& w) : Walker(w), tilemap_(w.tilemap_)
 {
 	stamina_ = w.stamina_;
-	home_position_ = w.getPosition();
+	home_position_ = w.home_position_;
 	InitiateBehaviourTree();
 }
 
@@ -75,6 +75,12 @@ void Woodsman::InitiateBehaviourTree()
 
 	bt_tree_.Attach(main_selector);
 	//std::cout << "Behavior tree initialized for Woodsman" << std::endl;
+
+	check_stamina = nullptr;
+	seek_wood = nullptr;
+	gather_wood = nullptr;
+	return_home = nullptr;
+	refill_stamina = nullptr;
 }
 
 void Woodsman::Tick()

@@ -16,7 +16,7 @@ Game::Game() :
 	button_build_sawmill_(sf::Vector2f(100, 265), sf::Color::Cyan, UiTexture::kSawmillUp, false),
 	button_build_storage_(sf::Vector2f(100, 320), sf::Color::Cyan, UiTexture::kStorageUp, false),
 	gameplay_resources_(sf::Vector2f(1820, 100), sf::Color::Cyan, UiTexture::kGameplayResourcesUp, true),
-	buttons_{ &button_menu_, &button_build_house_, &button_build_forge_, &button_build_sawmill_, &button_build_storage_, &gameplay_resources_ },
+	ui_elements_{ &button_menu_, &button_build_house_, &button_build_forge_, &button_build_sawmill_, &button_build_storage_, &gameplay_resources_ },
 	any_button_pressed_(false)
 {
 
@@ -79,7 +79,7 @@ void Game::update() {
 			game_view_.handleEvent(event, window_);
 
 			//Don't trigger event on map if clicking a button
-			for (const auto button : buttons_)
+			for (const auto button : ui_elements_)
 			{
 				if (button->is_visible())
 				{
@@ -121,7 +121,7 @@ void Game::update() {
 
 		window_.setView(hud_view_);
 
-		for (const auto& button : buttons_)
+		for (const auto& button : ui_elements_)
 		{
 			window_.draw(*button);
 		}
@@ -142,6 +142,7 @@ void Game::update() {
 
 void Game::SetCallbacks()
 {
+	//TODO Check lambdas, capture [] only what you need, not THIS, THIS is bad
 	map_.clicked_tile_ = [&](Tile& tile) {
 		//std::cout << "Tile clicked:\t" << tile.Position().x << "/" << tile.Position().y << "\t" << std::endl;
 		if (economy_manager_.current_population() == economy_manager_.total_population())
