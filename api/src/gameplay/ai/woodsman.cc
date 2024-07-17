@@ -7,6 +7,7 @@
 #include "behaviour_tree/leaf.h"
 #include "behaviour_tree/selector.h"
 #include "behaviour_tree/sequence.h"
+#include "gameplay/economy_manager.h"
 
 
 Woodsman::Woodsman(float x, float y, float linear_speed, Tilemap& tilemap) : tilemap_(tilemap), Walker(x, y, linear_speed)
@@ -30,11 +31,15 @@ void Woodsman::InitiateBehaviourTree()
 {
 	Leaf* check_stamina = new Leaf([this]()
 		{
-			if (stamina_ >= 0) { return Status::kSuccess; }
+			if (stamina_ >= 0)
+			{
+				return Status::kSuccess;
+			}
 			else { return Status::kFailure; }
 		});
 	Leaf* seek_wood = new Leaf([this]()
 		{
+			can_deposit_ = false;
 			return SeekWood();
 		});
 
@@ -50,6 +55,7 @@ void Woodsman::InitiateBehaviourTree()
 
 	Leaf* refill_stamina = new Leaf([this]()
 		{
+			can_deposit_ = true;
 			stamina_ = 15;
 			return Status::kFailure;
 		});
@@ -110,6 +116,8 @@ Status Woodsman::GatherWood()
 {
 	if (tilemap_.Gather(getPosition(), TileType::kForest))
 	{
+
+		resources_held_ += (std::rand() % 5) + 1;
 		//std::cout << "Cutting wood" << std::endl;
 		return Status::kSuccess;
 	}

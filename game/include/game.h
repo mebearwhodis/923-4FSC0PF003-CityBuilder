@@ -31,6 +31,7 @@ private:
     sf::Vector2u tile_size_;
     void SetCallbacks();
     void CreateTextboxes();
+    void UpdateTextboxes();
 
 
     UiButton button_menu_;

@@ -25,6 +25,6 @@ public:
 	bool is_visible() const { return is_visible_; }
 	void toggle_visible() { is_visible_ = !is_visible_; }
 	bool can_be_hidden() const { return can_be_hidden_; }
-	void update_textbox(sf::Color colour, sf::Text text);
+	void update_textbox(sf::Color colour, std::string text);
 };
 #endif // API_UI_TEXTBOX_H_

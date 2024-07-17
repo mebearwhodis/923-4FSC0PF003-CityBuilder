@@ -5,6 +5,7 @@
 #include "gatherer.h"
 #include "miner.h"
 #include "woodsman.h"
+#include "gameplay/economy_manager.h"
 #include "graphics/sprite_entity.h"
 #include "world_generation/tile.h"
 #include "world_generation/tilemap.h"
@@ -19,7 +20,7 @@ class VillagerManager : public sf::Drawable
 
 public:
 	void SpawnVillager(sf::Vector2f position, Tilemap& tilemap, VillagerType type);
-	void Tick();
+	void Tick(EconomyManager& economy_manager);
 protected:
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 };

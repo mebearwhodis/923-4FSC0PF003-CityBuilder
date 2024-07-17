@@ -1,16 +1,15 @@
 ﻿#include <Tracy/Tracy.hpp>
 #include "game.h"
 
+//TODO: write readme to explain buttons and mechanics - and switch the repo to public
 //TODO: check all #include guards and Google style guide
-//TODO: have text update when something changes
-//TODO: have little guys actually harvest resources - give them a variable of how many resources they have, icnrement it when they harvest and put it in the 'storage' when they get back home/to the storage
+
+//TODO: Add a way to get trees and berries to grow back -> Tilemap Tick() -> tire un nombre aléatoire, pourcentage de chance qu'un arbre et/ou baie aléatoire repousse
 //TODO: Save & Load system
 
-//TODO maybe add an idle state to the BT, or something they can do when there are no available resources -> check for a certain number of tries in the pathfinding? idk
-//TODO Add a way to get trees to grow back
-//TODO Add trading system ?
-
-//TODO: Set building_type to plain after building something to avoid being able to build without engouh resources OR check again when constructing
+//TODO: maybe add an idle state to the BT, or something they can do when there are no available resources or no path to it -> check for a certain number of tries in the pathfinding? idk / try again every x seconds
+//TODO: Add trading system ?
+//TODO: Cap building costs at 999 and population at ??/??
 
 int main() {
     Game game;

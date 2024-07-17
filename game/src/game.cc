@@ -44,7 +44,7 @@ void Game::init() {
 
 
 	// Center the view to the middle of the tilemap
-	sf::Vector2f map_size(map_.playground_size_u().x * tile_size_.x, map_.playground_size_u().y * tile_size_.y);
+	const sf::Vector2f map_size(map_.playground_size_u().x * tile_size_.x, map_.playground_size_u().y * tile_size_.y);
 	const sf::Vector2f map_center(map_size.x / 2.0f, map_size.y / 2.0f);
 	game_view_.setCenter(map_center);
 	game_view_.setBounds(sf::FloatRect(0, 0, map_size.x, map_size.y));
@@ -60,13 +60,17 @@ void Game::update() {
 
 		game_view_.apply(window_);
 		sf::Vector2i mouse_pos = sf::Mouse::getPosition(window_);
-		sf::Vector2f mouse_world_pos = window_.mapPixelToCoords(mouse_pos);
-		sf::Vector2f mouse_tile_coord(
+		const sf::Vector2f mouse_world_pos = window_.mapPixelToCoords(mouse_pos);
+		const sf::Vector2f mouse_tile_coord(
 			static_cast<int>(mouse_world_pos.x / tile_size_.x) * tile_size_.x,
 			static_cast<int>(mouse_world_pos.y / tile_size_.y) * tile_size_.y
 		);
 
-		villager_manager_.Tick();
+		villager_manager_.Tick(economy_manager_);
+		if(economy_manager_.text_to_update())
+		{
+			UpdateTextboxes();
+		}
 
 		game_view_.handleInput(window_);
 		// check all the window's events that were triggered since the last iteration of the loop
@@ -143,9 +147,10 @@ void Game::update() {
 void Game::SetCallbacks()
 {
 	//TODO Check lambdas, capture [] only what you need, not THIS, THIS is bad
+	//TODO Maybe just make this a function rather than a lambda
 	map_.clicked_tile_ = [&](Tile& tile) {
 		//std::cout << "Tile clicked:\t" << tile.Position().x << "/" << tile.Position().y << "\t" << std::endl;
-		if (economy_manager_.current_population() == economy_manager_.total_population())
+		if (economy_manager_.current_population() == economy_manager_.total_population() && building_manager_.building_type() != TileType::kHouse)
 		{
 			return;
 		}
@@ -184,6 +189,8 @@ void Game::SetCallbacks()
 			default:
 				break;
 			}
+			economy_manager_.set_text_to_update(true);
+			building_manager_.set_building_type(TileType::kPlain);
 		}
 		};
 
@@ -197,7 +204,7 @@ void Game::SetCallbacks()
 			button_build_storage_.toggle_visible();
 			for (auto& textbox : textboxes_)
 			{
-				if(textbox.can_be_hidden())
+				if (textbox.can_be_hidden())
 				{
 					textbox.toggle_visible();
 				}
@@ -215,7 +222,7 @@ void Game::SetCallbacks()
 
 	button_build_house_.callback_ = [this]()
 		{
-			if (economy_manager_.wood() < economy_manager_.current_house_cost() && economy_manager_.food() < economy_manager_.current_house_cost())
+			if (economy_manager_.wood() < economy_manager_.current_house_cost() || economy_manager_.food() < economy_manager_.current_house_cost())
 			{
 				return;
 			}
@@ -227,7 +234,7 @@ void Game::SetCallbacks()
 
 	button_build_forge_.callback_ = [this]()
 		{
-			if (economy_manager_.wood() < economy_manager_.current_forge_cost() && economy_manager_.stone() < economy_manager_.current_forge_cost())
+			if (economy_manager_.wood() < economy_manager_.current_forge_cost() || economy_manager_.stone() < economy_manager_.current_forge_cost() || economy_manager_.current_population() == economy_manager_.total_population())
 			{
 				return;
 			}
@@ -239,7 +246,7 @@ void Game::SetCallbacks()
 
 	button_build_sawmill_.callback_ = [this]()
 		{
-			if (economy_manager_.wood() < economy_manager_.current_sawmill_cost() && economy_manager_.stone() < economy_manager_.current_sawmill_cost())
+			if (economy_manager_.wood() < economy_manager_.current_sawmill_cost() || economy_manager_.stone() < economy_manager_.current_sawmill_cost() || economy_manager_.current_population() == economy_manager_.total_population())
 			{
 				return;
 			}
@@ -251,7 +258,7 @@ void Game::SetCallbacks()
 
 	button_build_storage_.callback_ = [this]()
 		{
-			if (economy_manager_.wood() < economy_manager_.current_storage_cost() && economy_manager_.stone() < economy_manager_.current_storage_cost())
+			if (economy_manager_.wood() < economy_manager_.current_storage_cost() || economy_manager_.stone() < economy_manager_.current_storage_cost() || economy_manager_.current_population() == economy_manager_.total_population())
 			{
 				return;
 			}
@@ -264,7 +271,8 @@ void Game::SetCallbacks()
 
 void Game::CreateTextboxes()
 {
-	const TextBox current_pop(sf::Vector2f(1860, 75), "0/5", 15, sf::Color::Black, true);
+	const std::string population = std::to_string(economy_manager_.current_population()) + "/" + std::to_string(economy_manager_.total_population());
+	const TextBox current_pop(sf::Vector2f(1860, 75), population, 15, sf::Color::Black, true);
 	textboxes_[0] = current_pop;
 	const TextBox current_food(sf::Vector2f(1860, 98), std::to_string(economy_manager_.food()), 15, sf::Color::Black, true);
 	textboxes_[1] = current_food;
@@ -289,4 +297,26 @@ void Game::CreateTextboxes()
 	textboxes_[10] = storage_cost_1;
 	const TextBox storage_cost_2(sf::Vector2f(129, 330), std::to_string(economy_manager_.current_storage_cost()), 24, sf::Color::Black, false);
 	textboxes_[11] = storage_cost_2;
+}
+
+void Game::UpdateTextboxes()
+{
+	const std::string population = std::to_string(economy_manager_.current_population()) + "/" + std::to_string(economy_manager_.total_population());
+
+	textboxes_[0].update_textbox(economy_manager_.current_population() == economy_manager_.total_population() ? sf::Color::Red : sf::Color::Black, population);
+	textboxes_[1].update_textbox(sf::Color::Black, std::to_string(economy_manager_.food()));
+	textboxes_[2].update_textbox(sf::Color::Black, std::to_string(economy_manager_.wood()));
+	textboxes_[3].update_textbox(sf::Color::Black, std::to_string(economy_manager_.stone()));
+
+	//wood - food, wood - stone
+	textboxes_[4].update_textbox(economy_manager_.wood() < economy_manager_.current_house_cost() ? sf::Color::Red : sf::Color::Black, std::to_string(economy_manager_.current_house_cost()));
+	textboxes_[5].update_textbox(economy_manager_.food() < economy_manager_.current_house_cost() ? sf::Color::Red : sf::Color::Black, std::to_string(economy_manager_.current_house_cost()));
+	textboxes_[6].update_textbox(economy_manager_.wood() < economy_manager_.current_forge_cost() ? sf::Color::Red : sf::Color::Black, std::to_string(economy_manager_.current_forge_cost()));
+	textboxes_[7].update_textbox(economy_manager_.stone() < economy_manager_.current_forge_cost() ? sf::Color::Red : sf::Color::Black, std::to_string(economy_manager_.current_forge_cost()));
+	textboxes_[8].update_textbox(economy_manager_.wood() < economy_manager_.current_sawmill_cost() ? sf::Color::Red : sf::Color::Black, std::to_string(economy_manager_.current_sawmill_cost()));
+	textboxes_[9].update_textbox(economy_manager_.stone() < economy_manager_.current_sawmill_cost() ? sf::Color::Red : sf::Color::Black, std::to_string(economy_manager_.current_sawmill_cost()));
+	textboxes_[10].update_textbox(economy_manager_.wood() < economy_manager_.current_storage_cost() ? sf::Color::Red : sf::Color::Black, std::to_string(economy_manager_.current_storage_cost()));
+	textboxes_[11].update_textbox(economy_manager_.stone() < economy_manager_.current_storage_cost() ? sf::Color::Red : sf::Color::Black, std::to_string(economy_manager_.current_storage_cost()));
+
+	economy_manager_.set_text_to_update(false);
 }

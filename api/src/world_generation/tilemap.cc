@@ -32,6 +32,7 @@ void Tilemap::Generate()
 	std::default_random_engine e1(r());
 	std::uniform_int_distribution<int> uniform_dist(1, 10);
 
+	//TODO Perlin noise (check repo)
 
 	for (unsigned int x = 0; x < playground_size_u_.x; x++)
 	{

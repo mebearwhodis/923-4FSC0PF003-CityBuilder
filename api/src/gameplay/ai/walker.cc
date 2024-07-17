@@ -59,7 +59,7 @@ void Walker::Tick()
 			new_position = actual_position + direction * delta_time * linear_speed_;
 		}
 		setPosition(new_position);
-		sprite_.setPosition(new_position); // Use new_position directly
+		sprite_.setPosition(new_position);
 		frame_.setPosition(new_position);
 	}
 }

@@ -1,5 +1,4 @@
 #include "gameplay/ai/villager_manager.h"
-
 #include "gameplay/ai/woodsman.h"
 
 void VillagerManager::SpawnVillager(sf::Vector2f position, Tilemap& tilemap, VillagerType type)
@@ -9,13 +8,13 @@ void VillagerManager::SpawnVillager(sf::Vector2f position, Tilemap& tilemap, Vil
 	case VillagerType::kVillager:
 		break;
 	case VillagerType::kWoodsman:
-		woodsmen_.emplace_back(Woodsman(position.x, position.y, 64, tilemap));
+		woodsmen_.emplace_back(position.x, position.y, 64, tilemap);
 		break;
 	case VillagerType::kMiner:
-		miners_.emplace_back(Miner(position.x, position.y, 64, tilemap));
+		miners_.emplace_back(position.x, position.y, 64, tilemap);
 		break;
 	case VillagerType::kGatherer:
-		gatherers_.emplace_back(Gatherer(position.x, position.y, 64, tilemap));
+		gatherers_.emplace_back(position.x, position.y, 64, tilemap);
 		break;
 	default: ;
 	}
@@ -27,28 +26,46 @@ void VillagerManager::draw(sf::RenderTarget& target, sf::RenderStates states) co
 	{
 		target.draw(w, states);
 	}
-	for (const auto& w : miners_)
+	for (const auto& m : miners_)
 	{
-		target.draw(w, states);
+		target.draw(m, states);
 	}
-	for (const auto& w : gatherers_)
+	for (const auto& g : gatherers_)
 	{
-		target.draw(w, states);
+		target.draw(g, states);
 	}
 }
 
-void VillagerManager::Tick()
+void VillagerManager::Tick(EconomyManager& economy_manager)
 {
 	for (auto& w : woodsmen_)
 	{
 		w.Tick();
+		if(w.can_deposit())
+		{
+			economy_manager.AddWood(w.resources_held());
+			w.ResetResourcesHeld();
+			economy_manager.set_text_to_update(true);
+		}
 	}
-	for (auto& w : miners_)
+	for (auto& m : miners_)
 	{
-		w.Tick();
+		m.Tick();
+		if (m.can_deposit())
+		{
+			economy_manager.AddStone(m.resources_held());
+			m.ResetResourcesHeld();
+			economy_manager.set_text_to_update(true);
+		}
 	}
-	for (auto& w : gatherers_)
+	for (auto& g : gatherers_)
 	{
-		w.Tick();
+		g.Tick();
+		if (g.can_deposit())
+		{
+			economy_manager.AddFood(g.resources_held());
+			g.ResetResourcesHeld();
+			economy_manager.set_text_to_update(true);
+		}
 	}
 }

@@ -35,6 +35,7 @@ void Miner::InitiateBehaviourTree()
 		});
 	Leaf* seek_stone = new Leaf([this]()
 		{
+			can_deposit_ = false;
 			return SeekStone();
 		});
 
@@ -50,6 +51,7 @@ void Miner::InitiateBehaviourTree()
 
 	Leaf* refill_stamina = new Leaf([this]()
 		{
+			can_deposit_ = true;
 			stamina_ = 15;
 			return Status::kFailure;
 		});
@@ -108,6 +110,7 @@ Status Miner::GatherStone()
 {
 	if (tilemap_.Gather(getPosition(), TileType::kStone))
 	{
+		resources_held_ += (std::rand() % 5) + 1;
 		//std::cout << "Cutting wood" << std::endl;
 		return Status::kSuccess;
 	}

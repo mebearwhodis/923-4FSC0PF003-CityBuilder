@@ -4,16 +4,18 @@
 class EconomyManager
 {
 	//TODO tweak default values
-	int food_ = 500;
+	int food_ = 100;
 	int wood_ = 500;
 	int stone_ = 500;
 	int current_population_ = 0;
-	int total_population_ = 100000;
+	int total_population_ = 1;
 
-	int current_house_cost_ = 0;
-	int current_forge_cost_ = 0;
-	int current_sawmill_cost_ = 0;
-	int current_storage_cost_ = 0;
+	int current_house_cost_ = 10;
+	int current_forge_cost_ = 10;
+	int current_sawmill_cost_ = 10;
+	int current_storage_cost_ = 10;
+
+	bool text_to_update_ = true;
 
 public:
 	EconomyManager() = default;
@@ -37,5 +39,8 @@ public:
 	[[nodiscard]] int current_forge_cost() const;
 	[[nodiscard]] int current_sawmill_cost() const;
 	[[nodiscard]] int current_storage_cost() const;
+
+	bool text_to_update() const { return text_to_update_; }
+	void set_text_to_update(bool value) { text_to_update_ = value; }
 };
 #endif // API_GAMEPLAY_ECONOMY_MANAGER_H_
