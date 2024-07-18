@@ -79,6 +79,11 @@ void Game::update() {
 			if (event.type == sf::Event::Closed)
 				window_.close();
 
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::F5))
+			{
+				save_system_.SaveGame(map_, building_manager_, economy_manager_);
+			}
+
 			game_view_.handleEvent(event, window_);
 
 			//Don't trigger event on map if clicking a button

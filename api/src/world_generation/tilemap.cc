@@ -198,6 +198,8 @@ bool Tilemap::Gather(sf::Vector2f pos, TileType type)
 	return false;
 }
 
+
+
 void Tilemap::Regrow()
 {
 	std::vector<sf::Vector2f>* type_map = nullptr;

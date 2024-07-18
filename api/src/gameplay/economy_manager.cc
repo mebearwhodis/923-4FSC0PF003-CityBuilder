@@ -95,3 +95,4 @@ float EconomyManager::cost_multiplier() const
 	return cost_multiplier_;
 }
 
+

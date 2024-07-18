@@ -1,7 +1,10 @@
 #root
 cmake_minimum_required(VERSION 3.18)
 project(CityBuilder)
+include(FetchContent)
 
+FetchContent_Declare(json URL https://github.com/nlohmann/json/releases/download/v3.11.3/json.tar.xz)
+FetchContent_MakeAvailable(json)
 
 set (CMAKE_CXX_STANDARD 20)
 set (CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -21,7 +24,7 @@ add_subdirectory(api/)
 add_subdirectory(game/)
 
 add_executable(main main.cc)
-target_link_libraries(main PRIVATE core api game sfml-system sfml-network sfml-graphics sfml-window sfml-audio)
+target_link_libraries(main PRIVATE core api game sfml-system sfml-network sfml-graphics sfml-window sfml-audio nlohmann_json::nlohmann_json)
 
 if(ENABLE_PROFILING)
 	target_link_libraries(main PUBLIC Tracy::TracyClient)

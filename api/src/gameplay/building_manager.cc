@@ -86,6 +86,7 @@ void BuildingManager::ChangeHoverTileColour(sf::Color colour)
 	hover_tile_.setOutlineColor(colour);
 }
 
+
 void BuildingManager::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
 	for (const auto& b : buildings_)

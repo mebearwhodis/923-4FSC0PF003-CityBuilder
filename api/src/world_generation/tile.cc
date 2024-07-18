@@ -73,6 +73,7 @@ void Tile::setColor(const sf::Color& color)
 	//outline_.setOutlineColor(color);
 }
 
+
 void Tile::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
 	target.draw(sprite_, states);

@@ -4,6 +4,7 @@
 #include <functional>
 #include <iostream>
 #include <vector>
+#include <nlohmann/json.hpp>
 
 #include <SFML/Graphics/Drawable.hpp>
 #include <SFML/System/Vector2.hpp>

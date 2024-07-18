@@ -30,7 +30,6 @@ public:
 	void set_building_type(TileType building_type);
 	void ChangeHoverTileColour(sf::Color colour);
 
-
 protected:
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 };

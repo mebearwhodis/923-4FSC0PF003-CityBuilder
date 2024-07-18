@@ -1,5 +1,6 @@
 #ifndef API_WORLD_GENERATION_TILE_H_
 #define API_WORLD_GENERATION_TILE_H_
+#include <nlohmann/json.hpp>
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Graphics/Texture.hpp>
 #include <SFML/Graphics/RenderTarget.hpp>

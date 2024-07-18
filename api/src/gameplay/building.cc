@@ -9,6 +9,7 @@
 
 Building::Building(TileType type, float x, float y): SpriteEntity(x, y)
 {
+	type_ = type;
 	DefineTexture(static_cast<int>(type));
 }
 
@@ -20,3 +21,5 @@ void Building::DefineTexture(int type)
 		sprite_.setTexture(texture);
 	}
 }
+
+

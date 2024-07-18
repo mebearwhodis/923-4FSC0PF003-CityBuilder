@@ -1,5 +1,6 @@
 #ifndef API_GAMEPLAY_ECONOMY_MANAGER_H_
 #define API_GAMEPLAY_ECONOMY_MANAGER_H_
+#include <nlohmann/json.hpp>
 
 class EconomyManager
 {

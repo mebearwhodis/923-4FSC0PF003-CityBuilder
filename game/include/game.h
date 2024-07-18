@@ -2,6 +2,7 @@
 #define GAME_GAME_H_
 #include <SFML/Graphics/RenderWindow.hpp>
 
+#include "save_system.h"
 #include "gameplay/building_manager.h"
 #include "gameplay/economy_manager.h"
 #include "world_generation/tilemap.h"
@@ -27,6 +28,7 @@ private:
     BuildingManager building_manager_;
     VillagerManager villager_manager_;
     EconomyManager economy_manager_;
+    SaveSystem save_system_;
     Cursor cursor_manager_;
     sf::Vector2u tile_size_;
     void SetCallbacks();
