@@ -327,6 +327,22 @@ void Tilemap::Tick()
 	}
 }
 
+void Tilemap::LoadTile(int type, float x, float y, int texture_index, bool walkable, bool buildable)
+{
+	tiles_.emplace_back(type, x, y, texture_index, walkable, buildable);
+}
+
+void Tilemap::clearVectors()
+{
+	trees_.clear();
+	cut_trees_.clear();
+	stones_.clear();
+	mined_stones_.clear();
+	berries_.clear();
+	gathered_berries_.clear();
+	storages_.clear();
+}
+
 void Tilemap::applyFadeEffect(sf::RenderTarget& target)
 {
 	sf::View view = target.getView();

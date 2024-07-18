@@ -81,7 +81,12 @@ void Game::update() {
 
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::F5))
 			{
-				save_system_.SaveGame(map_, building_manager_, economy_manager_);
+				save_system_.SaveGame(map_, building_manager_, economy_manager_, "save1.json");
+			}
+
+			if (sf::Keyboard::isKeyPressed(sf::Keyboard::F9))
+			{
+				save_system_.LoadGame(map_,"save1.json");
 			}
 
 			game_view_.handleEvent(event, window_);

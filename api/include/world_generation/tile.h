@@ -25,6 +25,7 @@ protected:
 public:
 	Tile();
 	Tile(TileType type, float x, float y, bool walkable);
+	Tile(int type, float x, float y, int texture_index, bool walkable, bool buildable);
 	bool is_walkable() const { return is_walkable_; }
 	bool is_buildable() const { return is_buildable_; }
 	void set_walkable(bool walkable) { is_walkable_ = walkable; }
@@ -35,7 +36,8 @@ public:
 	void Select();
 	void Deselect();
 	void setColor(const sf::Color& color); // New method to set the color
-	TileType type() { return type_; }
+	TileType type() const { return type_; }
+	int tile_texture_index() const { return tile_texture_index_; }
 };
 
 #endif

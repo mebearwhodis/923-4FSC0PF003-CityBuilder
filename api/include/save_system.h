@@ -15,8 +15,8 @@
 class SaveSystem
 {
 public:
-	void SaveGame(Tilemap& tilemap, BuildingManager& building_manager, EconomyManager& economy_manager);
-	void LoadGame(const std::string& file_name);
+	void SaveGame(Tilemap& tilemap, BuildingManager& building_manager, EconomyManager& economy_manager, const std::string& file_name);
+	void LoadGame(Tilemap& tilemap, const std::string& file_name);
 };
 
 
