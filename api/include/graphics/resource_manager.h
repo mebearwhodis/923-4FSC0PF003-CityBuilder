@@ -33,7 +33,7 @@ public:
 	ResourceManager(const ResourceManager&) = delete;
 	ResourceManager& operator=(const ResourceManager&) = delete;
 
-	//TODO rename getters
+	//TODO: CLEANUP rename getters
 	sf::Font& GetFont() { return font_; }
 	sf::Texture& GetUiTexture(UiTexture resource_id);
 	sf::Image& GetCursorImage(CursorType cursor_id);

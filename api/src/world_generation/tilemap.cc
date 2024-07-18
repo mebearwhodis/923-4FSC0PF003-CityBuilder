@@ -32,7 +32,7 @@ void Tilemap::Generate()
 	std::default_random_engine e1(r());
 	std::uniform_int_distribution<int> uniform_dist(1, 10);
 
-	//TODO Perlin noise (check repo)
+	//TODO: SOON Perlin noise (check repo)
 
 	for (unsigned int x = 0; x < playground_size_u_.x; x++)
 	{
@@ -42,16 +42,16 @@ void Tilemap::Generate()
 			double tile_y = y * playground_tile_size_u_.y;
 
 			//Make sure centre of the map is all plains
-			if(x == playground_size_u_.x / 2 && y == playground_size_u_.y /2)
+			if (x == playground_size_u_.x / 2 && y == playground_size_u_.y / 2)
 			{
 				tiles_.emplace_back(TileType::kCastleBase, tile_x, tile_y, false);
-				
+
 			}
-			else if(x == playground_size_u_.x / 2 && y == playground_size_u_.y /2 - 1)
+			else if (x == playground_size_u_.x / 2 && y == playground_size_u_.y / 2 - 1)
 			{
 				tiles_.emplace_back(TileType::kCastleRoof, tile_x, tile_y, false);
 			}
-			else if(x > playground_size_u_.x / 2 - 3 && x < playground_size_u_.x /2 + 3 && y > playground_size_u_.y /2 - 3 && y < playground_size_u_.y /2 + 3)
+			else if (x > playground_size_u_.x / 2 - 3 && x < playground_size_u_.x / 2 + 3 && y > playground_size_u_.y / 2 - 3 && y < playground_size_u_.y / 2 + 3)
 			{
 				tiles_.emplace_back(TileType::kPlain, tile_x, tile_y, true);
 			}
@@ -59,7 +59,6 @@ void Tilemap::Generate()
 			{
 				//int idx = x * playground_size_u_.y + y;
 
-				//TODO Perlin Noise/ WFC/ Whatevs
 
 				int rnd = uniform_dist(e1);
 
@@ -137,31 +136,35 @@ void Tilemap::HandleEvent(const sf::Event& event, const sf::RenderWindow& window
 
 bool Tilemap::Gather(sf::Vector2f pos, TileType type)
 {
-
-	std::vector<sf::Vector2f>* type_map = nullptr; 
-		TileType new_tile = {};
+	std::vector<sf::Vector2f>* type_map = nullptr;
+	std::vector<sf::Vector2f>* gathered_map = nullptr;
+	TileType new_tile = {};
 
 	switch (type) {
 	case TileType::kForest:
 		type_map = &trees_;
+		gathered_map = &cut_trees_;
 		new_tile = TileType::kForestCutDown;
 		break;
 	case TileType::kStone:
 		type_map = &stones_;
+		gathered_map = &mined_stones_;
 		new_tile = TileType::kPlain;
 		break;
 	case TileType::kBerryFull:
 		type_map = &berries_;
+		gathered_map = &gathered_berries_;
 		new_tile = TileType::kBerryEmpty;
 		break;
 	default:;
 	}
 
-	if(type_map != nullptr)
+	if (type_map != nullptr)
 	{
 		auto item = std::find_if(type_map->begin(), type_map->end(), [pos](const sf::Vector2f& t) { return pos == t; });
 		if (item != type_map->end())
 		{
+			gathered_map->emplace_back(pos);
 			type_map->erase(item);
 			auto tile = std::find_if(tiles_.begin(), tiles_.end(), [pos](const Tile& t) {return pos == t.Position(); });
 			if (tile != tiles_.end())
@@ -177,6 +180,63 @@ bool Tilemap::Gather(sf::Vector2f pos, TileType type)
 		}
 	}
 	return false;
+}
+
+void Tilemap::Regrow()
+{
+	std::vector<sf::Vector2f>* type_map = nullptr;
+	std::vector<sf::Vector2f>* gathered_map = nullptr;
+
+	TileType new_tile = {};
+
+	int rnd = rand() % 3;
+
+	switch (rnd) {
+	case 0:
+		type_map = &trees_;
+		gathered_map = &cut_trees_;
+		new_tile = TileType::kForest;
+		break;
+	case 1:
+		type_map = &stones_;
+		gathered_map = &mined_stones_;
+		new_tile = TileType::kStone;
+		break;
+	case 2:
+		type_map = &berries_;
+		gathered_map = &gathered_berries_;
+		new_tile = TileType::kBerryFull;
+		break;
+	default:;
+	}
+
+	if (gathered_map != nullptr && !gathered_map->empty())
+	{
+		int random = rand() % gathered_map->size();
+		auto& item = gathered_map->at(random);
+
+		type_map->emplace_back(item.x, item.y);
+		
+		// Find the iterator for the item and erase it
+		auto it = std::find(gathered_map->begin(), gathered_map->end(), item);
+		if (it != gathered_map->end()) {
+			gathered_map->erase(it);
+		}
+
+		auto tile = std::find_if(tiles_.begin(), tiles_.end(), [item](const Tile& t) {return sf::Vector2f(item.x, item.y) == t.Position(); });
+		if (tile != tiles_.end())
+		{
+			tile->set_type(new_tile);
+			if (new_tile == TileType::kBerryFull)
+			{
+				tile->set_walkable(true);
+			}
+			else
+			{
+				tile->set_walkable(false);
+			}
+		}
+	}
 }
 
 std::vector<sf::Vector2f> Tilemap::GetWalkableTiles()
@@ -213,7 +273,7 @@ sf::Vector2f Tilemap::GetClosest(sf::Vector2f position, TileType type) const
 	case TileType::kStorage:
 		type_map = storages_;
 		break;
-	default: ;
+	default:;
 	}
 
 	std::for_each(type_map.begin(), type_map.end(), [&closest_distance, &closest, position](const sf::Vector2f tree)
@@ -236,6 +296,16 @@ TileType Tilemap::GetSelectedTileType() const {
 	}
 	else {
 		return TileType::kPlain;
+	}
+}
+
+void Tilemap::Tick()
+{
+	//TODO: END Tweak random values in here and Regrow()	
+	int random = rand() % 100;
+	if(random <= 10)
+	{
+		Regrow();
 	}
 }
 

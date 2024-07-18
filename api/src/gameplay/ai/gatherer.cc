@@ -110,7 +110,7 @@ Status Gatherer::GatherBerry()
 {
 	if (tilemap_.Gather(getPosition(), TileType::kBerryFull))
 	{
-		//TODO (peut-être barre de progression), Running pendant qu'il coupe, succès une fois fini
+		//TODO: MAYBE, Running pendant qu'il coupe, succès une fois fini
 
 		resources_held_ += (std::rand() % 5) + 1;
 		//std::cout << "Cutting wood" << std::endl;

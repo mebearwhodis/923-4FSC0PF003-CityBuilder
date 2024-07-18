@@ -4,7 +4,7 @@
 
 #include "path.h"
 
-//TODO Comment all of this, maybe refactor in its own PathPoint class files
+//TODO: CLEANUP Comment all of this
 
 class PathPoint
 {

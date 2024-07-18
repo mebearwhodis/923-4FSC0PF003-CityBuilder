@@ -32,7 +32,7 @@ Tile::Tile(TileType type, float x = 0, float y = 0, bool walkable = true)
 
 void Tile::set_type(TileType type)
 {
-	if(type == TileType::kForestCutDown || type == TileType::kBerryEmpty)
+	if(type == TileType::kForestCutDown || type == TileType::kForest || type == TileType::kBerryEmpty || type == TileType::kBerryFull || type == TileType::kStone)
 	{
 		const auto& textures = ResourceManager::Get().GetTileTextures(type);
 		const sf::Texture& texture = textures[tile_texture_index_];

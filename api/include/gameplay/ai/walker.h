@@ -30,7 +30,7 @@ public:
 	void set_linear_speed(float linear_speed);
 	void set_path(const Path& path);
 	void Tick();
-	//TODO Comment what that thing is
+	//TODO: CLEANUP Comment what that thing is (and most of the code)
 	sf::Vector2f GetLastDestination() const;
 	behaviour_tree::Status GoToNearest(Tilemap& tilemap, sf::Vector2f pos, int& stamina, bool use_stamina);
 };

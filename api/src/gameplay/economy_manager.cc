@@ -90,3 +90,8 @@ int EconomyManager::current_storage_cost() const
 	return current_storage_cost_;
 }
 
+float EconomyManager::cost_multiplier() const
+{
+	return cost_multiplier_;
+}
+

@@ -8,7 +8,7 @@
 #include "pathfinding/pathfinder.h"
 
 Game::Game() :
-	window_(sf::VideoMode(1920, 1080), "My window"),
+	window_(sf::VideoMode(1920, 1080), "Little people gathering little resources"),
 	game_view_(sf::Vector2f(960, 540), sf::Vector2f(1920, 1080)),
 	button_menu_(sf::Vector2f(100, 100), sf::Color::Cyan, UiTexture::kMenuUp, true),
 	button_build_house_(sf::Vector2f(100, 155), sf::Color::Cyan, UiTexture::kHouseUp, false),
@@ -71,6 +71,7 @@ void Game::update() {
 		{
 			UpdateTextboxes();
 		}
+		map_.Tick();
 
 		game_view_.handleInput(window_);
 		// check all the window's events that were triggered since the last iteration of the loop
@@ -146,9 +147,13 @@ void Game::update() {
 
 void Game::SetCallbacks()
 {
-	//TODO Check lambdas, capture [] only what you need, not THIS, THIS is bad
-	//TODO Maybe just make this a function rather than a lambda
+	//TODO: CLEANUP Check lambdas, capture [] only what you need, not THIS, THIS is bad
+	//TODO: CLEANUP Maybe just make this a function rather than a lambda
 	map_.clicked_tile_ = [&](Tile& tile) {
+		int new_house_cost = 0;
+		int new_forge_cost = 0;
+		int new_sawmill_cost = 0;
+		int new_storage_cost = 0;
 		//std::cout << "Tile clicked:\t" << tile.Position().x << "/" << tile.Position().y << "\t" << std::endl;
 		if (economy_manager_.current_population() == economy_manager_.total_population() && building_manager_.building_type() != TileType::kHouse)
 		{
@@ -163,28 +168,48 @@ void Game::SetCallbacks()
 				economy_manager_.AddTotalPopulation(2);
 				economy_manager_.AddWood(-1 * economy_manager_.current_house_cost());
 				economy_manager_.AddFood(-1 * economy_manager_.current_house_cost());
-				economy_manager_.set_current_house_cost(economy_manager_.current_house_cost() * 1.5f);
+				new_house_cost = std::floor(economy_manager_.current_house_cost() * economy_manager_.cost_multiplier());
+				if(new_house_cost >= 999)
+				{
+					new_house_cost = 999;
+				}
+				economy_manager_.set_current_house_cost(new_house_cost);
 				break;
 			case TileType::kForge:
 				villager_manager_.SpawnVillager(tile.Position(), map_, VillagerType::kMiner);
 				economy_manager_.AddPopulation(1);
 				economy_manager_.AddWood(-1 * economy_manager_.current_forge_cost());
 				economy_manager_.AddStone(-1 * economy_manager_.current_forge_cost());
-				economy_manager_.set_current_forge_cost(economy_manager_.current_forge_cost() * 1.5f);
+				new_forge_cost = std::floor(economy_manager_.current_forge_cost() * economy_manager_.cost_multiplier());
+				if (new_forge_cost >= 999)
+				{
+					new_forge_cost = 999;
+				}
+				economy_manager_.set_current_forge_cost(new_forge_cost);
 				break;
 			case TileType::kSawmill:
 				villager_manager_.SpawnVillager(tile.Position(), map_, VillagerType::kWoodsman);
 				economy_manager_.AddPopulation(1);
 				economy_manager_.AddWood(-1 * economy_manager_.current_sawmill_cost());
 				economy_manager_.AddStone(-1 * economy_manager_.current_sawmill_cost());
-				economy_manager_.set_current_sawmill_cost(economy_manager_.current_sawmill_cost() * 1.5f);
+				new_sawmill_cost = std::floor(economy_manager_.current_sawmill_cost() * economy_manager_.cost_multiplier());
+				if (new_sawmill_cost >= 999)
+				{
+					new_sawmill_cost = 999;
+				}
+				economy_manager_.set_current_sawmill_cost(new_sawmill_cost);
 				break;
 			case TileType::kStorage:
 				villager_manager_.SpawnVillager(tile.Position(), map_, VillagerType::kGatherer);
 				economy_manager_.AddPopulation(1);
 				economy_manager_.AddWood(-1 * economy_manager_.current_storage_cost());
 				economy_manager_.AddStone(-1 * economy_manager_.current_storage_cost());
-				economy_manager_.set_current_storage_cost(economy_manager_.current_storage_cost() * 1.5f);
+				new_storage_cost = std::floor(economy_manager_.current_storage_cost() * economy_manager_.cost_multiplier());
+				if (new_storage_cost >= 999)
+				{
+					new_storage_cost = 999;
+				}
+				economy_manager_.set_current_storage_cost(new_storage_cost);
 				break;
 			default:
 				break;
