@@ -28,28 +28,28 @@ Gatherer::Gatherer(const Gatherer& w) : Walker(w), tilemap_(w.tilemap_)
 
 void Gatherer::InitiateBehaviourTree()
 {
-	Leaf* check_stamina = new Leaf([this]()
+	Leaf* check_stamina = new Leaf([&]()
 		{
 			if (stamina_ >= 0) { return Status::kSuccess; }
 			else { return Status::kFailure; }
 		});
-	Leaf* seek_berry = new Leaf([this]()
+	Leaf* seek_berry = new Leaf([&]()
 		{
 			can_deposit_ = false;
 			return SeekBerry();
 		});
 
-	Leaf* gather_berry = new Leaf([this]()
+	Leaf* gather_berry = new Leaf([&]()
 		{
 			return GatherBerry();
 		});
 
-	Leaf* return_home = new Leaf([this]()
+	Leaf* return_home = new Leaf([&]()
 		{
 			return ReturnHomeOrStorage();
 		});
 
-	Leaf* refill_stamina = new Leaf([this]()
+	Leaf* refill_stamina = new Leaf([&]()
 		{
 			can_deposit_ = true;
 			stamina_ = 15;

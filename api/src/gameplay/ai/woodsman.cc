@@ -29,7 +29,7 @@ Woodsman::Woodsman(const Woodsman& w) : Walker(w), tilemap_(w.tilemap_)
 
 void Woodsman::InitiateBehaviourTree()
 {
-	Leaf* check_stamina = new Leaf([this]()
+	Leaf* check_stamina = new Leaf([&]()
 		{
 			if (stamina_ >= 0)
 			{
@@ -37,23 +37,23 @@ void Woodsman::InitiateBehaviourTree()
 			}
 			else { return Status::kFailure; }
 		});
-	Leaf* seek_wood = new Leaf([this]()
+	Leaf* seek_wood = new Leaf([&]()
 		{
 			can_deposit_ = false;
 			return SeekWood();
 		});
 
-	Leaf* gather_wood = new Leaf([this]()
+	Leaf* gather_wood = new Leaf([&]()
 		{
 			return GatherWood();
 		});
 
-	Leaf* return_home = new Leaf([this]()
+	Leaf* return_home = new Leaf([&]()
 		{
 			return ReturnHomeOrStorage();
 		});
 
-	Leaf* refill_stamina = new Leaf([this]()
+	Leaf* refill_stamina = new Leaf([&]()
 		{
 			can_deposit_ = true;
 			stamina_ = 15;

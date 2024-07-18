@@ -28,28 +28,28 @@ Miner::Miner(const Miner& w) : Walker(w), tilemap_(w.tilemap_)
 
 void Miner::InitiateBehaviourTree()
 {
-	Leaf* check_stamina = new Leaf([this]()
+	Leaf* check_stamina = new Leaf([&]()
 		{
 			if (stamina_ >= 0) { return Status::kSuccess; }
 			else { return Status::kFailure; }
 		});
-	Leaf* seek_stone = new Leaf([this]()
+	Leaf* seek_stone = new Leaf([&]()
 		{
 			can_deposit_ = false;
 			return SeekStone();
 		});
 
-	Leaf* gather_stone = new Leaf([this]()
+	Leaf* gather_stone = new Leaf([&]()
 		{
 			return GatherStone();
 		});
 
-	Leaf* return_home = new Leaf([this]()
+	Leaf* return_home = new Leaf([&]()
 		{
 			return ReturnHomeOrStorage();
 		});
 
-	Leaf* refill_stamina = new Leaf([this]()
+	Leaf* refill_stamina = new Leaf([&]()
 		{
 			can_deposit_ = true;
 			stamina_ = 15;

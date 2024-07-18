@@ -4,6 +4,7 @@
 #include <SFML/Graphics/RenderTarget.hpp>
 
 #include "utils.h"
+#include "maths/perlin_noise.h"
 #ifdef TRACY_ENABLE
 #include <Tracy/Tracy.hpp>
 #include <Tracy/TracyC.h>
@@ -27,12 +28,21 @@ void Tilemap::Generate()
 	tiles_.erase(tiles_.begin(), tiles_.end());
 	tiles_.reserve(playground_size_u_.x * playground_size_u_.y);
 
-	//For now, just simple random
-	std::random_device r;
-	std::default_random_engine e1(r());
-	std::uniform_int_distribution<int> uniform_dist(1, 10);
+	// Seed and Perlin noise generators
+	siv::PerlinNoise::seed_type seed = 79425465;
+	siv::PerlinNoise perlin(seed);
 
-	//TODO: SOON Perlin noise (check repo)
+	// Different frequencies for different types of clusters
+	//double berryFrequency = 0.1; // Large clusters
+	double stoneFrequency = 0.2; // Medium clusters
+	double treeFrequency = 0.3;  // Small clusters
+	double berryFrequency = 0.5; // Sparse distribution
+
+	// Thresholds to determine the type of tile based on noise values
+	//double berryThreshold = 0.7;
+	double stoneThreshold = 0.5;
+	double treeThreshold = 0.2;
+	double berryThreshold = 0.4;
 
 	for (unsigned int x = 0; x < playground_size_u_.x; x++)
 	{
@@ -55,31 +65,37 @@ void Tilemap::Generate()
 			{
 				tiles_.emplace_back(TileType::kPlain, tile_x, tile_y, true);
 			}
+			
 			else
 			{
-				//int idx = x * playground_size_u_.y + y;
+				// Generate different noise values for different frequencies
+				double stoneNoise = perlin.noise2D(x * stoneFrequency, y * stoneFrequency);
+				double treeNoise = perlin.noise2D(x * treeFrequency, y * treeFrequency);
+				double berryNoise = perlin.noise2D(x * berryFrequency, y * berryFrequency);
 
+				// Determine tile type based on noise values and thresholds
 
-				int rnd = uniform_dist(e1);
-
-				if (rnd <= 3)
-				{
-					tiles_.emplace_back(TileType::kForest, tile_x, tile_y, false);
-					trees_.emplace_back(tile_x, tile_y);
-				}
-				else if (rnd <= 4)
+				if (stoneNoise > stoneThreshold)
 				{
 					tiles_.emplace_back(TileType::kStone, tile_x, tile_y, false);
 					stones_.emplace_back(tile_x, tile_y);
 				}
-				else if (rnd <= 5)
+				else if (treeNoise > treeThreshold)
 				{
-					tiles_.emplace_back(TileType::kBerryFull, tile_x, tile_y, true);
-					berries_.emplace_back(tile_x, tile_y);
+					tiles_.emplace_back(TileType::kForest, tile_x, tile_y, false);
+					trees_.emplace_back(tile_x, tile_y);
 				}
-				else if (rnd > 5)
+				else
 				{
-					tiles_.emplace_back(TileType::kPlain, tile_x, tile_y, true);
+					if (berryNoise > berryThreshold)
+					{
+						tiles_.emplace_back(TileType::kBerryFull, tile_x, tile_y, true);
+						berries_.emplace_back(tile_x, tile_y);
+					}
+					else
+					{
+						tiles_.emplace_back(TileType::kPlain, tile_x, tile_y, true);
+					}
 				}
 			}
 			numberOfTiles++;
@@ -301,9 +317,9 @@ TileType Tilemap::GetSelectedTileType() const {
 
 void Tilemap::Tick()
 {
-	//TODO: END Tweak random values in here and Regrow()	
-	int random = rand() % 100;
-	if(random <= 10)
+	//TODO: END Tweak random values in here	
+	int random = rand() % 1000;
+	if(random <= 5)
 	{
 		Regrow();
 	}

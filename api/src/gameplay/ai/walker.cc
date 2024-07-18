@@ -51,7 +51,7 @@ void Walker::Tick()
 		const sf::Vector2f direction = Normalized(destination_ - actual_position);
 		sf::Vector2f new_position;
 
-		if (Magnitude(destination_ - actual_position) < 16.0f) {
+		if (Magnitude(destination_ - actual_position) < 4.0f) {
 			new_position = destination_;
 			destination_ = path_.GetNextStep();
 		}

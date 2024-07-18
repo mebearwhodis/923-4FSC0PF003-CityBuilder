@@ -4,8 +4,6 @@
 #include <Tracy/Tracy.hpp>
 #endif
 
-#include "gameplay/ai/woodsman.h"
-#include "pathfinding/pathfinder.h"
 
 Game::Game() :
 	window_(sf::VideoMode(1920, 1080), "Little people gathering little resources"),
@@ -147,13 +145,7 @@ void Game::update() {
 
 void Game::SetCallbacks()
 {
-	//TODO: CLEANUP Check lambdas, capture [] only what you need, not THIS, THIS is bad
-	//TODO: CLEANUP Maybe just make this a function rather than a lambda
 	map_.clicked_tile_ = [&](Tile& tile) {
-		int new_house_cost = 0;
-		int new_forge_cost = 0;
-		int new_sawmill_cost = 0;
-		int new_storage_cost = 0;
 		//std::cout << "Tile clicked:\t" << tile.Position().x << "/" << tile.Position().y << "\t" << std::endl;
 		if (economy_manager_.current_population() == economy_manager_.total_population() && building_manager_.building_type() != TileType::kHouse)
 		{
@@ -162,6 +154,11 @@ void Game::SetCallbacks()
 
 		if (building_manager_.AddBuilding(tile, map_))
 		{
+			int new_house_cost;
+			int new_forge_cost;
+			int new_sawmill_cost;
+			int new_storage_cost;
+
 			switch (building_manager_.building_type())
 			{
 			case TileType::kHouse:
@@ -219,7 +216,7 @@ void Game::SetCallbacks()
 		}
 		};
 
-	button_menu_.callback_ = [this]()
+	button_menu_.callback_ = [&]()
 		{
 			building_manager_.set_building_type(TileType::kPlain);
 			building_manager_.ToggleActive();
@@ -245,7 +242,7 @@ void Game::SetCallbacks()
 			}
 		};
 
-	button_build_house_.callback_ = [this]()
+	button_build_house_.callback_ = [&]()
 		{
 			if (economy_manager_.wood() < economy_manager_.current_house_cost() || economy_manager_.food() < economy_manager_.current_house_cost())
 			{
@@ -257,7 +254,7 @@ void Game::SetCallbacks()
 			}
 		};
 
-	button_build_forge_.callback_ = [this]()
+	button_build_forge_.callback_ = [&]()
 		{
 			if (economy_manager_.wood() < economy_manager_.current_forge_cost() || economy_manager_.stone() < economy_manager_.current_forge_cost() || economy_manager_.current_population() == economy_manager_.total_population())
 			{
@@ -269,7 +266,7 @@ void Game::SetCallbacks()
 			}
 		};
 
-	button_build_sawmill_.callback_ = [this]()
+	button_build_sawmill_.callback_ = [&]()
 		{
 			if (economy_manager_.wood() < economy_manager_.current_sawmill_cost() || economy_manager_.stone() < economy_manager_.current_sawmill_cost() || economy_manager_.current_population() == economy_manager_.total_population())
 			{
@@ -281,7 +278,7 @@ void Game::SetCallbacks()
 			}
 		};
 
-	button_build_storage_.callback_ = [this]()
+	button_build_storage_.callback_ = [&]()
 		{
 			if (economy_manager_.wood() < economy_manager_.current_storage_cost() || economy_manager_.stone() < economy_manager_.current_storage_cost() || economy_manager_.current_population() == economy_manager_.total_population())
 			{
