@@ -13,4 +13,4 @@
 ## Credits
 
 - **Sprites**: Created by [Kenney](https://kenney.nl)
-- **Music**: This Lore Is Forgotten Composed by [Sylfvr](https://sylfvr.bandcamp.com)
+- **Music**: _This Lore Is Forgotten_, composed by [Sylfvr](https://sylfvr.bandcamp.com)
