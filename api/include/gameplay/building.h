@@ -9,6 +9,8 @@ class Building : public SpriteEntity
 {
 public:
 	Building(TileType type, float x, float y);
+	TileType type() const { return type_; }
+	sf::Vector2f Position() const { return sprite_.getPosition(); }
 
 protected:
 	virtual void DefineTexture(int type) override;

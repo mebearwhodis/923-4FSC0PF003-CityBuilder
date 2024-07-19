@@ -73,6 +73,17 @@ bool BuildingManager::AddBuilding(Tile& tile, Tilemap& tilemap)
 		return true;
 	}
 }
+void BuildingManager::AddCastle(sf::Vector2f position, const Tilemap& tilemap)
+{
+	buildings_.emplace_back(TileType::kCastleBase, position.x * tilemap.playground_tile_size_u().x, position.y * tilemap.playground_tile_size_u().y);
+	buildings_.emplace_back(TileType::kCastleRoof, position.x * tilemap.playground_tile_size_u().x, (position.y -1) * tilemap.playground_tile_size_u().y);
+}
+
+void BuildingManager::LoadBuilding(int type, float x, float y)
+{
+	buildings_.emplace_back(static_cast<TileType>(type), x, y);
+}
+
 
 void BuildingManager::set_building_type(TileType building_type)
 {

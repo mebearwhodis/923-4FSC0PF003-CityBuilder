@@ -6,10 +6,8 @@
 
 using json = nlohmann::json;
 
-//TODO URGENT save building manager and economy manager
 void SaveSystem::SaveGame(Tilemap& tilemap, BuildingManager& building_manager, EconomyManager& economy_manager, const std::string& file_name)
 {
-	std::cout << "save map 1.1 \n";
 	nlohmann::json json_level;
 	json_level["map_size_x"] = tilemap.playground_size_u().x;
 	json_level["map_size_y"] = tilemap.playground_size_u().y;
@@ -92,6 +90,26 @@ void SaveSystem::SaveGame(Tilemap& tilemap, BuildingManager& building_manager, E
 		json_level["storages"].push_back(storage_data);
 	}
 
+	json_level["buildings"] = nlohmann::json::array();
+	for (const auto& building : building_manager.buildings())
+	{
+		nlohmann::json building_data;
+		building_data["type"] = static_cast<int>(building.type());
+		building_data["x"] = building.Position().x;
+		building_data["y"] = building.Position().y;
+		json_level["buildings"].push_back(building_data);
+	}
+
+	json_level["current_food"] = economy_manager.food();
+	json_level["current_wood"] = economy_manager.wood();
+	json_level["current_stone"] = economy_manager.stone();
+	json_level["current_population"] = economy_manager.current_population();
+	json_level["total_population"] = economy_manager.total_population();
+	json_level["current_house_cost"] = economy_manager.current_house_cost();
+	json_level["current_forge_cost"] = economy_manager.current_forge_cost();
+	json_level["current_sawmill_cost"] = economy_manager.current_sawmill_cost();
+	json_level["current_storage_cost"] = economy_manager.current_storage_cost();
+
 	// Écrire le JSON formaté dans le fichier
 	std::ofstream file(file_name);
 	if (file.is_open()) {
@@ -103,12 +121,16 @@ void SaveSystem::SaveGame(Tilemap& tilemap, BuildingManager& building_manager, E
 	}
 }
 
-void SaveSystem::LoadGame(Tilemap& tilemap, const std::string& file_name)
+
+void SaveSystem::LoadGame(Tilemap& tilemap, BuildingManager& building_manager, EconomyManager& economy_manager, VillagerManager& villager_manager, const std::string& file_name)
 {
 	// Nettoyer les vecteurs de tuiles et d'arbres existants
 	tilemap.Clear();
 	tilemap.clearVectors();
-	
+	building_manager.ClearBuildings();
+	economy_manager.ClearAll();
+	villager_manager.ClearVillagers();
+
 
 	// Ouvrir le fichier JSON
 	std::ifstream file(file_name);
@@ -128,12 +150,10 @@ void SaveSystem::LoadGame(Tilemap& tilemap, const std::string& file_name)
 			json_level.contains("tile_size_x") && json_level.contains("tile_size_y"))
 		{
 			tilemap.Setup(sf::Vector2u(json_level["map_size_x"], json_level["map_size_y"]), sf::Vector2u(json_level["tile_size_x"], json_level["tile_size_y"]));
-
-			//TODO peut-être besoin du reserve jsp
 		}
 		else
 		{
-			std::cerr << "Missing or invalid playground dimensions or tile offset in JSON." << std::endl;
+			std::cerr << "Missing or invalid map or tile size." << std::endl;
 			return;
 		}
 
@@ -158,7 +178,7 @@ void SaveSystem::LoadGame(Tilemap& tilemap, const std::string& file_name)
 		{
 			float x = tree_data["x"];
 			float y = tree_data["y"];
-			tilemap.trees().emplace_back(x, y);
+			tilemap.LoadElement(TileType::kForest, x, y);
 		}
 
 		auto cut_trees_array = json_level["cut_trees"];
@@ -166,7 +186,7 @@ void SaveSystem::LoadGame(Tilemap& tilemap, const std::string& file_name)
 		{
 			float x = cut_tree_data["x"];
 			float y = cut_tree_data["y"];
-			tilemap.cut_trees().emplace_back(x, y);
+			tilemap.LoadElement(TileType::kForestCutDown, x, y);
 		}
 
 		auto stones_array = json_level["stones"];
@@ -174,7 +194,7 @@ void SaveSystem::LoadGame(Tilemap& tilemap, const std::string& file_name)
 		{
 			float x = stone_data["x"];
 			float y = stone_data["y"];
-			tilemap.stones().emplace_back(x, y);
+			tilemap.LoadElement(TileType::kStone, x, y);
 		}
 
 		auto mined_stones_array = json_level["mined_stones"];
@@ -182,7 +202,7 @@ void SaveSystem::LoadGame(Tilemap& tilemap, const std::string& file_name)
 		{
 			float x = mined_stone_data["x"];
 			float y = mined_stone_data["y"];
-			tilemap.mined_stones().emplace_back(x, y);
+			tilemap.LoadMinedStone(x, y);
 		}
 
 		auto berries_array = json_level["berries"];
@@ -190,7 +210,7 @@ void SaveSystem::LoadGame(Tilemap& tilemap, const std::string& file_name)
 		{
 			float x = berry_data["x"];
 			float y = berry_data["y"];
-			tilemap.berries().emplace_back(x, y);
+			tilemap.LoadElement(TileType::kBerryFull, x, y);
 		}
 
 		auto gathered_berries_array = json_level["gathered_berries"];
@@ -198,7 +218,7 @@ void SaveSystem::LoadGame(Tilemap& tilemap, const std::string& file_name)
 		{
 			float x = gathered_berry_data["x"];
 			float y = gathered_berry_data["y"];
-			tilemap.gathered_berries().emplace_back(x, y);
+			tilemap.LoadElement(TileType::kBerryEmpty, x, y);
 		}
 
 		auto storages_array = json_level["storages"];
@@ -206,8 +226,60 @@ void SaveSystem::LoadGame(Tilemap& tilemap, const std::string& file_name)
 		{
 			float x = storage_data["x"];
 			float y = storage_data["y"];
-			tilemap.storages().emplace_back(x, y);
+			tilemap.LoadElement(TileType::kStorage, x, y);
 		}
+
+		auto buildings_array = json_level["buildings"];
+		for (const auto& building_data : buildings_array)
+		{
+			int type_int = building_data["type"];
+			float x = building_data["x"];
+			float y = building_data["y"];
+
+			if (type_int >= 0 && type_int < static_cast<int>(TileType::kLength))
+			{
+				building_manager.LoadBuilding(type_int, x, y);
+				if(type_int == static_cast<int>(TileType::kForge))
+				{
+					villager_manager.SpawnVillager(sf::Vector2f(x, y), tilemap, VillagerType::kMiner);
+				}
+				else if(type_int == static_cast<int>(TileType::kSawmill))
+				{
+					villager_manager.SpawnVillager(sf::Vector2f(x, y), tilemap, VillagerType::kWoodsman);
+				}
+				else if(type_int == static_cast<int>(TileType::kStorage))
+				{
+					villager_manager.SpawnVillager(sf::Vector2f(x, y), tilemap, VillagerType::kGatherer);
+				}
+			}
+		}
+
+		auto current_food = json_level["current_food"];
+		economy_manager.AddFood(current_food);
+
+		auto current_wood = json_level["current_wood"];
+		economy_manager.AddWood(current_wood);
+
+		auto current_stone = json_level["current_stone"];
+		economy_manager.AddStone(current_stone);
+
+		auto current_population = json_level["current_population"];
+		economy_manager.AddPopulation(current_population);
+
+		auto total_population = json_level["total_population"];
+		economy_manager.AddTotalPopulation(total_population);
+
+		auto current_house_cost = json_level["current_house_cost"];
+		economy_manager.set_current_house_cost(current_house_cost);
+
+		auto current_forge_cost = json_level["current_forge_cost"];
+		economy_manager.set_current_forge_cost(current_forge_cost);
+
+		auto current_sawmill_cost = json_level["current_sawmill_cost"];
+		economy_manager.set_current_sawmill_cost(current_sawmill_cost);
+
+		auto current_storage_cost = json_level["current_storage_cost"];
+		economy_manager.set_current_storage_cost(current_storage_cost);
 	}
 	catch (const nlohmann::json::exception& e)
 	{

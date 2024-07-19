@@ -52,18 +52,13 @@ void Tilemap::Generate()
 			double tile_y = y * playground_tile_size_u_.y;
 
 			//Make sure centre of the map is all plains
-			if (x == playground_size_u_.x / 2 && y == playground_size_u_.y / 2)
+			if (x == playground_size_u_.x / 2 && (y == playground_size_u_.y / 2 || y == playground_size_u_.y / 2 - 1))
 			{
-				tiles_.emplace_back(TileType::kCastleBase, tile_x, tile_y, false);
-
-			}
-			else if (x == playground_size_u_.x / 2 && y == playground_size_u_.y / 2 - 1)
-			{
-				tiles_.emplace_back(TileType::kCastleRoof, tile_x, tile_y, false);
+				tiles_.emplace_back(TileType::kPlain, tile_x, tile_y, false, false);
 			}
 			else if (x > playground_size_u_.x / 2 - 3 && x < playground_size_u_.x / 2 + 3 && y > playground_size_u_.y / 2 - 3 && y < playground_size_u_.y / 2 + 3)
 			{
-				tiles_.emplace_back(TileType::kPlain, tile_x, tile_y, true);
+				tiles_.emplace_back(TileType::kPlain, tile_x, tile_y, true, true);
 			}
 			
 			else
@@ -77,24 +72,24 @@ void Tilemap::Generate()
 
 				if (stoneNoise > stoneThreshold)
 				{
-					tiles_.emplace_back(TileType::kStone, tile_x, tile_y, false);
+					tiles_.emplace_back(TileType::kStone, tile_x, tile_y, false, false);
 					stones_.emplace_back(tile_x, tile_y);
 				}
 				else if (treeNoise > treeThreshold)
 				{
-					tiles_.emplace_back(TileType::kForest, tile_x, tile_y, false);
+					tiles_.emplace_back(TileType::kForest, tile_x, tile_y, false, false);
 					trees_.emplace_back(tile_x, tile_y);
 				}
 				else
 				{
 					if (berryNoise > berryThreshold)
 					{
-						tiles_.emplace_back(TileType::kBerryFull, tile_x, tile_y, true);
+						tiles_.emplace_back(TileType::kBerryFull, tile_x, tile_y, true, false);
 						berries_.emplace_back(tile_x, tile_y);
 					}
 					else
 					{
-						tiles_.emplace_back(TileType::kPlain, tile_x, tile_y, true);
+						tiles_.emplace_back(TileType::kPlain, tile_x, tile_y, true, true);
 					}
 				}
 			}
@@ -140,11 +135,11 @@ void Tilemap::HandleEvent(const sf::Event& event, const sf::RenderWindow& window
 		{
 			if (clicked_tile_ && tile_selected_) {
 				clicked_tile_(*tile_selected_);
-				//std::cout << static_cast<int>(GetSelectedTileType()) << std::endl;
 			}
 			else
 			{
 				//std::cout << "No callback defined." << std::endl;
+				return;
 			}
 		}
 	}
@@ -316,10 +311,17 @@ TileType Tilemap::GetSelectedTileType() const {
 		return TileType::kPlain;
 	}
 }
+bool Tilemap::IsSelectedTileBuildable() const {
+	if (tile_selected_) {
+		return tile_selected_->is_buildable();
+	}
+	else {
+		return false;
+	}
+}
 
 void Tilemap::Tick()
 {
-	//TODO: END Tweak random values in here	
 	int random = rand() % 1000;
 	if(random <= 5)
 	{
@@ -329,7 +331,40 @@ void Tilemap::Tick()
 
 void Tilemap::LoadTile(int type, float x, float y, int texture_index, bool walkable, bool buildable)
 {
-	tiles_.emplace_back(type, x, y, texture_index, walkable, buildable);
+	if (type >= static_cast<int>(TileType::kHouse))
+	{
+		tiles_.emplace_back(static_cast<int>(TileType::kPlain), x, y, texture_index, walkable, buildable);
+	}
+	else
+	{
+		tiles_.emplace_back(type, x, y, texture_index, walkable, buildable);
+	}
+}
+
+void Tilemap::LoadElement(TileType type, float x, float y)
+{
+	switch (type)
+	{
+	case TileType::kForest:
+		trees_.emplace_back(x, y);
+		break;
+	case TileType::kForestCutDown:
+		cut_trees_.emplace_back(x, y);
+		break;
+	case TileType::kStone:
+		stones_.emplace_back(x, y);
+		break;
+	case TileType::kBerryFull:
+		berries_.emplace_back(x, y);
+		break;
+	case TileType::kBerryEmpty:
+		gathered_berries_.emplace_back(x, y);
+		break;
+	case TileType::kStorage:
+		storages_.emplace_back(x, y);
+		break;
+	default:;
+	}
 }
 
 void Tilemap::clearVectors()
@@ -379,7 +414,7 @@ void Tilemap::draw(sf::RenderTarget& target, sf::RenderStates states) const
 	ZoneScoped;
 #endif
 
-	//const_cast<Tilemap*>(this)->applyFadeEffect(target);
+	const_cast<Tilemap*>(this)->applyFadeEffect(target);
 
 	for (const auto& tile : tiles_)
 	{

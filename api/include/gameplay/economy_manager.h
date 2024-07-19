@@ -42,6 +42,7 @@ public:
 	[[nodiscard]] int current_sawmill_cost() const;
 	[[nodiscard]] int current_storage_cost() const;
 	[[nodiscard]] float cost_multiplier() const;
+	void ClearAll();
 
 	bool text_to_update() const { return text_to_update_; }
 	void set_text_to_update(bool value) { text_to_update_ = value; }

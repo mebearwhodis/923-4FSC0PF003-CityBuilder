@@ -11,7 +11,6 @@ class Tile : public sf::Drawable {
 
 	sf::Vector2u size_;
 	sf::Sprite sprite_;
-	sf::RectangleShape outline_;
 	sf::Vector2f position_;
 	TileType type_;
 	bool is_buildable_;
@@ -24,7 +23,7 @@ protected:
 
 public:
 	Tile();
-	Tile(TileType type, float x, float y, bool walkable);
+	Tile(TileType type, float x, float y, bool walkable, bool buildable);
 	Tile(int type, float x, float y, int texture_index, bool walkable, bool buildable);
 	bool is_walkable() const { return is_walkable_; }
 	bool is_buildable() const { return is_buildable_; }

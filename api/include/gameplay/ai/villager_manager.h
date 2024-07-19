@@ -20,6 +20,7 @@ class VillagerManager : public sf::Drawable
 
 public:
 	void SpawnVillager(sf::Vector2f position, Tilemap& tilemap, VillagerType type);
+	void ClearVillagers();
 	void Tick(EconomyManager& economy_manager);
 protected:
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;

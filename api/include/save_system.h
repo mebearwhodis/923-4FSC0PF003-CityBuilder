@@ -4,6 +4,7 @@
 
 #include "gameplay/building_manager.h"
 #include "gameplay/economy_manager.h"
+#include "gameplay/ai/villager_manager.h"
 #include "world_generation/tilemap.h"
 #include <nlohmann/json.hpp>
 
@@ -15,8 +16,8 @@
 class SaveSystem
 {
 public:
-	void SaveGame(Tilemap& tilemap, BuildingManager& building_manager, EconomyManager& economy_manager, const std::string& file_name);
-	void LoadGame(Tilemap& tilemap, const std::string& file_name);
+	static void SaveGame(Tilemap& tilemap, BuildingManager& building_manager, EconomyManager& economy_manager, const std::string& file_name);
+	static void LoadGame(Tilemap& tilemap, BuildingManager& building_manager, EconomyManager& economy_manager, VillagerManager& villager_manager, const std::string& file_name);
 };
 
 

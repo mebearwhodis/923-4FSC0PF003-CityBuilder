@@ -39,6 +39,7 @@ void Game::init() {
 	tile_size_ = sf::Vector2u(64, 64);
 	map_.Setup(sf::Vector2u(100, 100), tile_size_);
 	map_.Generate();
+	building_manager_.AddCastle(sf::Vector2f(map_.playground_size_u().x/2, map_.playground_size_u().y/2), map_);
 
 
 	// Center the view to the middle of the tilemap
@@ -86,7 +87,8 @@ void Game::update() {
 
 			if (sf::Keyboard::isKeyPressed(sf::Keyboard::F9))
 			{
-				save_system_.LoadGame(map_,"save1.json");
+				save_system_.LoadGame(map_,building_manager_, economy_manager_,villager_manager_, "save1.json");
+				UpdateTextboxes();
 			}
 
 			game_view_.handleEvent(event, window_);
@@ -120,7 +122,7 @@ void Game::update() {
 		window_.draw(building_manager_);
 
 		if (building_manager_.IsActive()) {
-			if (map_.GetSelectedTileType() == TileType::kPlain)
+			if (map_.IsSelectedTileBuildable())
 			{
 				building_manager_.ChangeHoverTileColour(sf::Color(100, 255, 100, 200));
 			}

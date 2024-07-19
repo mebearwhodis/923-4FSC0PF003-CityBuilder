@@ -20,6 +20,13 @@ void VillagerManager::SpawnVillager(sf::Vector2f position, Tilemap& tilemap, Vil
 	}
 }
 
+void VillagerManager::ClearVillagers()
+{
+	woodsmen_.clear();
+	miners_.clear();
+	gatherers_.clear();
+}
+
 void VillagerManager::draw(sf::RenderTarget& target, sf::RenderStates states) const
 {
 	for (const auto& w : woodsmen_)

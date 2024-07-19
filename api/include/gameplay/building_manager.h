@@ -25,10 +25,13 @@ public:
 	void SetHoverTilePosition(sf::Vector2f position);
 	bool IsActive() const { return is_active_; }
 	bool AddBuilding(Tile& tile, Tilemap& tilemap);
+	void AddCastle(sf::Vector2f position, const Tilemap& tilemap);
+	void LoadBuilding(int type, float x, float y);
 	void ClearBuildings() { buildings_.clear(); }
 	TileType building_type() const { return building_type_; }
 	void set_building_type(TileType building_type);
 	void ChangeHoverTileColour(sf::Color colour);
+	std::vector<Building> buildings() const { return buildings_; }
 
 protected:
 	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;

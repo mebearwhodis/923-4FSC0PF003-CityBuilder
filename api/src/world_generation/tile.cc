@@ -4,7 +4,7 @@
 #endif
 #include "graphics/resource_manager.h"
 
-Tile::Tile(TileType type, float x = 0, float y = 0, bool walkable = true)
+Tile::Tile(TileType type, float x = 0, float y = 0, bool walkable = true, bool buildable = true)
 {
 #ifdef TRACY_ENABLE
 	ZoneScoped;
@@ -21,14 +21,7 @@ Tile::Tile(TileType type, float x = 0, float y = 0, bool walkable = true)
 	sprite_.setPosition(x, y);
 
 	is_walkable_ = walkable;
-	is_buildable_ = walkable;
-
-	//TODO: remove this? is it still used?
-	outline_.setPosition(x, y);
-	outline_.setSize(sf::Vector2f(sprite_.getTexture()->getSize()));
-	outline_.setFillColor(sf::Color(100, 100, 100, 0));
-	outline_.setOutlineColor(sf::Color::White);
-	outline_.setOutlineThickness(-1);
+	is_buildable_ = buildable;
 }
 
 Tile::Tile(int type, float x, float y, int texture_index, bool walkable, bool buildable)

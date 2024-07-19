@@ -95,4 +95,14 @@ float EconomyManager::cost_multiplier() const
 	return cost_multiplier_;
 }
 
-
+void EconomyManager::ClearAll(){
+	food_ = 0;
+	wood_ = 0;
+	stone_ = 0;
+	current_population_ = 0;
+	total_population_ = 0;
+	current_house_cost_ = 0;
+	current_forge_cost_ = 0;
+	current_sawmill_cost_ = 0;
+	current_storage_cost_ = 0;
+}
