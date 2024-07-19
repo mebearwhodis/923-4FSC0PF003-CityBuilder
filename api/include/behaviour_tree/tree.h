@@ -13,6 +13,7 @@ using namespace behaviour_tree;
 	{
 	private:
 		std::unique_ptr<Node> root_ = nullptr;
+
 	public:
 		void Tick() const;
 		void Attach(std::unique_ptr<Leaf>& node);

@@ -1,10 +1,8 @@
-#include "pathfinding/pathfinder.h"
-
 #include <iostream>
 #include <unordered_set>
 
+#include "pathfinding/pathfinder.h"
 #include "utils.h"
-
 
 static std::vector<sf::Vector2f> ConstructPath(const PathPoint& exit_point, const PathPoint* visited_points)
 {
@@ -65,7 +63,7 @@ Path CalculatePath(std::vector<sf::Vector2f> positions, sf::Vector2f start, sf::
 		closed_list.emplace(current.position());
 
 		open_queue.pop();
-		std::erase_if(open_list, [&current](sf::Vector2f p) {return current.position() == p; });
+		std::erase_if(open_list, [&current](const sf::Vector2f p) {return current.position() == p; });
 
 		if (Magnitude(rounded_end - current.position()) <= std::numeric_limits<float>::epsilon())
 		{
@@ -77,7 +75,7 @@ Path CalculatePath(std::vector<sf::Vector2f> positions, sf::Vector2f start, sf::
 		{
 			sf::Vector2f neighbourPos = current.position() + neighbour * static_cast<float>(tile_size);
 
-			// Tous les voisins
+			// All Neighbours
 			auto found_position = std::find_if(positions.begin(), positions.end(), [&neighbourPos](sf::Vector2f& pos)
 				{
 					return pos == neighbourPos;

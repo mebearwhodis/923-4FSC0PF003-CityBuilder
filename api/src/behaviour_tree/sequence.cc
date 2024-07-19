@@ -27,4 +27,3 @@ Status Sequence::Process()
 
 	return Status::kFailure;
 }
-

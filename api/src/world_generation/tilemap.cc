@@ -1,17 +1,16 @@
-#include "world_generation/tilemap.h"
-
-#include <random>
-#include <SFML/Graphics/RenderTarget.hpp>
-
-#include "utils.h"
-#include "maths/perlin_noise.h"
 #ifdef TRACY_ENABLE
 #include <Tracy/Tracy.hpp>
 #include <Tracy/TracyC.h>
 #endif
 
+#include <random>
+#include <SFML/Graphics/RenderTarget.hpp>
 
-void Tilemap::Setup(sf::Vector2u playground_size_u, sf::Vector2u playground_tile_size_u)
+#include "maths/perlin_noise.h"
+#include "utils.h"
+#include "world_generation/tilemap.h"
+
+void Tilemap::Setup(const sf::Vector2u playground_size_u, const sf::Vector2u playground_tile_size_u)
 {
 	playground_size_u_ = playground_size_u;
 	playground_tile_size_u_ = playground_tile_size_u;
@@ -23,26 +22,24 @@ void Tilemap::Generate()
 	ZoneScoped;
 #endif
 
-	int numberOfTiles = 0;
+	int number_of_tiles = 0;
 	tiles_.clear();
 	tiles_.erase(tiles_.begin(), tiles_.end());
 	tiles_.reserve(playground_size_u_.x * playground_size_u_.y);
 
 	// Seed and Perlin noise generators
-	siv::PerlinNoise::seed_type seed = 79425465;
-	siv::PerlinNoise perlin(seed);
+	const siv::PerlinNoise::seed_type seed = 79425465;
+	const siv::PerlinNoise perlin(seed);
 
 	// Different frequencies for different types of clusters
-	//double berryFrequency = 0.1; // Large clusters
-	double stoneFrequency = 0.2; // Medium clusters
-	double treeFrequency = 0.3;  // Small clusters
-	double berryFrequency = 0.5; // Sparse distribution
+	const double stone_frequency = 0.2; // Medium clusters
+	const double tree_frequency = 0.3;  // Small clusters
+	const double berry_frequency = 0.5; // Sparse distribution
 
 	// Thresholds to determine the type of tile based on noise values
-	//double berryThreshold = 0.7;
-	double stoneThreshold = 0.5;
-	double treeThreshold = 0.2;
-	double berryThreshold = 0.4;
+	const double stone_threshold = 0.5;
+	const double tree_threshold = 0.2;
+	const double berry_threshold = 0.4;
 
 	for (unsigned int x = 0; x < playground_size_u_.x; x++)
 	{
@@ -51,7 +48,7 @@ void Tilemap::Generate()
 			double tile_x = x * playground_tile_size_u_.x;
 			double tile_y = y * playground_tile_size_u_.y;
 
-			//Make sure centre of the map is all plains
+			// Make sure centre of the map is all plains
 			if (x == playground_size_u_.x / 2 && (y == playground_size_u_.y / 2 || y == playground_size_u_.y / 2 - 1))
 			{
 				tiles_.emplace_back(TileType::kPlain, tile_x, tile_y, false, false);
@@ -64,25 +61,25 @@ void Tilemap::Generate()
 			else
 			{
 				// Generate different noise values for different frequencies
-				double stoneNoise = perlin.noise2D(x * stoneFrequency, y * stoneFrequency);
-				double treeNoise = perlin.noise2D(x * treeFrequency, y * treeFrequency);
-				double berryNoise = perlin.noise2D(x * berryFrequency, y * berryFrequency);
+				const double stone_noise = perlin.noise2D(x * stone_frequency, y * stone_frequency);
+				const double tree_noise = perlin.noise2D(x * tree_frequency, y * tree_frequency);
+				const double berry_noise = perlin.noise2D(x * berry_frequency, y * berry_frequency);
 
 				// Determine tile type based on noise values and thresholds
 
-				if (stoneNoise > stoneThreshold)
+				if (stone_noise > stone_threshold)
 				{
 					tiles_.emplace_back(TileType::kStone, tile_x, tile_y, false, false);
 					stones_.emplace_back(tile_x, tile_y);
 				}
-				else if (treeNoise > treeThreshold)
+				else if (tree_noise > tree_threshold)
 				{
 					tiles_.emplace_back(TileType::kForest, tile_x, tile_y, false, false);
 					trees_.emplace_back(tile_x, tile_y);
 				}
 				else
 				{
-					if (berryNoise > berryThreshold)
+					if (berry_noise > berry_threshold)
 					{
 						tiles_.emplace_back(TileType::kBerryFull, tile_x, tile_y, true, false);
 						berries_.emplace_back(tile_x, tile_y);
@@ -93,12 +90,11 @@ void Tilemap::Generate()
 					}
 				}
 			}
-			numberOfTiles++;
+			number_of_tiles++;
 		}
 	}
 	tile_selected_ = &(*tiles_.begin());
 	tile_selected_->Deselect();
-	//std::cout << "Total tiles: " << numberOfTiles << std::endl;
 }
 
 void Tilemap::Clear()
@@ -111,26 +107,26 @@ void Tilemap::HandleEvent(const sf::Event& event, const sf::RenderWindow& window
 #ifdef TRACY_ENABLE
 	ZoneScoped;
 #endif
-	sf::Vector2f worldPos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
+	const sf::Vector2f world_pos = window.mapPixelToCoords(sf::Mouse::getPosition(window));
 
 	// Snap mouse position to the grid
-	sf::Vector2f mousePosition(
-		static_cast<int>(worldPos.x / playground_tile_size_u_.x) * playground_tile_size_u_.x,
-		static_cast<int>(worldPos.y / playground_tile_size_u_.y) * playground_tile_size_u_.y
+	sf::Vector2f mouse_position(
+		static_cast<int>(world_pos.x / playground_tile_size_u_.x) * playground_tile_size_u_.x,
+		static_cast<int>(world_pos.y / playground_tile_size_u_.y) * playground_tile_size_u_.y
 	);
 
 
-	auto tileFound = std::find_if(tiles_.begin(), tiles_.end(), [&mousePosition](Tile& t) {return t.Position() == mousePosition; });
+	const auto tile_found = std::find_if(tiles_.begin(), tiles_.end(), [&mouse_position](Tile& t) {return t.Position() == mouse_position; });
 
-	if (tileFound != tiles_.end())
+	if (tile_found != tiles_.end())
 	{
-		tile_selected_ = &(*tileFound);
+		tile_selected_ = &(*tile_found);
 		tile_selected_->Select();
 	}
 
 	if (event.type == sf::Event::MouseButtonReleased)
 	{
-		//Check if the left mouse button is pressed
+		// Check if the left mouse button is pressed
 		if (event.mouseButton.button == sf::Mouse::Left)
 		{
 			if (clicked_tile_ && tile_selected_) {
@@ -145,7 +141,7 @@ void Tilemap::HandleEvent(const sf::Event& event, const sf::RenderWindow& window
 	}
 }
 
-bool Tilemap::Gather(sf::Vector2f pos, TileType type)
+bool Tilemap::Gather(sf::Vector2f pos, const TileType type)
 {
 	std::vector<sf::Vector2f>* type_map = nullptr;
 	std::vector<sf::Vector2f>* gathered_map = nullptr;
@@ -172,12 +168,12 @@ bool Tilemap::Gather(sf::Vector2f pos, TileType type)
 
 	if (type_map != nullptr)
 	{
-		auto item = std::find_if(type_map->begin(), type_map->end(), [pos](const sf::Vector2f& t) { return pos == t; });
+		const auto item = std::find_if(type_map->begin(), type_map->end(), [pos](const sf::Vector2f& t) { return pos == t; });
 		if (item != type_map->end())
 		{
 			gathered_map->emplace_back(pos);
 			type_map->erase(item);
-			auto tile = std::find_if(tiles_.begin(), tiles_.end(), [pos](const Tile& t) {return pos == t.Position(); });
+			const auto tile = std::find_if(tiles_.begin(), tiles_.end(), [pos](const Tile& t) {return pos == t.Position(); });
 			if (tile != tiles_.end())
 			{
 				tile->set_type(new_tile);
@@ -193,8 +189,6 @@ bool Tilemap::Gather(sf::Vector2f pos, TileType type)
 	return false;
 }
 
-
-
 void Tilemap::Regrow()
 {
 	std::vector<sf::Vector2f>* type_map = nullptr;
@@ -202,7 +196,7 @@ void Tilemap::Regrow()
 
 	TileType new_tile = {};
 
-	int rnd = rand() % 3;
+	const int rnd = rand() % 3;
 
 	switch (rnd) {
 	case 0:
@@ -225,18 +219,18 @@ void Tilemap::Regrow()
 
 	if (gathered_map != nullptr && !gathered_map->empty())
 	{
-		int random = rand() % gathered_map->size();
+		const int random = rand() % gathered_map->size();
 		auto& item = gathered_map->at(random);
 
 		type_map->emplace_back(item.x, item.y);
 		
 		// Find the iterator for the item and erase it
-		auto it = std::find(gathered_map->begin(), gathered_map->end(), item);
+		const auto it = std::find(gathered_map->begin(), gathered_map->end(), item);
 		if (it != gathered_map->end()) {
 			gathered_map->erase(it);
 		}
 
-		auto tile = std::find_if(tiles_.begin(), tiles_.end(), [item](const Tile& t) {return sf::Vector2f(item.x, item.y) == t.Position(); });
+		const auto tile = std::find_if(tiles_.begin(), tiles_.end(), [item](const Tile& t) {return sf::Vector2f(item.x, item.y) == t.Position(); });
 		if (tile != tiles_.end())
 		{
 			tile->set_type(new_tile);
@@ -266,7 +260,7 @@ std::vector<sf::Vector2f> Tilemap::GetWalkableTiles()
 	return walkable_positions;
 }
 
-sf::Vector2f Tilemap::GetClosest(sf::Vector2f position, TileType type) const
+sf::Vector2f Tilemap::GetClosest(sf::Vector2f position, const TileType type) const
 {
 	sf::Vector2f closest;
 	float closest_distance = std::numeric_limits<float>::infinity();
@@ -311,6 +305,7 @@ TileType Tilemap::GetSelectedTileType() const {
 		return TileType::kPlain;
 	}
 }
+
 bool Tilemap::IsSelectedTileBuildable() const {
 	if (tile_selected_) {
 		return tile_selected_->is_buildable();
@@ -322,7 +317,7 @@ bool Tilemap::IsSelectedTileBuildable() const {
 
 void Tilemap::Tick()
 {
-	int random = rand() % 1000;
+	const int random = rand() % 2000;
 	if(random <= 5)
 	{
 		Regrow();
@@ -341,7 +336,7 @@ void Tilemap::LoadTile(int type, float x, float y, int texture_index, bool walka
 	}
 }
 
-void Tilemap::LoadElement(TileType type, float x, float y)
+void Tilemap::LoadElement(const TileType type, float x, float y)
 {
 	switch (type)
 	{
@@ -367,7 +362,7 @@ void Tilemap::LoadElement(TileType type, float x, float y)
 	}
 }
 
-void Tilemap::clearVectors()
+void Tilemap::ClearVectors()
 {
 	trees_.clear();
 	cut_trees_.clear();
@@ -378,43 +373,39 @@ void Tilemap::clearVectors()
 	storages_.clear();
 }
 
-void Tilemap::applyFadeEffect(sf::RenderTarget& target)
+void Tilemap::ApplyFadeEffect(const sf::RenderTarget& target)
 {
-	sf::View view = target.getView();
-	sf::Vector2f viewCenter = view.getCenter();
-	sf::FloatRect viewBounds(
-		viewCenter - view.getSize() / 2.f,
+	const sf::View view = target.getView();
+	const sf::Vector2f view_center = view.getCenter();
+	const sf::FloatRect view_bounds(
+		view_center - view.getSize() / 2.f,
 		view.getSize()
 	);
 
-	float maxDistance = std::max(viewBounds.width, viewBounds.height) / 2.f;
+	const float max_distance = std::max(view_bounds.width, view_bounds.height) / 2.f;
 
 	for (auto& tile : tiles_)
 	{
-		sf::FloatRect tileBounds(
+		sf::FloatRect tile_bounds(
 			tile.Position().x,
 			tile.Position().y,
 			static_cast<float>(playground_tile_size_u_.x),
 			static_cast<float>(playground_tile_size_u_.y)
 		);
 
-		if (viewBounds.intersects(tileBounds))
+		if (view_bounds.intersects(tile_bounds))
 		{
-			float distance = std::hypot(tile.Position().x - viewCenter.x, tile.Position().y - viewCenter.y);
-			float fadeFactor = std::clamp(1.0f - (distance / maxDistance), 0.0f, 1.0f);
-			sf::Color color = sf::Color(255 * fadeFactor, 255 * fadeFactor, 255 * fadeFactor);
-			tile.setColor(color);
+			const float distance = std::hypot(tile.Position().x - view_center.x, tile.Position().y - view_center.y);
+			const float fade_factor = std::clamp(1.0f - (distance / max_distance), 0.0f, 1.0f);
+			sf::Color color = sf::Color(255 * fade_factor, 255 * fade_factor, 255 * fade_factor);
+			tile.SetColor(color);
 		}
 	}
 }
 
-void Tilemap::draw(sf::RenderTarget& target, sf::RenderStates states) const
+void Tilemap::draw(sf::RenderTarget& target, const sf::RenderStates states) const
 {
-#ifdef TRACY_ENABLE
-	ZoneScoped;
-#endif
-
-	const_cast<Tilemap*>(this)->applyFadeEffect(target);
+	//const_cast<Tilemap*>(this)->applyFadeEffect(target);
 
 	for (const auto& tile : tiles_)
 	{

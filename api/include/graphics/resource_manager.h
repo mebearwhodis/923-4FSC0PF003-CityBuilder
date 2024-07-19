@@ -3,15 +3,15 @@
 
 #include <array>
 #include <SFML/Graphics.hpp>
-#include "../enum.h"
+
 #include "containers/small_vector.h"
+#include "enum.h"
 
-class ResourceManager {
-
+class ResourceManager
+{
 private:
-	std::array<sf::Texture, static_cast<int>(UiTexture::kLength)> ui_textures_;
 	std::array<sf::Image, static_cast<int>(CursorType::kLength)> cursor_images_;
-
+	std::array<sf::Texture, static_cast<int>(UiTexture::kLength)> ui_textures_;
 	std::array<core::SmallVector<sf::Texture, 4>, static_cast<int>(TileType::kLength)> tile_textures_;
 	std::array<core::SmallVector<sf::Texture, 8>, static_cast<int>(VillagerType::kLength)> character_textures_;
 
@@ -33,16 +33,10 @@ public:
 	ResourceManager(const ResourceManager&) = delete;
 	ResourceManager& operator=(const ResourceManager&) = delete;
 
-	//TODO: CLEANUP rename getters
-	sf::Font& GetFont() { return font_; }
+	sf::Font& font() { return font_; }
 	sf::Texture& GetUiTexture(UiTexture resource_id);
 	sf::Image& GetCursorImage(CursorType cursor_id);
-	const core::SmallVector<sf::Texture, 4>& GetTileTextures(TileType type) const {
-		return tile_textures_[(static_cast<int>(type))];}
-	const core::SmallVector<sf::Texture, 8>& GetCharacterTextures(VillagerType type) const
-	{
-		return character_textures_[(static_cast<int>(type))];
-	}
+	const core::SmallVector<sf::Texture, 4>& GetTileTextures(TileType type) const;
+	const core::SmallVector<sf::Texture, 8>& GetCharacterTextures(VillagerType type) const;
 };
-
 #endif

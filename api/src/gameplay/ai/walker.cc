@@ -1,14 +1,9 @@
-
-#include "gameplay/ai/walker.h"
-
-#include <iostream>
-
-#include "utils.h"
 #include "behaviour_tree/node.h"
+#include "gameplay/ai/walker.h"
 #include "pathfinding/pathfinder.h"
+#include "utils.h"
 
-
-Walker::Walker(float x, float y, float linear_speed) : SpriteEntity(x, y)
+Walker::Walker(const float x, const float y, const float linear_speed) : SpriteEntity(x, y)
 {
 	setPosition(x, y);
 	destination_ = getPosition();
@@ -16,16 +11,16 @@ Walker::Walker(float x, float y, float linear_speed) : SpriteEntity(x, y)
 	last_time_ = std::chrono::steady_clock::now();
 }
 
-void Walker::set_destination(sf::Vector2f destination)
+void Walker::set_destination(const sf::Vector2f destination)
 {
 	destination_ = destination;
 }
-void Walker::set_destination(float x, float y)
+void Walker::set_destination(const float x, const float y)
 {
 	set_destination(sf::Vector2f(x, y));
 }
 
-void Walker::set_linear_speed(float linear_speed)
+void Walker::set_linear_speed(const float linear_speed)
 {
 	linear_speed_ = linear_speed;
 }
@@ -69,7 +64,7 @@ sf::Vector2f Walker::GetLastDestination() const
 	return destination_;
 }
 
-behaviour_tree::Status Walker::GoToNearest(Tilemap& tilemap, sf::Vector2f pos, int& stamina, bool use_stamina) {
+behaviour_tree::Status Walker::GoToNearest(Tilemap& tilemap, const sf::Vector2f pos, int& stamina, const bool use_stamina) {
 	if (squaredMagnitude(pos - path_.final_destination()) > std::numeric_limits<float>::epsilon()) {
 		Path p = CalculatePath(tilemap.GetWalkableTiles(), GetLastDestination(), pos, 64);
 		if (p.is_available()) {

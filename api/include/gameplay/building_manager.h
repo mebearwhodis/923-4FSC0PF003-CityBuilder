@@ -1,39 +1,40 @@
 #ifndef API_GAMEPLAY_BUILDING_MANAGER_H_
 #define API_GAMEPLAY_BUILDING_MANAGER_H_
+
 #include <SFML/Graphics/RectangleShape.hpp>
 
 #include "building.h"
-#include "../world_generation/tile.h"
+#include "world_generation/tile.h"
 #include "world_generation/tilemap.h"
-
 
 class BuildingManager : public sf::Drawable
 {
-	bool is_active_ = false;
-	sf::RectangleShape hover_tile_;
-
 	std::vector<Building> buildings_;
+	sf::RectangleShape hover_tile_;
 	TileType building_type_ = TileType::kHouse;
+	bool is_active_ = false;
 
 	void UpdateHoverTileTexture();
 
+protected:
+	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
 
 public:
 	BuildingManager();
-	void ToggleActive();
-	sf::RectangleShape HoverTile() { return hover_tile_; }
-	void SetHoverTilePosition(sf::Vector2f position);
-	bool IsActive() const { return is_active_; }
+
 	bool AddBuilding(Tile& tile, Tilemap& tilemap);
 	void AddCastle(sf::Vector2f position, const Tilemap& tilemap);
-	void LoadBuilding(int type, float x, float y);
-	void ClearBuildings() { buildings_.clear(); }
-	TileType building_type() const { return building_type_; }
-	void set_building_type(TileType building_type);
 	void ChangeHoverTileColour(sf::Color colour);
-	std::vector<Building> buildings() const { return buildings_; }
+	void ClearBuildings() { buildings_.clear(); }
+	void LoadBuilding(int type, float x, float y);
+	void SetHoverTilePosition(sf::Vector2f position);
+	void ToggleActive();
 
-protected:
-	void draw(sf::RenderTarget& target, sf::RenderStates states) const override;
+	void set_building_type(TileType building_type);
+
+	bool is_active() const { return is_active_; }
+	TileType building_type() const { return building_type_; }
+	std::vector<Building> buildings() const { return buildings_; }
+	sf::RectangleShape HoverTile() { return hover_tile_; }
 };
 #endif // API_GAMEPLAY_BUILDING_MANAGER_H_

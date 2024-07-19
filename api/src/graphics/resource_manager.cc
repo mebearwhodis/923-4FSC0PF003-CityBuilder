@@ -1,8 +1,9 @@
-#include "graphics/resource_manager.h"
 #ifdef TRACY_ENABLE
 #include <Tracy/Tracy.hpp>
 #include <Tracy/TracyC.h>
 #endif
+
+#include "graphics/resource_manager.h"
 
 void ResourceManager::LoadAllTextures()
 {
@@ -140,27 +141,11 @@ void ResourceManager::LoadUITexture(const std::string& filepath, UiTexture ui_te
 
 void ResourceManager::LoadTileTexture(const std::string& filepath, TileType type)
 {
-
-#ifdef TRACY_ENABLE
-	ZoneScoped;
-#endif
-	//sf::Texture texture;
-	//if(texture.loadFromFile(filepath))
-	//{
-	//	tile_textures_[type].push_back(texture);
-	//}
-
-	#ifdef TRACY_ENABLE
-	TracyCZoneN(loadImage, "Load image", true);
-#endif
-
-
 	sf::Image image;
 	if (!image.loadFromFile(filepath)) 
 	{
 		return;
 	}
-
 
 #ifdef TRACY_ENABLE
 	TracyCZoneEnd(loadImage);
@@ -170,7 +155,6 @@ void ResourceManager::LoadTileTexture(const std::string& filepath, TileType type
 #ifdef TRACY_ENABLE
 	TracyCZoneN(loadTexture, "Load texture", true);
 #endif
-
 
 	sf::Texture texture;
 	if (!texture.loadFromImage(image))
@@ -248,4 +232,14 @@ sf::Image& ResourceManager::GetCursorImage(CursorType cursor_id)
 	{
 		return blank_cursor_image_;
 	}
+}
+
+const core::SmallVector<sf::Texture, 4>& ResourceManager::GetTileTextures(TileType type) const
+{
+	return tile_textures_[(static_cast<int>(type))];
+}
+
+const core::SmallVector<sf::Texture, 8>& ResourceManager::GetCharacterTextures(VillagerType type) const
+{
+	return character_textures_[(static_cast<int>(type))];
 }

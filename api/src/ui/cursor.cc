@@ -1,15 +1,13 @@
-// cursor.cpp
-
 #include "ui/cursor.h"
 
-Cursor::Cursor() {}
+Cursor::Cursor() = default;
 
-void Cursor::changeCursor(CursorType cursor, sf::RenderWindow& window) {
+void Cursor::ChangeCursor(const CursorType cursor, sf::RenderWindow& window) {
     // Load cursor image from ResourceManager
-    cursorImage = ResourceManager::Get().GetCursorImage(cursor);
+    cursor_image_ = ResourceManager::Get().GetCursorImage(cursor);
 
     // Create SFML Cursor object from loaded image
-    cursor_.loadFromPixels(cursorImage.getPixelsPtr(), cursorImage.getSize(), { 0, 0 });
+    cursor_.loadFromPixels(cursor_image_.getPixelsPtr(), cursor_image_.getSize(), { 0, 0 });
 
     // Set SFML window cursor
     window.setMouseCursor(cursor_);

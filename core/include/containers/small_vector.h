@@ -122,7 +122,7 @@ namespace core
 		}
 
 		// Overloaded operator[]
-		T& operator[](std::size_t pos)
+		T& operator[](const std::size_t pos)
 		{
 			if (pos >= size_)
 			{
@@ -131,7 +131,7 @@ namespace core
 			return data_[(begin_ + pos) % Capacity];
 		}
 
-		const T& operator[](std::size_t pos) const
+		const T& operator[](const std::size_t pos) const
 		{
 			if (pos >= size_)
 			{
@@ -141,7 +141,7 @@ namespace core
 		}
 
 		// Insert an element at the specified position
-		void Insert(std::size_t position, const T& value)
+		void Insert(const std::size_t position, const T& value)
 		{
 			if (size_ >= Capacity)
 			{
@@ -161,7 +161,7 @@ namespace core
 		}
 
 		// Erase the element at the specified position
-		void Erase(std::size_t position)
+		void Erase(const std::size_t position)
 		{
 			if (size_ == 0)
 			{

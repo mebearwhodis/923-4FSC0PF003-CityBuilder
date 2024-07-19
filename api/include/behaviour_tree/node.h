@@ -1,6 +1,6 @@
 #ifndef API_BEHAVIOUR_TREE_NODE_H_
 #define API_BEHAVIOUR_TREE_NODE_H_
-#include <memory>
+
 #include <vector>
 
 namespace behaviour_tree
@@ -19,8 +19,6 @@ namespace behaviour_tree
 		virtual Status Process() = 0;
 		virtual void Reset() = 0;
 	};
-
-
 
 	class NodeList : public Node
 	{
@@ -43,5 +41,4 @@ namespace behaviour_tree
 		current_child_ = 0;
 	}
 }
-
 #endif //API_BEHAVIOUR_TREE_NODE_H_

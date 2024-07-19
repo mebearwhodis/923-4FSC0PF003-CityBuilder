@@ -1,20 +1,20 @@
 #ifndef API_UI_CURSOR_H_
 #define API_UI_CURSOR_H_
+
 #include <SFML/Graphics/Image.hpp>
 #include <SFML/Window/Cursor.hpp>
 
-#include "../graphics/resource_manager.h"
+#include "graphics/resource_manager.h"
 
+class Cursor
+{
+private:
+    sf::Cursor cursor_;
+    sf::Image cursor_image_;
 
-class Cursor {
 public:
     Cursor();
 
-    void changeCursor(CursorType cursor, sf::RenderWindow& window);
-
-private:
-    sf::Cursor cursor_;
-    sf::Image cursorImage;
+    void ChangeCursor(CursorType cursor, sf::RenderWindow& window);
 };
-
 #endif // API_UI_CURSOR_H_

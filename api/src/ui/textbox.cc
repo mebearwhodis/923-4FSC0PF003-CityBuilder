@@ -1,23 +1,19 @@
 #include "ui/textbox.h"
 
-#include "gameplay/economy_manager.h"
-
-
-TextBox::TextBox(sf::Vector2f positionRelativeToView, std::string text, int size, sf::Color color, bool visible)
+TextBox::TextBox(const sf::Vector2f position_relative_to_view, const std::string& text, const int size, const sf::Color color, const bool visible)
 {
-
-	text_ = sf::Text(text, ResourceManager::Get().GetFont());
+	text_ = sf::Text(text, ResourceManager::Get().font());
 	text_.setCharacterSize(size);
 	text_.setFillColor(color);
 	// Set origin to the bottom-right corner of the text bounds
 	const sf::FloatRect text_bounds = text_.getLocalBounds();
 	text_.setOrigin(text_bounds.left + text_bounds.width, text_bounds.top + text_bounds.height);
-	text_.setPosition(positionRelativeToView);
+	text_.setPosition(position_relative_to_view);
 	is_visible_ = visible;
 	can_be_hidden_ = !visible;
 }
 
-void TextBox::update_textbox(sf::Color colour, std::string text)
+void TextBox::UpdateTextbox(const sf::Color colour, const std::string& text)
 {
 	text_.setFillColor(colour);
 	text_.setString(text);

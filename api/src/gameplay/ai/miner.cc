@@ -1,22 +1,18 @@
-#include "gameplay/ai/miner.h"
-
 #include <iostream>
-#include <SFML/Graphics/Texture.hpp>
 
-#include "utils.h"
 #include "behaviour_tree/leaf.h"
 #include "behaviour_tree/selector.h"
 #include "behaviour_tree/sequence.h"
+#include "gameplay/ai/miner.h"
+#include "utils.h"
 
-
-Miner::Miner(float x, float y, float linear_speed, Tilemap& tilemap) : tilemap_(tilemap), Walker(x, y, linear_speed)
+Miner::Miner(const float x, const float y, const float linear_speed, Tilemap& tilemap) : tilemap_(tilemap), Walker(x, y, linear_speed)
 {
 	DefineTexture(static_cast<int>(VillagerType::kMiner));
 	frame_.setPosition(sprite_.getGlobalBounds().getPosition());
 	frame_.setSize(sprite_.getGlobalBounds().getSize());
 	home_position_ = getPosition();
 	InitiateBehaviourTree();
-
 }
 
 Miner::Miner(const Miner& w) : Walker(w), tilemap_(w.tilemap_)
@@ -101,9 +97,9 @@ void Miner::DefineTexture(int type)
 
 Status Miner::SeekStone()
 {
-	sf::Vector2f closestStone = tilemap_.GetClosest(getPosition(), TileType::kStone);
+	const sf::Vector2f closest_stone = tilemap_.GetClosest(getPosition(), TileType::kStone);
 
-	return GoToNearest(tilemap_, closestStone, stamina_, true);
+	return GoToNearest(tilemap_, closest_stone, stamina_, true);
 }
 
 Status Miner::GatherStone()
@@ -111,12 +107,10 @@ Status Miner::GatherStone()
 	if (tilemap_.Gather(getPosition(), TileType::kStone))
 	{
 		resources_held_ += (std::rand() % 5) + 1;
-		//std::cout << "Cutting wood" << std::endl;
 		return Status::kSuccess;
 	}
 	else
 	{
-		//std::cout << "Not cutting wood" << std::endl;
 		return Status::kFailure;
 	}
 }

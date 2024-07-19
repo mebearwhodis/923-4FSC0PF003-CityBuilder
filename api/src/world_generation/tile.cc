@@ -1,10 +1,10 @@
-#include "world_generation/tile.h"
 #ifdef TRACY_ENABLE
 #include <Tracy/Tracy.hpp>
 #endif
-#include "graphics/resource_manager.h"
 
-Tile::Tile(TileType type, float x = 0, float y = 0, bool walkable = true, bool buildable = true)
+#include "world_generation/tile.h"
+
+Tile::Tile(const TileType type, const float x = 0, const float y = 0, const bool walkable = true, const bool buildable = true)
 {
 #ifdef TRACY_ENABLE
 	ZoneScoped;
@@ -24,7 +24,7 @@ Tile::Tile(TileType type, float x = 0, float y = 0, bool walkable = true, bool b
 	is_buildable_ = buildable;
 }
 
-Tile::Tile(int type, float x, float y, int texture_index, bool walkable, bool buildable)
+Tile::Tile(int type, const float x, const float y, const int texture_index, const bool walkable, const bool buildable)
 {
 	selected_ = false;
 	type_ = static_cast<TileType>(type);
@@ -41,7 +41,7 @@ Tile::Tile(int type, float x, float y, int texture_index, bool walkable, bool bu
 
 }
 
-void Tile::set_type(TileType type)
+void Tile::set_type(const TileType type)
 {
 	if(type == TileType::kForestCutDown || type == TileType::kForest || type == TileType::kBerryEmpty || type == TileType::kBerryFull || type == TileType::kStone)
 	{
@@ -78,14 +78,13 @@ void Tile::Deselect()
 	selected_ = false;
 }
 
-void Tile::setColor(const sf::Color& color)
+void Tile::SetColor(const sf::Color& color)
 {
 	sprite_.setColor(color);
-	//outline_.setOutlineColor(color);
 }
 
 
-void Tile::draw(sf::RenderTarget& target, sf::RenderStates states) const
+void Tile::draw(sf::RenderTarget& target, const sf::RenderStates states) const
 {
 	target.draw(sprite_, states);
 }

@@ -1,8 +1,7 @@
-#include "save_system.h"
-
 #include <iostream>
 #include <fstream>
-#include <nlohmann/json.hpp>
+
+#include "save_system.h"
 
 using json = nlohmann::json;
 
@@ -110,7 +109,6 @@ void SaveSystem::SaveGame(Tilemap& tilemap, BuildingManager& building_manager, E
 	json_level["current_sawmill_cost"] = economy_manager.current_sawmill_cost();
 	json_level["current_storage_cost"] = economy_manager.current_storage_cost();
 
-	// Écrire le JSON formaté dans le fichier
 	std::ofstream file(file_name);
 	if (file.is_open()) {
 		file << json_level.dump(4);
@@ -124,15 +122,13 @@ void SaveSystem::SaveGame(Tilemap& tilemap, BuildingManager& building_manager, E
 
 void SaveSystem::LoadGame(Tilemap& tilemap, BuildingManager& building_manager, EconomyManager& economy_manager, VillagerManager& villager_manager, const std::string& file_name)
 {
-	// Nettoyer les vecteurs de tuiles et d'arbres existants
 	tilemap.Clear();
-	tilemap.clearVectors();
+	tilemap.ClearVectors();
 	building_manager.ClearBuildings();
 	economy_manager.ClearAll();
 	villager_manager.ClearVillagers();
 
 
-	// Ouvrir le fichier JSON
 	std::ifstream file(file_name);
 	if (!file.is_open())
 	{

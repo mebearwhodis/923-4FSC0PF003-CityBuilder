@@ -1,23 +1,16 @@
-#include "gameplay/ai/woodsman.h"
-
-#include <iostream>
-#include <SFML/Graphics/Texture.hpp>
-
-#include "utils.h"
 #include "behaviour_tree/leaf.h"
 #include "behaviour_tree/selector.h"
 #include "behaviour_tree/sequence.h"
-#include "gameplay/economy_manager.h"
+#include "gameplay/ai/woodsman.h"
+#include "utils.h"
 
-
-Woodsman::Woodsman(float x, float y, float linear_speed, Tilemap& tilemap) : tilemap_(tilemap), Walker(x, y, linear_speed)
+Woodsman::Woodsman(const float x, const float y, const float linear_speed, Tilemap& tilemap) : Walker(x, y, linear_speed), tilemap_(tilemap)
 {
 	DefineTexture(static_cast<int>(VillagerType::kWoodsman));
 	frame_.setPosition(sprite_.getGlobalBounds().getPosition());
 	frame_.setSize(sprite_.getGlobalBounds().getSize());
 	home_position_ = getPosition();
 	InitiateBehaviourTree();
-
 }
 
 Woodsman::Woodsman(const Woodsman& w) : Walker(w), tilemap_(w.tilemap_)
@@ -61,14 +54,11 @@ void Woodsman::InitiateBehaviourTree()
 		});
 
 
-	// Creating the selector
 	std::unique_ptr<Selector> main_selector = std::make_unique<Selector>();
 
-	// Creating the sequences
 	Sequence* gathering_sequence = new Sequence();
 	Sequence* home_sequence = new Sequence();
 
-	// Adding the nodes to the sequence using std::move and static_cast
 	main_selector->AddNode(gathering_sequence);
 	main_selector->AddNode(home_sequence);
 
@@ -80,7 +70,6 @@ void Woodsman::InitiateBehaviourTree()
 	home_sequence->AddNode(refill_stamina);
 
 	bt_tree_.Attach(main_selector);
-	//std::cout << "Behavior tree initialized for Woodsman" << std::endl;
 
 	check_stamina = nullptr;
 	seek_wood = nullptr;
@@ -95,7 +84,6 @@ void Woodsman::Tick()
 	bt_tree_.Tick();
 }
 
-//sprite_.setPosition(x, y);
 void Woodsman::DefineTexture(int type)
 {
 	const auto& textures = ResourceManager::Get().GetCharacterTextures(static_cast<VillagerType>(type));
@@ -107,9 +95,9 @@ void Woodsman::DefineTexture(int type)
 
 Status Woodsman::SeekWood()
 {
-	sf::Vector2f closestTree = tilemap_.GetClosest(getPosition(), TileType::kForest);
+	const sf::Vector2f closest_tree = tilemap_.GetClosest(getPosition(), TileType::kForest);
 
-	return GoToNearest(tilemap_, closestTree, stamina_, true);
+	return GoToNearest(tilemap_, closest_tree, stamina_, true);
 }
 
 Status Woodsman::GatherWood()
@@ -118,12 +106,10 @@ Status Woodsman::GatherWood()
 	{
 
 		resources_held_ += (std::rand() % 5) + 1;
-		//std::cout << "Cutting wood" << std::endl;
 		return Status::kSuccess;
 	}
 	else
 	{
-		//std::cout << "Not cutting wood" << std::endl;
 		return Status::kFailure;
 	}
 }
@@ -136,5 +122,4 @@ Status Woodsman::ReturnHomeOrStorage()
 
 	return (magnitude_to_home < magnitude_to_storage) ?
 		GoToNearest(tilemap_, home_position_, stamina_, false) : GoToNearest(tilemap_, closest_storage, stamina_, false);
-
 }

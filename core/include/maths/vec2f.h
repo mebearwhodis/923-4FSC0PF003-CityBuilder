@@ -11,13 +11,13 @@ namespace core
 		float x = 0, y = 0;
 
 		//Addition
-		constexpr Vec2f operator+(Vec2f other) const
+		constexpr Vec2f operator+(const Vec2f other) const
 		{
 			return { x + other.x, y + other.y };
 		}
 
 		//Substraction
-		constexpr Vec2f operator-(Vec2f other) const
+		constexpr Vec2f operator-(const Vec2f other) const
 		{
 			return { x - other.x, y - other.y };
 		}
@@ -29,7 +29,7 @@ namespace core
 		}
 
 		//Dot product
-		static constexpr float Dot(Vec2f v1, Vec2f v2)
+		static constexpr float Dot(const Vec2f v1, const Vec2f v2)
 		{
 			return v1.x * v2.x + v1.y * v2.y;
 		}
@@ -47,13 +47,13 @@ namespace core
 		}
 
 		//Multiplication by scalar
-		constexpr Vec2f operator*(float scalar) const
+		constexpr Vec2f operator*(const float scalar) const
 		{
 			return { x * scalar, y * scalar };
 		}
 
 		//Division by scalar
-		constexpr Vec2f operator/(float scalar) const
+		constexpr Vec2f operator/(const float scalar) const
 		{
 			if (scalar == 0) return{ 0,0 };
 			return { x / scalar, y / scalar };
@@ -66,7 +66,7 @@ namespace core
 		}
 
 		//Square root approximation with the Newton-Rahpson method
-		static constexpr float Sqrt(float value)
+		static constexpr float Sqrt(const float value)
 		{
 			if (value <= 0) return 0;
 			float x = value;
@@ -94,7 +94,7 @@ namespace core
 		}
 
 		//LERP(a, b, t) where a & b are Vec2f and t is a float ranging from 0 to 1
-		[[nodiscard]] constexpr Vec2f LERP(Vec2f other, float t) const
+		[[nodiscard]] constexpr Vec2f LERP(const Vec2f other, const float t) const
 		{
 			return { x + t * (other.x - x), y + t * (other.y - y) };
 		}
@@ -102,7 +102,7 @@ namespace core
 	}; // struct Vec2f
 
 	//Operator overload for multiplication
-	constexpr Vec2f operator*(float scalar, const Vec2f& vec)
+	constexpr Vec2f operator*(const float scalar, const Vec2f& vec)
 	{
 		return { scalar * vec.x, scalar * vec.y };
 	}

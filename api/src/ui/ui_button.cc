@@ -1,25 +1,18 @@
-#include "ui/ui_button.h"
-
-
-#include <iostream>
-
-#include <SFML/Graphics/RenderTarget.hpp>
-
 #ifdef TRACY_ENABLE
 #include <Tracy/Tracy.hpp>
 #endif
 
-#include "graphics/resource_manager.h"
+#include <SFML/Graphics/RenderTarget.hpp>
 
+#include "ui/ui_button.h"
 
-UiButton::UiButton(sf::Vector2f positionRelativeToView, sf::Color colorBase, UiTexture up_texture_name, bool visible)
+UiButton::UiButton(const sf::Vector2f position_relative_to_view, UiTexture up_texture_name, const bool visible)
 {
-
 #ifdef TRACY_ENABLE
 	ZoneScoped;
 #endif
 
-	setPosition(positionRelativeToView);
+	setPosition(position_relative_to_view);
 
 	texture_up_ = ResourceManager::Get().GetUiTexture(up_texture_name);
 	texture_down_ = ResourceManager::Get().GetUiTexture(static_cast<UiTexture>(static_cast<int>(up_texture_name) +1));
@@ -56,11 +49,11 @@ bool UiButton::ContainsMouse(const sf::Event::MouseButtonEvent& event) const
 #endif
 
 	// Get the position of the mouse click
-	float mouseX = static_cast<float>(event.x) - getPosition().x;
-	float mouseY = static_cast<float>(event.y) - getPosition().y;
+	const float mouse_x = static_cast<float>(event.x) - getPosition().x;
+	const float mouse_y = static_cast<float>(event.y) - getPosition().y;
 
 	// Check if the mouse click is inside the drawable shape
-	if (sprite_.getGlobalBounds().contains(mouseX, mouseY)) {
+	if (sprite_.getGlobalBounds().contains(mouse_x, mouse_y)) {
 		return true;
 	}
 	else

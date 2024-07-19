@@ -1,7 +1,6 @@
 #include "gameplay/ai/villager_manager.h"
-#include "gameplay/ai/woodsman.h"
 
-void VillagerManager::SpawnVillager(sf::Vector2f position, Tilemap& tilemap, VillagerType type)
+void VillagerManager::SpawnVillager(sf::Vector2f position, Tilemap& tilemap, const VillagerType type)
 {
 	switch(type)
 	{
@@ -27,7 +26,7 @@ void VillagerManager::ClearVillagers()
 	gatherers_.clear();
 }
 
-void VillagerManager::draw(sf::RenderTarget& target, sf::RenderStates states) const
+void VillagerManager::draw(sf::RenderTarget& target, const sf::RenderStates states) const
 {
 	for (const auto& w : woodsmen_)
 	{

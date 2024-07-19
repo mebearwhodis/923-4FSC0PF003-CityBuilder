@@ -1,18 +1,14 @@
-#ifndef API_SAVE_SYSTEM_H
-#define API_SAVE_SYSTEM_H
+#ifndef API_SAVE_SYSTEM_H_
+#define API_SAVE_SYSTEM_H_
+
 #include <string>
+#include <nlohmann/json.hpp>
 
 #include "gameplay/building_manager.h"
 #include "gameplay/economy_manager.h"
 #include "gameplay/ai/villager_manager.h"
 #include "world_generation/tilemap.h"
-#include <nlohmann/json.hpp>
 
-
-//TODO: SOON Save & Load system
-//Things that need saving: me
-//Tilemap -> tiles_(type(if type kPlain, then buildable = true), position, walkable, tile_texture_index_)
-//all vectors in tilemap
 class SaveSystem
 {
 public:
@@ -21,9 +17,4 @@ public:
 };
 
 
-
-
-
-
-
-#endif // API_SAVE_SYSTEM_H
+#endif // API_SAVE_SYSTEM_H_

@@ -1,5 +1,4 @@
 #include "behaviour_tree/tree.h"
-#include <iostream>
 
 using namespace behaviour_tree;
 

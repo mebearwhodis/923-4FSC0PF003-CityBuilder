@@ -7,7 +7,8 @@ Status Leaf::Process()
 	if(leaf_action_ != nullptr)
 	{
 		return leaf_action_();
-	}else
+	}
+	else
 	{
 		return Status::kFailure;
 	}

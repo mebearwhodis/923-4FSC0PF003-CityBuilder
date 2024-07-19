@@ -1,46 +1,46 @@
 #include "gameplay/economy_manager.h"
 
-void EconomyManager::AddFood(int amount)
+void EconomyManager::AddFood(const int amount)
 {
 	food_ += amount;
 }
 
-void EconomyManager::AddWood(int amount)
+void EconomyManager::AddWood(const int amount)
 {
 	wood_ += amount;
 }
 
-void EconomyManager::AddStone(int amount)
+void EconomyManager::AddStone(const int amount)
 {
 	stone_ += amount;
 }
 
-void EconomyManager::AddPopulation(int amount)
+void EconomyManager::AddPopulation(const int amount)
 {
 	current_population_ += amount;
 }
 
-void EconomyManager::AddTotalPopulation(int amount)
+void EconomyManager::AddTotalPopulation(const int amount)
 {
 	total_population_ += amount;
 }
 
-void EconomyManager::set_current_house_cost(int amount)
+void EconomyManager::set_current_house_cost(const int amount)
 {
 	current_house_cost_ = amount;
 }
 
-void EconomyManager::set_current_forge_cost(int amount)
+void EconomyManager::set_current_forge_cost(const int amount)
 {
 	current_forge_cost_ = amount;
 }
 
-void EconomyManager::set_current_sawmill_cost(int amount)
+void EconomyManager::set_current_sawmill_cost(const int amount)
 {
 	current_sawmill_cost_ = amount;
 }
 
-void EconomyManager::set_current_storage_cost(int amount)
+void EconomyManager::set_current_storage_cost(const int amount)
 {
 	current_storage_cost_ = amount;
 }

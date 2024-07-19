@@ -1,7 +1,8 @@
-#include "gameplay/building_manager.h"
 #ifdef TRACY_ENABLE
 #include <Tracy/Tracy.hpp>
 #endif
+
+#include "gameplay/building_manager.h"
 #include "world_generation/tilemap.h"
 
 void BuildingManager::UpdateHoverTileTexture()
@@ -54,12 +55,10 @@ bool BuildingManager::AddBuilding(Tile& tile, Tilemap& tilemap)
 
 	if(!is_active_ || !tile.is_buildable() || building_type_ == TileType::kPlain)
 	{
-		////std::cout << "can't build here" << std::endl;
 		return false;
 	}
 	else
 	{
-		//tile.set_walkable(false);
 		tile.set_is_buildable(false);
 
 		buildings_.emplace_back(building_type_, tile.Position().x, tile.Position().y);
@@ -73,7 +72,7 @@ bool BuildingManager::AddBuilding(Tile& tile, Tilemap& tilemap)
 		return true;
 	}
 }
-void BuildingManager::AddCastle(sf::Vector2f position, const Tilemap& tilemap)
+void BuildingManager::AddCastle(const sf::Vector2f position, const Tilemap& tilemap)
 {
 	buildings_.emplace_back(TileType::kCastleBase, position.x * tilemap.playground_tile_size_u().x, position.y * tilemap.playground_tile_size_u().y);
 	buildings_.emplace_back(TileType::kCastleRoof, position.x * tilemap.playground_tile_size_u().x, (position.y -1) * tilemap.playground_tile_size_u().y);
@@ -85,20 +84,20 @@ void BuildingManager::LoadBuilding(int type, float x, float y)
 }
 
 
-void BuildingManager::set_building_type(TileType building_type)
+void BuildingManager::set_building_type(const TileType building_type)
 {
 	building_type_ = building_type;
 	UpdateHoverTileTexture();
 }
 
-void BuildingManager::ChangeHoverTileColour(sf::Color colour)
+void BuildingManager::ChangeHoverTileColour(const sf::Color colour)
 {
 	hover_tile_.setFillColor(colour);
 	hover_tile_.setOutlineColor(colour);
 }
 
 
-void BuildingManager::draw(sf::RenderTarget& target, sf::RenderStates states) const
+void BuildingManager::draw(sf::RenderTarget& target, const sf::RenderStates states) const
 {
 	for (const auto& b : buildings_)
 	{

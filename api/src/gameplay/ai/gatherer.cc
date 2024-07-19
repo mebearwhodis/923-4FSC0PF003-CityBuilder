@@ -1,15 +1,10 @@
-#include "gameplay/ai/gatherer.h"
-
-#include <iostream>
-#include <SFML/Graphics/Texture.hpp>
-
-#include "utils.h"
 #include "behaviour_tree/leaf.h"
 #include "behaviour_tree/selector.h"
 #include "behaviour_tree/sequence.h"
+#include "gameplay/ai/gatherer.h"
+#include "utils.h"
 
-
-Gatherer::Gatherer(float x, float y, float linear_speed, Tilemap& tilemap) : tilemap_(tilemap), Walker(x, y, linear_speed)
+Gatherer::Gatherer(const float x, const float y, const float linear_speed, Tilemap& tilemap) : tilemap_(tilemap), Walker(x, y, linear_speed)
 {
 	DefineTexture(static_cast<int>(VillagerType::kGatherer));
 	frame_.setPosition(sprite_.getGlobalBounds().getPosition());
@@ -101,9 +96,9 @@ void Gatherer::DefineTexture(int type)
 
 Status Gatherer::SeekBerry()
 {
-	sf::Vector2f closestBerry = tilemap_.GetClosest(getPosition(), TileType::kBerryFull);
+	const sf::Vector2f closest_berry = tilemap_.GetClosest(getPosition(), TileType::kBerryFull);
 
-	return GoToNearest(tilemap_, closestBerry, stamina_, true);
+	return GoToNearest(tilemap_, closest_berry, stamina_, true);
 }
 
 Status Gatherer::GatherBerry()

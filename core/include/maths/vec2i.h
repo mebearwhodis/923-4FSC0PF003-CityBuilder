@@ -11,13 +11,13 @@ namespace core
 		int x = 0, y = 0;
 
 		//Addition
-		constexpr Vec2i operator+(Vec2i other) const
+		constexpr Vec2i operator+(const Vec2i other) const
 		{
 			return { x + other.x, y + other.y };
 		}
 
 		//Substraction
-		constexpr Vec2i operator-(Vec2i other) const
+		constexpr Vec2i operator-(const Vec2i other) const
 		{
 			return { x - other.x, y - other.y };
 		}
@@ -29,7 +29,7 @@ namespace core
 		}
 
 		//Dot product
-		static constexpr int Dot(Vec2i v1, Vec2i v2)
+		static constexpr int Dot(const Vec2i v1, const Vec2i v2)
 		{
 			return v1.x * v2.x + v1.y * v2.y;
 		}
@@ -47,13 +47,13 @@ namespace core
 		}
 
 		//Multiplication by scalar
-		constexpr Vec2i operator*(int scalar) const
+		constexpr Vec2i operator*(const int scalar) const
 		{
 			return{ x * scalar, y * scalar };
 		}
 
 		//Division by scalar
-		constexpr Vec2i operator/(int scalar) const
+		constexpr Vec2i operator/(const int scalar) const
 		{
 			if (scalar == 0) return { 0,0 };
 			return { x / scalar, y / scalar };
@@ -68,7 +68,7 @@ namespace core
 	}; // struct Vec2i
 
 	//Operator overload for multiplication
-	constexpr Vec2i operator*(int scalar, const Vec2i& vec)
+	constexpr Vec2i operator*(const int scalar, const Vec2i& vec)
 	{
 		return { scalar * vec.x, scalar * vec.y };
 	}
